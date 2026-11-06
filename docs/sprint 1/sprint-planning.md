@@ -15,7 +15,7 @@ Los siguientes issues fueron seleccionados del Product Backlog y pasaron a la co
 | Issue # | Título de la Historia de Usuario | Estimación (Puntos) | Asignado a |
 | :--- | :--- | :--- | :--- |
 | HU-01 | Como adulto mayor que va a la sala de internet quiero que al abrir el computador ya me aparezcan los temas en botones grandes y fáciles de leer para encontrar rápido lo que necesito sin tener que preguntarle a nadie. | [X] pts | [Nombre] |
-| HU-02 | Como [rol] quiero [acción] para [beneficio] | [X] pts | [Nombre] |
+| HU-02 | Como persona que no sabe mucho de computadores quiero que me expliquen las cosas de a un paso a la vez, para poder hacerlo yo solo sin perderme. | [X] pts | [Nombre] |
 
 ## 3. Acuerdos y Notas de Planificación
 * Se definieron las dependencias técnicas y el orden de desarrollo de las tareas.
