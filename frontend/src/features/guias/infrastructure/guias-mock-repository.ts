@@ -2,11 +2,16 @@ import type { GuiasRepository } from '../domain/guias-repository'
 import type { Categoria, GuiaResumen } from '../domain/entities'
 
 const categorias: Categoria[] = [
-  { id: 'correo', nombre: 'Correo electrónico', ilustracionUrl: '/ilustraciones/correo.svg' },
-  { id: 'busqueda', nombre: 'Buscar en internet', ilustracionUrl: '/ilustraciones/busqueda.svg' },
-  { id: 'documentos', nombre: 'Documentos', ilustracionUrl: '/ilustraciones/documentos.svg' },
-  { id: 'redes', nombre: 'Redes sociales', ilustracionUrl: '/ilustraciones/redes.svg' },
-  { id: 'seguridad', nombre: 'Seguridad digital', ilustracionUrl: '/ilustraciones/seguridad.svg' },
+  { id: 'correo', nombre: 'Correo Gmail', icono: 'mail', esDestacada: true,
+    descripcion: 'Entrar a tu correo, escribir un mensaje y mandar fotos a tu familia.' },
+  { id: 'tramites', nombre: 'Trámites en línea', icono: 'landmark', esDestacada: false,
+    descripcion: 'Citas médicas, certificados y pagos' },
+  { id: 'documentos', nombre: 'Documentos', icono: 'file-text', esDestacada: false,
+    descripcion: 'Escribir una carta, guardar e imprimir' },
+  { id: 'redes', nombre: 'Redes sociales', icono: 'users', esDestacada: false,
+    descripcion: 'Facebook y WhatsApp Web' },
+  { id: 'seguridad', nombre: 'Seguridad en internet', icono: 'shield', esDestacada: false,
+    descripcion: 'Contraseñas, estafas y cerrar sesión' },
 ]
 
 const guias: GuiaResumen[] = [

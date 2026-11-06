@@ -1,20 +1,28 @@
+import { PageLayout } from '../../../../shared/components/PageLayout'
+import { CategoriaDestacada } from '../components/CategoriaDestacada'
+import { CategoriaItem } from '../components/CategoriaItem'
+import { HeroBusqueda } from '../components/HeroBusqueda'
 import { useCategorias } from '../hooks/useCategorias'
-import { CategoriaCard } from '../components/CategoriaCard'
 
 export function InicioPage() {
   const { data, isLoading, isError } = useCategorias()
 
-  if (isLoading) return <p role="status">Cargando temas…</p>
-  if (isError || !data) return <p role="alert">No pudimos cargar los temas. Pida ayuda a un monitor.</p>
+  const contenido = () => {
+    if (isLoading) return <p role="status">Cargando temas…</p>
+    if (isError || !data) return <p role="alert">No pudimos cargar los temas. Pide ayuda a un monitor.</p>
 
-  return (
-    <main id="contenido">
-      <h1>¿Qué quiere aprender hoy?</h1>
-      <ul className="categorias-grid">
-        {data.map((c) => (
-          <li key={c.id}><CategoriaCard categoria={c} /></li>
-        ))}
-      </ul>
-    </main>
-  )
+    const destacada = data.find((c) => c.esDestacada)
+    const otras = data.filter((c) => !c.esDestacada)
+    return (
+      <>
+        {destacada && <CategoriaDestacada categoria={destacada} />}
+        <h2 className="otros-temas">Otros temas</h2>
+        <ul className="temas-lista">
+          {otras.map((c) => <li key={c.id}><CategoriaItem categoria={c} /></li>)}
+        </ul>
+      </>
+    )
+  }
+
+  return <PageLayout hero={<HeroBusqueda />}>{contenido()}</PageLayout>
 }
