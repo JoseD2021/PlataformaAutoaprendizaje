@@ -1,0 +1,20 @@
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+}
+.categoria-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  min-height: var(--tap-min);
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius);
+  font-size: var(--fs-lg);
+  text-decoration: none;
+  color: var(--color-text);
+}
