@@ -15,8 +15,17 @@ const categorias: Categoria[] = [
 ]
 
 const guias: GuiaResumen[] = [
-  { id: 'enviar-foto', titulo: 'Enviar una foto por correo', categoriaId: 'correo' },
-  { id: 'imprimir', titulo: 'Imprimir un documento', categoriaId: 'documentos' },
+  { id: 'entrar-correo', titulo: 'Entrar a mi correo', categoriaId: 'correo',
+    totalPasos: 3, minutosEstimados: 2, esMasPedida: false },
+  { id: 'enviar-correo-foto', titulo: 'Enviar un correo con una foto', categoriaId: 'correo',
+    totalPasos: 4, minutosEstimados: 3, esMasPedida: true },
+  { id: 'responder-correo', titulo: 'Responder un correo', categoriaId: 'correo',
+    totalPasos: 3, minutosEstimados: 2, esMasPedida: false },
+  { id: 'crear-cuenta-gmail', titulo: 'Crear una cuenta de Gmail', categoriaId: 'correo',
+    totalPasos: 7, minutosEstimados: 10, esMasPedida: false },
+  { id: 'cerrar-sesion', titulo: 'Cerrar sesión al terminar', categoriaId: 'correo',
+    totalPasos: 2, minutosEstimados: 1, esMasPedida: false,
+    etiqueta: 'Importante en computadores públicos' },
 ]
 
 export class GuiasMockRepository implements GuiasRepository {
@@ -24,4 +33,7 @@ export class GuiasMockRepository implements GuiasRepository {
   async listarGuiasPorCategoria(categoriaId: string) {
     return guias.filter((g) => g.categoriaId === categoriaId)
   }
+  async obtenerCategoria(id: string) {
+  return categorias.find((c) => c.id === id) ?? null
+}
 }

@@ -10,4 +10,8 @@ export interface GuiaResumen {
   id: string
   titulo: string
   categoriaId: string
+  totalPasos: number
+  minutosEstimados: number
+  esMasPedida: boolean
+  etiqueta?: string   // ej. "Importante en computadores públicos"
 }
