@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": ["dist", "node_modules"],
+  "overrides": [
+    {
+      "files": ["src/modules/*/domain/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": [
+            { "group": ["@nestjs/*", "typeorm", "typeorm/*", "@prisma/*"],
+              "message": "El dominio debe ser TypeScript puro." },
+            { "regex": "(^|/)(application|infrastructure|presentation)(/|$)",
+              "message": "El dominio no puede depender de capas externas." }
+          ]
+        }]
+      }
+    },
+    {
+      "files": ["src/modules/*/application/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": [
+            { "regex": "(^|/)(infrastructure|presentation)(/|$)",
+              "message": "La capa de aplicación no puede depender de infraestructura ni presentación." }
+          ]
+        }]
+      }
+    }
+  ]
+}
