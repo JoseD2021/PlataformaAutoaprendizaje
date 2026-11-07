@@ -4,6 +4,7 @@ export interface Categoria {
   descripcion: string
   icono: string          // nombre del ícono, no un componente de React
   esDestacada: boolean   // el "tema más pedido en la sala"
+  slug?: string
 }
 
 export interface GuiaResumen {
@@ -30,4 +31,8 @@ export interface GuiaDetalle {
   titulo: string
   categoriaId: string
   pasos: Paso[]
+  totalPasos?: number
+  minutosEstimados?: number
+  esMasPedida?: boolean
+  etiqueta?: string
 }
