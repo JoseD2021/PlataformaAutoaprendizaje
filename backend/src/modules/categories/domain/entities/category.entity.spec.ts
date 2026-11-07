@@ -36,6 +36,10 @@ describe('Category', () => {
       expect(category.isFeatured).toBe(false);
     });
 
+    it('genera el slug sin tildes ni caracteres especiales', () => {
+      expect(Category.generateSlug('Trámites en línea')).toBe('tramites-en-linea');
+    });
+    
     it('rechaza una categoría sin ID', () => {
       expect(() => Category.create({ ...categoryProps, id: '' })).toThrow(
         InvalidCategoryError,
@@ -63,7 +67,7 @@ describe('Category', () => {
       category.changeName('Arte y Música');
 
       expect(category.name).toBe('Arte y Música');
-      expect(category.slug).toBe('arte-y-msica');
+      expect(category.slug).toBe('arte-y-musica');
     });
 
     it('rechaza un nombre vacío', () => {

@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'node:crypto';
+import { CATEGORY_LOOKUP, CategoryLookup } from '../../application/ports/category-lookup.port';
 import { GuideStep } from '../../domain/entities/guide-step.entity';
 import { Guide } from '../../domain/entities/guide.entity';
 import { GuideStatus } from '../../domain/enums/guide-status.enum';
@@ -10,7 +11,7 @@ import { GUIDES_DEMO_DATA } from './guides-demo.data';
 /**
  * Siembra las guías de demostración de forma idempotente.
  *
- * Solo actúa cuando SEED_DEMO_DATA=true. Los datos son ficticios.
+ * Solo actúa cuando SEED_DEMO_DATA=true. Necesita que las categorías de demo existan.
  */
 @Injectable()
 export class GuidesSeedService implements OnApplicationBootstrap {
@@ -18,6 +19,7 @@ export class GuidesSeedService implements OnApplicationBootstrap {
 
   constructor(
     @Inject(GUIDE_REPOSITORY) private readonly guides: GuideRepository,
+    @Inject(CATEGORY_LOOKUP) private readonly categories: CategoryLookup,
     private readonly config: ConfigService,
   ) {}
 
@@ -34,10 +36,19 @@ export class GuidesSeedService implements OnApplicationBootstrap {
           continue;
         }
 
+        const categoryId = await this.categories.findIdBySlug(data.categorySlug);
+
+        if (!categoryId) {
+          this.logger.warn(
+            `Se omite la guía "${data.id}": no existe la categoría "${data.categorySlug}".`,
+          );
+          continue;
+        }
+
         const guide = Guide.create({
           id: data.id,
           title: data.title,
-          categoryId: data.categoryId,
+          categoryId,
           estimatedMinutes: data.estimatedMinutes,
           isMostRequested: data.isMostRequested,
           tag: data.tag,

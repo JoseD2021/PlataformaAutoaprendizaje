@@ -8,13 +8,20 @@ import { GuideStepOrmEntity } from './infrastructure/persistence/guide-step.orm-
 import { TypeOrmGuideRepository } from './infrastructure/persistence/typeorm-guide.repository';
 import { GuidesSeedService } from './infrastructure/seeding/guides-seed.service';
 import { GuidesController } from './presentation/controllers/guides.controller';
+import { CategoriesModule } from '../categories/categories.module';
+import { CATEGORY_LOOKUP } from './application/ports/category-lookup.port';
+import { CategoryRepositoryLookup } from './infrastructure/categories/category-repository.lookup';
 
-const repositories = [{ provide: GUIDE_REPOSITORY, useClass: TypeOrmGuideRepository }];
+
+const repositories = [
+  { provide: GUIDE_REPOSITORY, useClass: TypeOrmGuideRepository },
+  { provide: CATEGORY_LOOKUP, useClass: CategoryRepositoryLookup },
+];
 
 const useCases = [ListGuidesUseCase, GetGuideUseCase];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GuideOrmEntity, GuideStepOrmEntity])],
+    imports: [TypeOrmModule.forFeature([GuideOrmEntity, GuideStepOrmEntity]), CategoriesModule],
   providers: [...repositories, ...useCases, GuidesSeedService],
   exports: [GUIDE_REPOSITORY],
   controllers: [GuidesController],

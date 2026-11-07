@@ -7,7 +7,7 @@ export interface DemoStepData {
 export interface DemoGuideData {
   id: string;
   title: string;
-  categoryId: string;
+  categorySlug: string;
   estimatedMinutes: number;
   isMostRequested: boolean;
   tag: string | null;
@@ -18,7 +18,7 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
   {
     id: 'entrar-correo',
     title: 'Entrar a mi correo',
-    categoryId: 'correo',
+    categorySlug: 'correo-gmail',
     estimatedMinutes: 2,
     isMostRequested: false,
     tag: null,
@@ -45,7 +45,7 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
   {
     id: 'enviar-correo-foto',
     title: 'Enviar un correo con una foto',
-    categoryId: 'correo',
+    categorySlug: 'correo-gmail',
     estimatedMinutes: 3,
     isMostRequested: true,
     tag: null,
@@ -79,7 +79,7 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
   {
     id: 'responder-correo',
     title: 'Responder un correo',
-    categoryId: 'correo',
+    categorySlug: 'correo-gmail',
     estimatedMinutes: 2,
     isMostRequested: false,
     tag: null,
@@ -105,7 +105,7 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
   {
     id: 'crear-cuenta-gmail',
     title: 'Crear una cuenta de Gmail',
-    categoryId: 'correo',
+    categorySlug: 'correo-gmail',
     estimatedMinutes: 10,
     isMostRequested: false,
     tag: null,
@@ -154,7 +154,7 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
   {
     id: 'cerrar-sesion',
     title: 'Cerrar sesión al terminar',
-    categoryId: 'correo',
+    categorySlug: 'correo-gmail',
     estimatedMinutes: 1,
     isMostRequested: false,
     tag: 'Importante en computadores públicos',

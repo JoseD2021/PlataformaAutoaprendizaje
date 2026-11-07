@@ -7,8 +7,11 @@ import {
   PrimaryColumn,
   type Relation,
   UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { GuideStepOrmEntity } from './guide-step.orm-entity';
+import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
 @Entity({ name: 'guides' })
 export class GuideOrmEntity {
@@ -18,9 +21,13 @@ export class GuideOrmEntity {
   @Column({ type: 'varchar', length: 160 })
   title: string;
 
-  @Index('IDX_guides_category_id')
-  @Column({ name: 'category_id', type: 'varchar', length: 64 })
+    @Index('IDX_guides_category_id')
+  @Column({ name: 'category_id', type: 'uuid' })
   categoryId: string;
+
+  @ManyToOne(() => CategoryOrmEntity, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'category_id', foreignKeyConstraintName: 'FK_guides_category' })
+  category: Relation<CategoryOrmEntity>;
 
   @Column({ name: 'estimated_minutes', type: 'integer' })
   estimatedMinutes: number;

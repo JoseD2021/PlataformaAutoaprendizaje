@@ -83,7 +83,7 @@ describe('UpdateCategoryUseCase', () => {
     });
 
     expect(category.name).toBe('Documentos académicos');
-    expect(category.slug).toBe('documentos-acadmicos');
+    expect(category.slug).toBe('documentos-academicos');
     expect(category.iconName).toBe('book-open');
     expect(category.description).toBe('Material académico');
     expect(category.isFeatured).toBe(true);
