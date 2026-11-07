@@ -1,14 +1,24 @@
+import { GuiasHttpRepository } from '../features/guias/infrastructure/guias-http-repository'
 import { GuiasMockRepository } from '../features/guias/infrastructure/guias-mock-repository'
+import { httpClient } from '../shared/http/client'
 import { ListarCategorias } from '../features/guias/application/listar-categorias'
 import { ListarGuiasPorCategoria } from '../features/guias/application/listar-guias-por-categoria'
 import { ObtenerCategoria } from '../features/guias/application/obtener-categoria'
 import { ObtenerGuia } from '../features/guias/application/obtener-guia'
+import type { GuiasRepository } from '../features/guias/domain/guias-repository'
 
-const repo = new GuiasMockRepository() // luego: condicional con VITE_USE_MOCK
+export function crearContenedor(repoOverride?: GuiasRepository) {
+  const usarMock = import.meta.env.VITE_USE_MOCK === 'true'
+  const repo =
+    repoOverride ??
+    (usarMock ? new GuiasMockRepository() : new GuiasHttpRepository(httpClient))
 
-export const container = {
-  listarCategorias: new ListarCategorias(repo),
-  listarGuiasPorCategoria: new ListarGuiasPorCategoria(repo),
-  obtenerCategoria: new ObtenerCategoria(repo),
-  obtenerGuia: new ObtenerGuia(repo),
+  return {
+    listarCategorias: new ListarCategorias(repo),
+    listarGuiasPorCategoria: new ListarGuiasPorCategoria(repo),
+    obtenerCategoria: new ObtenerCategoria(repo),
+    obtenerGuia: new ObtenerGuia(repo),
+  }
 }
+
+export const container = crearContenedor()

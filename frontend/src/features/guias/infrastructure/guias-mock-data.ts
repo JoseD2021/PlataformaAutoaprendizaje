@@ -4,6 +4,7 @@ export const categoriasMock: Categoria[] = [
   {
     id: 'correo',
     nombre: 'Correo Gmail',
+    slug: 'correo-gmail',
     icono: 'mail',
     esDestacada: true,
     descripcion: 'Entrar a tu correo, escribir un mensaje y mandar fotos a tu familia.',
@@ -11,6 +12,7 @@ export const categoriasMock: Categoria[] = [
   {
     id: 'tramites',
     nombre: 'Trámites en línea',
+    slug: 'tramites-en-linea',
     icono: 'landmark',
     esDestacada: false,
     descripcion: 'Citas médicas, certificados y pagos',
@@ -18,6 +20,7 @@ export const categoriasMock: Categoria[] = [
   {
     id: 'documentos',
     nombre: 'Documentos',
+    slug: 'documentos',
     icono: 'file-text',
     esDestacada: false,
     descripcion: 'Escribir una carta, guardar e imprimir',
@@ -25,6 +28,7 @@ export const categoriasMock: Categoria[] = [
   {
     id: 'redes',
     nombre: 'Redes sociales',
+    slug: 'redes-sociales',
     icono: 'users',
     esDestacada: false,
     descripcion: 'Facebook y WhatsApp Web',
@@ -32,6 +36,7 @@ export const categoriasMock: Categoria[] = [
   {
     id: 'seguridad',
     nombre: 'Seguridad en internet',
+    slug: 'seguridad-en-internet',
     icono: 'shield',
     esDestacada: false,
     descripcion: 'Contraseñas, estafas y cerrar sesión',
@@ -87,46 +92,45 @@ export const guiasDetalleMock: GuiaDetalle[] = [
     id: 'enviar-correo-foto',
     titulo: 'Enviar un correo con una foto',
     categoriaId: 'correo',
+    totalPasos: 4,
+    minutosEstimados: 3,
+    esMasPedida: true,
     pasos: [
       {
-        id: 'paso-1',
+        id: '1',
         numero: 1,
-        titulo: 'Abre la ventana para escribir',
+        titulo: 'Haz clic en el botón Redactar',
         texto:
-          "Busca arriba a la izquierda el botón grande que dice 'Redactar' con un símbolo de lápiz o cruz de colores. Haz clic una sola vez con el botón izquierdo del ratón.",
+          'Está arriba a la izquierda y tiene un lápiz dibujado. Se abrirá una ventana para escribir tu mensaje.',
         imagenUrl: '/guias/enviar-foto-paso-1.svg',
-        imagenAlt:
-          'Ilustración del botón Redactar en la esquina superior izquierda de la pantalla de Gmail',
+        imagenAlt: 'Ilustración del paso 1: Haz clic en el botón Redactar',
       },
       {
-        id: 'paso-2',
+        id: '2',
         numero: 2,
-        titulo: 'Escribe a quién se lo mandas y el asunto',
+        titulo: 'Escribe a quién se lo envías',
         texto:
-          "En la casilla 'Para', escribe el correo electrónico de tu familiar o amigo. Debajo, en 'Asunto', escribe una palabra que resuma el mensaje, como por ejemplo: Fotos del paseo.",
+          'En el campo Para, escribe el correo de la persona. En Asunto, escribe una frase corta, por ejemplo: Fotos.',
         imagenUrl: '/guias/enviar-foto-paso-2.svg',
-        imagenAlt:
-          'Campos de texto Para y Asunto en la ventana de nuevo mensaje',
+        imagenAlt: 'Ilustración del paso 2: Escribe a quién se lo envías',
       },
       {
-        id: 'paso-3',
+        id: '3',
         numero: 3,
-        titulo: 'Adjunta la fotografía',
+        titulo: 'Haz clic en el clip para agregar la foto',
         texto:
-          "En la parte de abajo de la ventana, busca el dibujo de un gancho o clip sujetapapeles. Haz clic en él, busca la foto en tu computador y presiona el botón 'Abrir'.",
+          'Abajo de la ventana hay un ícono de clip. Haz clic, busca la foto en el computador y presiona Abrir.',
         imagenUrl: '/guias/enviar-foto-paso-3.svg',
-        imagenAlt:
-          'Icono de clip sujetapapeles para adjuntar archivos en la parte inferior del mensaje',
+        imagenAlt: 'Ilustración del paso 3: Haz clic en el clip para agregar la foto',
       },
       {
-        id: 'paso-4',
+        id: '4',
         numero: 4,
-        titulo: 'Revisa y presiona Enviar',
+        titulo: 'Haz clic en el botón Enviar',
         texto:
-          "Comprueba que el nombre de la foto aparezca abajo en color azul. Cuando estés listo, haz clic en el botón azul grande que dice 'Enviar'. ¡Y listo, tu mensaje fue enviado!",
+          'Es el botón azul de abajo a la izquierda. Verás un aviso que dice que el mensaje fue enviado.',
         imagenUrl: '/guias/enviar-foto-paso-4.svg',
-        imagenAlt:
-          'Botón azul de Enviar resaltado en la parte inferior de la ventana',
+        imagenAlt: 'Ilustración del paso 4: Haz clic en el botón Enviar',
       },
     ],
   },
@@ -134,33 +138,35 @@ export const guiasDetalleMock: GuiaDetalle[] = [
     id: 'entrar-correo',
     titulo: 'Entrar a mi correo',
     categoriaId: 'correo',
+    totalPasos: 3,
+    minutosEstimados: 2,
+    esMasPedida: false,
     pasos: [
       {
-        id: 'paso-1',
+        id: '1',
         numero: 1,
-        titulo: 'Abre la página de Gmail',
-        texto:
-          'Abre el navegador de internet y escribe gmail.com en la barra de arriba, o presiona el acceso directo en la pantalla.',
+        titulo: 'Abre el navegador de internet',
+        texto: 'Busca en el escritorio el ícono de Google Chrome y haz doble clic sobre él.',
         imagenUrl: '/guias/enviar-foto-paso-1.svg',
-        imagenAlt: 'Pantalla de acceso a Gmail',
+        imagenAlt: 'Ilustración del paso 1: Abre el navegador de internet',
       },
       {
-        id: 'paso-2',
+        id: '2',
         numero: 2,
-        titulo: 'Escribe tu dirección de correo',
+        titulo: 'Escribe la dirección de Gmail',
         texto:
-          'Escribe tu correo electrónico completo (por ejemplo tunombre@gmail.com) y haz clic en el botón azul que dice Siguiente.',
+          'Arriba, en la barra larga, escribe gmail.com y presiona la tecla Enter del teclado.',
         imagenUrl: '/guias/enviar-foto-paso-2.svg',
-        imagenAlt: 'Campo para ingresar el correo electrónico',
+        imagenAlt: 'Ilustración del paso 2: Escribe la dirección de Gmail',
       },
       {
-        id: 'paso-3',
+        id: '3',
         numero: 3,
-        titulo: 'Escribe tu contraseña',
+        titulo: 'Escribe tu correo y tu contraseña',
         texto:
-          'Escribe cuidadosamente tu contraseña secreta y presiona Siguiente para entrar a ver tus mensajes.',
+          'Escribe tu correo y presiona Siguiente. Luego escribe tu contraseña y presiona Siguiente.',
         imagenUrl: '/guias/enviar-foto-paso-4.svg',
-        imagenAlt: 'Campo para ingresar la contraseña y botón Siguiente',
+        imagenAlt: 'Ilustración del paso 3: Escribe tu correo y tu contraseña',
       },
     ],
   },

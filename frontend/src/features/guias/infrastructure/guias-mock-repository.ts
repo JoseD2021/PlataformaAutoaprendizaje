@@ -16,7 +16,7 @@ export class GuiasMockRepository implements GuiasRepository {
   }
 
   async obtenerCategoria(id: string): Promise<Categoria | null> {
-    return categoriasMock.find((c) => c.id === id) ?? null
+    return categoriasMock.find((c) => c.id === id || c.slug === id) ?? null
   }
 
   async obtenerGuia(id: string): Promise<GuiaDetalle | null> {
