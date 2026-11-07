@@ -1,9 +1,20 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -15,6 +26,7 @@ import { CurrentUser } from '../../../../shared/presentation/decorators/current-
 import { RequirePermissions } from '../../../../shared/presentation/decorators/require-permissions.decorator';
 import { ApiErrorResponseDto } from '../../../../shared/presentation/dto/api-error-response.dto';
 import { CreateCategoryUseCase } from '../../application/use-cases/create-category.use-case';
+import { DeleteCategoryUseCase } from '../../application/use-cases/delete-category.use-case';
 import { GetAllCategoriesUseCase } from '../../application/use-cases/get-all-categories.use-case';
 import { UpdateCategoryUseCase } from '../../application/use-cases/update-category.use-case';
 import { Permission } from '../../../users/domain/enums/permission.enum';
@@ -28,6 +40,7 @@ import { Public } from '../../../../shared/presentation/decorators/public.decora
 export class CategoriesController {
   constructor(
     private readonly createCategoryUseCase: CreateCategoryUseCase,
+    private readonly deleteCategoryUseCase: DeleteCategoryUseCase,
     private readonly getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private readonly updateCategoryUseCase: UpdateCategoryUseCase,
   ) {}
@@ -90,5 +103,24 @@ export class CategoriesController {
     );
 
     return CategoryResponseDto.from(category);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @RequirePermissions(Permission.CATEGORIES_MANAGE)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Eliminar una categoría' })
+  @ApiNoContentResponse()
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiResponse({ status: 404, type: ApiErrorResponseDto })
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser() actor: AuthenticatedUser,
+  ): Promise<void> {
+    await this.deleteCategoryUseCase.execute(
+      { id },
+      { permissions: actor.permissions },
+    );
   }
 }
