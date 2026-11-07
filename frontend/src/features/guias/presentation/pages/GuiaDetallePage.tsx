@@ -1,14 +1,25 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ArrowLeft, ArrowRight, CheckCircle2, Home } from 'lucide-react'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { useGuia } from '../hooks/useGuia'
 
 export function GuiaDetallePage() {
   const { id = '' } = useParams()
+  const navigate = useNavigate()
   const { data: guia, isLoading, isError } = useGuia(id)
   const [pasoActualIndice, setPasoActualIndice] = useState(0)
   const [guiaCompletada, setGuiaCompletada] = useState(false)
+
+  const volverAtras = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else if (guia?.categoriaId) {
+      navigate(`/categorias/${guia.categoriaId}`)
+    } else {
+      navigate('/')
+    }
+  }
 
   const retrocederPaso = () => {
     if (pasoActualIndice > 0) {
@@ -88,8 +99,15 @@ export function GuiaDetallePage() {
             >
               Repetir la guía
             </button>
+            <button
+              type="button"
+              className="btn btn--claro"
+              onClick={volverAtras}
+            >
+              <ArrowLeft aria-hidden size={20} /> Volver a la página anterior
+            </button>
             <Link to="/" className="btn btn--verde">
-              Volver al inicio
+              <Home aria-hidden size={20} /> Volver al inicio
             </Link>
           </div>
         </div>
@@ -155,9 +173,19 @@ export function GuiaDetallePage() {
 
   return (
     <PageLayout>
-      <Link to="/" className="volver">
-        <ArrowLeft aria-hidden size={20} /> Volver al inicio
-      </Link>
+      <nav className="navegacion-superior" aria-label="Navegación de retorno">
+        <button
+          type="button"
+          onClick={volverAtras}
+          className="btn-enlace"
+        >
+          <ArrowLeft aria-hidden size={20} /> Volver a la página anterior
+        </button>
+        <span className="separador-nav" aria-hidden>·</span>
+        <Link to="/" className="btn-enlace">
+          <Home aria-hidden size={20} /> Volver al inicio
+        </Link>
+      </nav>
       {guia && <h1 id="titulo-guia">{guia.titulo}</h1>}
       {renderizarContenido()}
     </PageLayout>

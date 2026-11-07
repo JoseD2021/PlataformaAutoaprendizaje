@@ -123,6 +123,42 @@ body {
   font-size: 1.125rem; text-decoration: underline;
 }
 
+.navegacion-superior {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 1.25rem 0 .75rem;
+}
+
+.btn-enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  min-height: var(--tap-min);
+  padding: .25rem .5rem;
+  background: transparent;
+  border: 0;
+  color: var(--color-verde);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: .375rem;
+}
+
+.btn-enlace:hover {
+  background: #f1f5f2;
+}
+
+.separador-nav {
+  color: var(--color-borde);
+  font-weight: 700;
+  user-select: none;
+}
+
+
 .guias-lista {
   list-style: none; margin: 1.25rem 0 0; padding: 0; overflow: hidden;
   border: 1px solid var(--color-borde); border-radius: var(--radius);

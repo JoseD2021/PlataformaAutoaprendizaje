@@ -114,11 +114,14 @@ describe('GuiaDetallePage', () => {
     ).toBeInTheDocument()
   })
 
-  it('cuenta con enlace para volver al inicio', async () => {
+  it('cuenta con enlace para volver al inicio y botón para volver a la página anterior', async () => {
     renderizar('enviar-correo-foto')
 
     const enlaceInicio = await screen.findByRole('link', { name: /Volver al inicio/i })
     expect(enlaceInicio).toHaveAttribute('href', '/')
+
+    const botonVolverAtras = screen.getByRole('button', { name: /Volver a la página anterior/i })
+    expect(botonVolverAtras).toBeInTheDocument()
   })
 
   it('muestra aviso si la guía solicitada no existe', async () => {
