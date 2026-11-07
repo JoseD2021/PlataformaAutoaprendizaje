@@ -1,5 +1,4 @@
 import { GuiasHttpRepository } from '../features/guias/infrastructure/guias-http-repository'
-import { GuiasMockRepository } from '../features/guias/infrastructure/guias-mock-repository'
 import { httpClient } from '../shared/http/client'
 import { ListarCategorias } from '../features/guias/application/listar-categorias'
 import { ListarGuiasPorCategoria } from '../features/guias/application/listar-guias-por-categoria'
@@ -8,10 +7,7 @@ import { ObtenerGuia } from '../features/guias/application/obtener-guia'
 import type { GuiasRepository } from '../features/guias/domain/guias-repository'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
-  const usarMock = import.meta.env.VITE_USE_MOCK === 'true'
-  const repo =
-    repoOverride ??
-    (usarMock ? new GuiasMockRepository() : new GuiasHttpRepository(httpClient))
+  const repo = repoOverride ?? new GuiasHttpRepository(httpClient)
 
   return {
     listarCategorias: new ListarCategorias(repo),
