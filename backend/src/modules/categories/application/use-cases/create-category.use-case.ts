@@ -10,9 +10,9 @@ import {
 
 export interface CreateCategoryInput {
   name: string;
-  iconUrl?: string;
-  displayOrder?: number;
-  isActive?: boolean;
+  iconName?: string;
+  description?: string;
+  isFeatured?: boolean;
 }
 
 export interface CreateCategoryActor {
@@ -36,9 +36,9 @@ export class CreateCategoryUseCase {
       id: randomUUID(),
       name: input.name,
       slug: '',
-      iconUrl: input.iconUrl,
-      displayOrder: input.displayOrder,
-      isActive: input.isActive,
+      iconName: input.iconName,
+      description: input.description,
+      isFeatured: input.isFeatured,
     });
 
     await this.categories.save(category);

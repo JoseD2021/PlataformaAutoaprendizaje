@@ -11,23 +11,23 @@ export class CategoryResponseDto {
   @ApiProperty({ example: 'documentos' })
   slug: string;
 
-  @ApiProperty({ example: 'https://example.com/icons/docs.svg' })
-  iconUrl: string;
+  @ApiProperty({ example: 'book-open' })
+  iconName: string;
 
-  @ApiProperty({ example: 1 })
-  displayOrder: number;
+  @ApiProperty({ example: 'Material de estudio y documentos' })
+  description: string;
 
-  @ApiProperty({ example: true })
-  isActive: boolean;
+  @ApiProperty({ example: false })
+  isFeatured: boolean;
 
   static from(category: Category): CategoryResponseDto {
     const dto = new CategoryResponseDto();
     dto.id = category.id;
     dto.name = category.name;
     dto.slug = category.slug;
-    dto.iconUrl = category.iconUrl;
-    dto.displayOrder = category.displayOrder;
-    dto.isActive = category.isActive;
+    dto.iconName = category.iconName;
+    dto.description = category.description;
+    dto.isFeatured = category.isFeatured;
 
     return dto;
   }

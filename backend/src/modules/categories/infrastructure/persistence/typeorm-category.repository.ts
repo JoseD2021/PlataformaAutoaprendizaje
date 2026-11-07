@@ -23,7 +23,7 @@ export class TypeOrmCategoryRepository extends CategoryRepository {
 
   async findAll(): Promise<Category[]> {
     const categories = await this.repository.find({
-      order: { displayOrder: 'ASC', name: 'ASC' },
+      order: { name: 'ASC' },
     });
 
     return categories.map((category) => CategoryMapper.toDomain(category));

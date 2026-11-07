@@ -4,9 +4,9 @@ export interface CategoryProps {
   id: string;
   name: string;
   slug: string;
-  iconUrl?: string;
-  displayOrder?: number;
-  isActive?: boolean;
+  iconName?: string;
+  description?: string;
+  isFeatured?: boolean;
 }
 
 export class Category {
@@ -27,9 +27,9 @@ export class Category {
             id: props.id,
             name: props.name,
             slug,
-            iconUrl: props.iconUrl ?? "",
-            displayOrder: props.displayOrder ?? 0,
-            isActive: props.isActive ?? true,
+            iconName: props.iconName ?? "",
+            description: props.description ?? "",
+            isFeatured: props.isFeatured ?? false,
         });
     }
 
@@ -53,16 +53,16 @@ export class Category {
         return this.props.slug;
     }
 
-    get iconUrl(): string {
-        return this.props.iconUrl!;
+    get iconName(): string {
+        return this.props.iconName!;
     }
 
-    get displayOrder(): number {
-        return this.props.displayOrder!;
+    get description(): string {
+        return this.props.description!;
     }
 
-    get isActive(): boolean {
-        return this.props.isActive!;
+    get isFeatured(): boolean {
+        return this.props.isFeatured!;
     }
 
     changeName(name: string): void {
@@ -74,19 +74,15 @@ export class Category {
         this.props.slug = Category.generateSlug(name);
     }
 
-    changeIconUrl(iconUrl: string): void {
-        this.props.iconUrl = iconUrl;
+    changeIconName(iconName: string): void {
+        this.props.iconName = iconName;
     }
 
-    changeDisplayOrder(displayOrder: number): void {
-        if (displayOrder < 0) {
-            throw new InvalidCategoryError('El orden de visualización no puede ser negativo.');
-        }
-
-        this.props.displayOrder = displayOrder;
+    changeDescription(description: string): void {
+        this.props.description = description;
     }
 
-    changeIsActive(isActive: boolean): void {
-        this.props.isActive = isActive;
+    changeIsFeatured(isFeatured: boolean): void {
+        this.props.isFeatured = isFeatured;
     }
 }

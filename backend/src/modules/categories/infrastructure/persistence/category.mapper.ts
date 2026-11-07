@@ -7,9 +7,9 @@ export class CategoryMapper {
       id: orm.id,
       name: orm.name,
       slug: orm.slug,
-      iconUrl: orm.iconUrl,
-      displayOrder: orm.displayOrder,
-      isActive: orm.isActive,
+      iconName: orm.iconName,
+      description: orm.description,
+      isFeatured: orm.isFeatured,
     });
   }
 
@@ -18,9 +18,9 @@ export class CategoryMapper {
     orm.id = category.id;
     orm.name = category.name;
     orm.slug = category.slug;
-    orm.iconUrl = category.iconUrl;
-    orm.displayOrder = category.displayOrder;
-    orm.isActive = category.isActive;
+    orm.iconName = category.iconName;
+    orm.description = category.description;
+    orm.isFeatured = category.isFeatured;
 
     return orm;
   }

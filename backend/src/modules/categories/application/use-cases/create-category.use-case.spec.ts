@@ -43,8 +43,9 @@ describe('CreateCategoryUseCase', () => {
   it('crea y persiste una categoría cuando el actor tiene permiso', async () => {
     const input: CreateCategoryInput = {
       name: 'Documentos',
-      iconUrl: 'https://example.com/icons/docs.svg',
-      displayOrder: 2,
+      iconName: 'book-open',
+      description: 'Material de estudio',
+      isFeatured: true,
     };
 
     const category = await useCase.execute(input, {

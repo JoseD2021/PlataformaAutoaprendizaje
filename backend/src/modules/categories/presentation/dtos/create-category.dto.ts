@@ -2,13 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
-  IsInt,
   IsOptional,
   IsString,
-  IsUrl,
   Length,
-  Max,
-  Min,
 } from 'class-validator';
 
 export class CreateCategoryDto {
@@ -20,24 +16,20 @@ export class CreateCategoryDto {
   @Length(2, 80)
   name: string;
 
-  @ApiPropertyOptional({
-    example: 'https://example.com/icons/docs.svg',
-    maxLength: 255,
-  })
+  @ApiPropertyOptional({ example: 'book-open', maxLength: 255 })
   @IsOptional()
-  @IsUrl()
+  @IsString()
   @Length(1, 255)
-  iconUrl?: string;
+  iconName?: string;
 
-  @ApiPropertyOptional({ example: 1, minimum: 0, maximum: 100000 })
+  @ApiPropertyOptional({ example: 'Material de estudio y documentos' })
   @IsOptional()
-  @IsInt()
-  @Min(0)
-  @Max(100000)
-  displayOrder?: number;
+  @IsString()
+  @Length(1, 500)
+  description?: string;
 
-  @ApiPropertyOptional({ example: true, default: true })
+  @ApiPropertyOptional({ example: true, default: false })
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  isFeatured?: boolean;
 }

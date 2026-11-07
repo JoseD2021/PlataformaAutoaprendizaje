@@ -12,11 +12,11 @@ export class CategoryOrmEntity {
   slug: string;
 
   @Column({ type: 'varchar', length: 255 })
-  iconUrl: string;
+  iconName: string;
 
-  @Column({ type: 'int' })
-  displayOrder: number;
+  @Column({ type: 'varchar', length: 500, default: '' })
+  description: string;
 
-  @Column({ type: 'boolean' })
-  isActive: boolean;
+  @Column({ type: 'boolean', default: false })
+  isFeatured: boolean;
 }

@@ -5,9 +5,9 @@ const categoryProps = {
   id: 'category-1',
   name: 'Documentos',
   slug: 'slug-ignorado',
-  iconUrl: 'https://example.com/icons/docs.svg',
-  displayOrder: 2,
-  isActive: false,
+  iconName: 'book-open',
+  description: 'Material de estudio',
+  isFeatured: false,
 };
 
 describe('Category', () => {
@@ -18,22 +18,22 @@ describe('Category', () => {
       expect(category.id).toBe('category-1');
       expect(category.name).toBe('Documentos');
       expect(category.slug).toBe('documentos');
-      expect(category.iconUrl).toBe('https://example.com/icons/docs.svg');
-      expect(category.displayOrder).toBe(2);
-      expect(category.isActive).toBe(false);
+      expect(category.iconName).toBe('book-open');
+      expect(category.description).toBe('Material de estudio');
+      expect(category.isFeatured).toBe(false);
     });
 
     it('aplica valores predeterminados para los datos opcionales', () => {
       const category = Category.create({
         ...categoryProps,
-        iconUrl: undefined,
-        displayOrder: undefined,
-        isActive: undefined,
+        iconName: undefined,
+        description: undefined,
+        isFeatured: undefined,
       });
 
-      expect(category.iconUrl).toBe('');
-      expect(category.displayOrder).toBe(0);
-      expect(category.isActive).toBe(true);
+      expect(category.iconName).toBe('');
+      expect(category.description).toBe('');
+      expect(category.isFeatured).toBe(false);
     });
 
     it('rechaza una categoría sin ID', () => {
@@ -50,9 +50,9 @@ describe('Category', () => {
       expect(category.id).toBe(categoryProps.id);
       expect(category.name).toBe(categoryProps.name);
       expect(category.slug).toBe(categoryProps.slug);
-      expect(category.iconUrl).toBe(categoryProps.iconUrl);
-      expect(category.displayOrder).toBe(categoryProps.displayOrder);
-      expect(category.isActive).toBe(categoryProps.isActive);
+      expect(category.iconName).toBe(categoryProps.iconName);
+      expect(category.description).toBe(categoryProps.description);
+      expect(category.isFeatured).toBe(categoryProps.isFeatured);
     });
   });
 
@@ -73,41 +73,33 @@ describe('Category', () => {
     });
   });
 
-  describe('changeIconUrl', () => {
-    it('actualiza la URL del ícono', () => {
+  describe('changeIconName', () => {
+    it('actualiza el nombre del ícono', () => {
       const category = Category.create(categoryProps);
 
-      category.changeIconUrl('https://example.com/new-icon.svg');
+      category.changeIconName('file-text');
 
-      expect(category.iconUrl).toBe('https://example.com/new-icon.svg');
+      expect(category.iconName).toBe('file-text');
     });
   });
 
-  describe('changeDisplayOrder', () => {
-    it('actualiza el orden de visualización', () => {
+  describe('changeDescription', () => {
+    it('actualiza la descripción', () => {
       const category = Category.create(categoryProps);
 
-      category.changeDisplayOrder(5);
+      category.changeDescription('Nueva descripción');
 
-      expect(category.displayOrder).toBe(5);
-    });
-
-    it('rechaza un orden negativo', () => {
-      const category = Category.create(categoryProps);
-
-      expect(() => category.changeDisplayOrder(-1)).toThrow(
-        InvalidCategoryError,
-      );
+      expect(category.description).toBe('Nueva descripción');
     });
   });
 
-  describe('changeIsActive', () => {
-    it('actualiza el estado activo', () => {
+  describe('changeIsFeatured', () => {
+    it('actualiza el estado destacado', () => {
       const category = Category.create(categoryProps);
 
-      category.changeIsActive(true);
+      category.changeIsFeatured(true);
 
-      expect(category.isActive).toBe(true);
+      expect(category.isFeatured).toBe(true);
     });
   });
 });
