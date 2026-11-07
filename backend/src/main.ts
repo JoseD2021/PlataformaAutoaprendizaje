@@ -1,23 +1,31 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { configureApp } from './app.setup';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api/v1', { exclude: ['health'] });
+  configureApp(app);
   app.enableCors({ origin: process.env.CORS_ORIGIN?.split(',') ?? true });
-  app.useGlobalPipes(
-    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
-  );
 
   const config = new DocumentBuilder()
     .setTitle('CLENA - Autoaprendizaje digital')
+    .setDescription(
+      'API de autenticación, usuarios, roles, permisos y guías paso a paso. Los permisos de roles inferiores pueden administrarse desde /api/v1/roles.',
+    )
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
+    .addTag('Autenticación')
+    .addTag('Usuarios')
+    .addTag('Roles y permisos')
+    .addTag('Guías')
     .build();
-  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config));
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: { persistAuthorization: true },
+    customSiteTitle: 'CLENA API - Documentación',
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }
