@@ -1,0 +1,8 @@
+:root {
+  --font: 'Nunito', system-ui, sans-serif;
+  --color-marca: #f5b400;   /* amarillo */
+  --color-verde: #1a3a2a;   /* verde oscuro */
+  --color-rojo: #c8102e;
+  --color-borde: #d9d6cc;
+  --color-primary: var(--color-verde);
+}
