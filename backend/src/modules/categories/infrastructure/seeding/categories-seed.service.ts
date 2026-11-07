@@ -2,7 +2,10 @@ import { Inject, Injectable, Logger, OnApplicationBootstrap } from '@nestjs/comm
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'node:crypto';
 import { Category } from '../../domain/entities/category.entity';
-import { CATEGORY_REPOSITORY, CategoryRepository } from '../../domain/repositories/category.repository';
+import {
+  CATEGORY_REPOSITORY,
+  CategoryRepository,
+} from '../../domain/repositories/category.repository';
 
 const DEMO_CATEGORIES = [
   {

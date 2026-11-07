@@ -8,16 +8,19 @@ import { CATEGORY_REPOSITORY } from './domain/repositories/category.repository';
 import { CategoryOrmEntity } from './infrastructure/persistence/category.orm-entity';
 import { TypeOrmCategoryRepository } from './infrastructure/persistence/typeorm-category.repository';
 import { CategoriesController } from './presentation/controllers/categories.controller';
+import { CategoriesSeedService } from './infrastructure/seeding/categories-seed.service';
+
 
 @Module({
   imports: [TypeOrmModule.forFeature([CategoryOrmEntity])],
   controllers: [CategoriesController],
-  providers: [
+    providers: [
     CreateCategoryUseCase,
     DeleteCategoryUseCase,
     GetAllCategoriesUseCase,
     UpdateCategoryUseCase,
     { provide: CATEGORY_REPOSITORY, useClass: TypeOrmCategoryRepository },
+    CategoriesSeedService,
   ],
   exports: [CATEGORY_REPOSITORY],
 })
