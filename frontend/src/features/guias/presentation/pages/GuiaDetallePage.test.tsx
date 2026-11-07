@@ -1,8 +1,67 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { GuiaDetallePage } from './GuiaDetallePage'
+import { httpClient } from '../../../../shared/http/client'
+
+const guiaBackendMock = {
+  id: 'enviar-correo-foto',
+  titulo: 'Enviar un correo con una foto',
+  categoriaId: 'correo',
+  totalPasos: 4,
+  minutosEstimados: 3,
+  esMasPedida: true,
+  pasos: [
+    {
+      orden: 1,
+      tituloCorto: 'Redactar',
+      accion: 'Haz clic en el botón Redactar',
+      descripcion:
+        'Está arriba a la izquierda y tiene un lápiz dibujado. Se abrirá una ventana para escribir tu mensaje.',
+      imagenUrl: '/guias/enviar-foto-paso-1.svg',
+      pieImagen:
+        'Ilustración del botón Redactar en la esquina superior izquierda de la pantalla de Gmail',
+    },
+    {
+      orden: 2,
+      tituloCorto: 'Para',
+      accion: 'Escribe a quién se lo envías',
+      descripcion:
+        'En el campo Para, escribe el correo de la persona. En Asunto, escribe una frase corta, por ejemplo: Fotos.',
+      imagenUrl: '/guias/enviar-foto-paso-2.svg',
+    },
+    {
+      orden: 3,
+      tituloCorto: 'Adjuntar',
+      accion: 'Haz clic en el clip para agregar la foto',
+      descripcion:
+        'Abajo de la ventana hay un ícono de clip. Haz clic, busca la foto en el computador y presiona Abrir.',
+      imagenUrl: '/guias/enviar-foto-paso-3.svg',
+    },
+    {
+      orden: 4,
+      tituloCorto: 'Enviar',
+      accion: 'Haz clic en el botón Enviar',
+      descripcion:
+        'Es el botón azul de abajo a la izquierda. Verás un aviso que dice que el mensaje fue enviado.',
+      imagenUrl: '/guias/enviar-foto-paso-4.svg',
+    },
+  ],
+}
+
+function crearError404(): AxiosError {
+  const error = new AxiosError('Not Found', 'ERR_BAD_REQUEST')
+  error.response = {
+    status: 404,
+    statusText: 'Not Found',
+    data: { message: 'Guía no encontrada' },
+    headers: {},
+    config: {} as InternalAxiosRequestConfig,
+  }
+  return error
+}
 
 function renderizar(guiaId: string = 'enviar-correo-foto') {
   const client = new QueryClient({
@@ -26,6 +85,15 @@ function renderizar(guiaId: string = 'enviar-correo-foto') {
 }
 
 describe('GuiaDetallePage', () => {
+  beforeEach(() => {
+    vi.spyOn(httpClient, 'get').mockImplementation(async (url) => {
+      if (url === '/guides/enviar-correo-foto') {
+        return { data: guiaBackendMock } as AxiosResponse
+      }
+      throw crearError404()
+    })
+  })
+
   it('al abrir la guía muestra solo el primer paso con imagen y aviso de pasos faltantes', async () => {
     renderizar('enviar-correo-foto')
 
@@ -38,7 +106,7 @@ describe('GuiaDetallePage', () => {
     expect(screen.getByText('Paso 1 de 4')).toBeInTheDocument()
     expect(screen.getByText('Faltan 3 pasos')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'Abre la ventana para escribir' }),
+      screen.getByRole('heading', { name: 'Haz clic en el botón Redactar' }),
     ).toBeInTheDocument()
 
     // Imagen con alt descriptivo accesible
@@ -54,14 +122,14 @@ describe('GuiaDetallePage', () => {
 
     // El paso 2 no debe mostrarse aún
     expect(
-      screen.queryByRole('heading', { name: 'Escribe a quién se lo mandas y el asunto' }),
+      screen.queryByRole('heading', { name: 'Escribe a quién se lo envías' }),
     ).not.toBeInTheDocument()
   })
 
   it('permite avanzar al siguiente paso y retroceder con Atrás', async () => {
     renderizar('enviar-correo-foto')
 
-    await screen.findByRole('heading', { name: 'Abre la ventana para escribir' })
+    await screen.findByRole('heading', { name: 'Haz clic en el botón Redactar' })
 
     const botonSiguiente = screen.getByRole('button', { name: /Siguiente/i })
     const botonAtras = screen.getByRole('button', { name: /Atrás/i })
@@ -72,7 +140,7 @@ describe('GuiaDetallePage', () => {
     expect(screen.getByText('Paso 2 de 4')).toBeInTheDocument()
     expect(screen.getByText('Faltan 2 pasos')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'Escribe a quién se lo mandas y el asunto' }),
+      screen.getByRole('heading', { name: 'Escribe a quién se lo envías' }),
     ).toBeInTheDocument()
     expect(botonAtras).not.toBeDisabled()
 
@@ -82,7 +150,7 @@ describe('GuiaDetallePage', () => {
     expect(screen.getByText('Paso 1 de 4')).toBeInTheDocument()
     expect(screen.getByText('Faltan 3 pasos')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'Abre la ventana para escribir' }),
+      screen.getByRole('heading', { name: 'Haz clic en el botón Redactar' }),
     ).toBeInTheDocument()
     expect(botonAtras).toBeDisabled()
   })
@@ -90,7 +158,7 @@ describe('GuiaDetallePage', () => {
   it('en el último paso reemplaza Siguiente por Finalizar guía y muestra felicitación', async () => {
     renderizar('enviar-correo-foto')
 
-    await screen.findByRole('heading', { name: 'Abre la ventana para escribir' })
+    await screen.findByRole('heading', { name: 'Haz clic en el botón Redactar' })
 
     // Avanzamos los 4 pasos
     const botonSiguiente = screen.getByRole('button', { name: /Siguiente/i })
@@ -100,7 +168,9 @@ describe('GuiaDetallePage', () => {
 
     expect(screen.getByText('Paso 4 de 4')).toBeInTheDocument()
     expect(screen.getByText('¡Este es el último paso!')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Revisa y presiona Enviar' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Haz clic en el botón Enviar' }),
+    ).toBeInTheDocument()
 
     // Ya no hay botón Siguiente; en su lugar está Finalizar guía
     expect(screen.queryByRole('button', { name: /Siguiente/i })).not.toBeInTheDocument()
