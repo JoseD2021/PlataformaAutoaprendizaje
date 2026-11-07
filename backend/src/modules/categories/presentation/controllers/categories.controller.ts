@@ -31,6 +31,7 @@ import { GetAllCategoriesUseCase } from '../../application/use-cases/get-all-cat
 import { UpdateCategoryUseCase } from '../../application/use-cases/update-category.use-case';
 import { Permission } from '../../../users/domain/enums/permission.enum';
 import { CategoryResponseDto } from '../dtos/category-response.dto';
+import { CategoryIdParamDto } from '../dtos/category-id-param.dto';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
 import { Public } from '../../../../shared/presentation/decorators/public.decorator';
@@ -87,13 +88,13 @@ export class CategoriesController {
   @ApiResponse({ status: 404, type: ApiErrorResponseDto })
   @ApiResponse({ status: 422, type: ApiErrorResponseDto })
   async update(
-    @Param('id') id: string,
+    @Param() params: CategoryIdParamDto,
     @Body() dto: UpdateCategoryDto,
     @CurrentUser() actor: AuthenticatedUser,
   ): Promise<CategoryResponseDto> {
     const category = await this.updateCategoryUseCase.execute(
       {
-        id,
+        id: params.id,
         name: dto.name,
         iconName: dto.iconName,
         description: dto.description,
@@ -115,11 +116,11 @@ export class CategoriesController {
   @ApiForbiddenResponse({ type: ApiErrorResponseDto })
   @ApiResponse({ status: 404, type: ApiErrorResponseDto })
   async remove(
-    @Param('id') id: string,
+    @Param() params: CategoryIdParamDto,
     @CurrentUser() actor: AuthenticatedUser,
   ): Promise<void> {
     await this.deleteCategoryUseCase.execute(
-      { id },
+      { id: params.id },
       { permissions: actor.permissions },
     );
   }
