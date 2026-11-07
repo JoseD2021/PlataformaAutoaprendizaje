@@ -38,7 +38,12 @@ export class Category {
     }
 
     static generateSlug(name: string): string {
-        return name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    return name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '');
     }
 
     get id(): string {

@@ -21,6 +21,17 @@ import {
   TokenService,
 } from '../../src/shared/application/ports/token-service.port';
 
+import { Guide } from '../../src/modules/guides/domain/entities/guide.entity';
+import { GuideStep } from '../../src/modules/guides/domain/entities/guide-step.entity';
+import { GuideStatus } from '../../src/modules/guides/domain/enums/guide-status.enum';
+import {
+  GuideFilters,
+  GuideRepository,
+  PaginatedGuides,
+  PaginationOptions as GuidePaginationOptions,
+} from '../../src/modules/guides/domain/repositories/guide.repository';
+
+
 export class InMemoryUserRepository extends UserRepository {
   private readonly users = new Map<string, User>();
 
@@ -98,6 +109,60 @@ export class InMemoryRoleRepository extends RoleRepository {
 
   async delete(role: Role): Promise<void> {
     this.roles.delete(role);
+  }
+}
+
+export class InMemoryGuideRepository extends GuideRepository {
+  private readonly guides = new Map<string, Guide>();
+
+  constructor(seed: Guide[] = []) {
+    super();
+    seed.forEach((guide) => this.guides.set(guide.id, guide));
+  }
+
+  async findById(id: string): Promise<Guide | null> {
+    return this.guides.get(id) ?? null;
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    return this.guides.has(id);
+  }
+
+  async save(guide: Guide): Promise<Guide> {
+    this.guides.set(guide.id, guide);
+
+    return guide;
+  }
+
+  async paginate(
+    filters: GuideFilters,
+    options: GuidePaginationOptions,
+  ): Promise<PaginatedGuides> {
+    const search = filters.search?.toLowerCase();
+
+    const filtered = [...this.guides.values()]
+      .filter((guide) => !filters.categoryId || guide.categoryId === filters.categoryId)
+      .filter((guide) => !filters.status || guide.status === filters.status)
+      .filter((guide) => !search || guide.title.toLowerCase().includes(search))
+      .sort(
+        (a, b) =>
+          Number(b.isMostRequested) - Number(a.isMostRequested) ||
+          a.title.localeCompare(b.title),
+      );
+    const start = (options.page - 1) * options.limit;
+
+    return {
+      items: filtered.slice(start, start + options.limit),
+      total: filtered.length,
+    };
+  }
+
+  async delete(id: string): Promise<void> {
+    this.guides.delete(id);
+  }
+
+  get all(): Guide[] {
+    return [...this.guides.values()];
   }
 }
 
@@ -211,6 +276,31 @@ export function makeUser(overrides: Partial<Parameters<typeof User.create>[0]> =
     passwordHash: 'hashed:Password123',
     fullName: 'Usuario de Prueba',
     role: Role.USUARIO,
+    ...overrides,
+  });
+}
+
+export function makeGuideStep(
+  overrides: Partial<Parameters<typeof GuideStep.create>[0]> = {},
+): GuideStep {
+  return GuideStep.create({
+    id: 'step-1',
+    position: 1,
+    shortTitle: 'Redactar',
+    action: 'Haz clic en el botón Redactar',
+    description: 'Está arriba a la izquierda y tiene un lápiz dibujado.',
+    ...overrides,
+  });
+}
+
+export function makeGuide(overrides: Partial<Parameters<typeof Guide.create>[0]> = {}): Guide {
+  return Guide.create({
+    id: 'enviar-correo-foto',
+    title: 'Enviar un correo con una foto',
+    categoryId: 'correo',
+    estimatedMinutes: 3,
+    status: GuideStatus.PUBLISHED,
+    steps: [makeGuideStep()],
     ...overrides,
   });
 }
