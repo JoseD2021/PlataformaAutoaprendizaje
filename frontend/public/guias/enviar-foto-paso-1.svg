@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%">
+  <rect width="600" height="360" fill="#f8faf9" rx="16" />
+  <rect x="20" y="20" width="560" height="50" rx="8" fill="#1a3a2a" />
+  <circle cx="50" cy="45" r="10" fill="#f5b400" />
+  <text x="75" y="52" fill="#ffffff" font-family="sans-serif" font-size="18" font-weight="bold">Correo Gmail - Bandeja de entrada</text>
+  
+  <!-- Barra lateral con botón Redactar destacado -->
+  <rect x="30" y="90" width="180" height="240" fill="#ffffff" rx="12" stroke="#d9d6cc" stroke-width="2" />
+  
+  <!-- Botón Redactar con halo brillante -->
+  <rect x="45" y="110" width="150" height="56" rx="28" fill="#f5b400" stroke="#1a3a2a" stroke-width="3" />
+  <!-- Ícono lápiz -->
+  <path d="M 68 144 L 64 150 L 70 146 Z" fill="#1a3a2a" />
+  <path d="M 70 142 L 82 130 L 86 134 L 74 146 Z" fill="#1a3a2a" />
+  <text x="96" y="145" fill="#1a3a2a" font-family="sans-serif" font-size="18" font-weight="bold">Redactar</text>
+  
+  <!-- Indicador tipo flecha señalando el botón -->
+  <circle cx="230" cy="138" r="24" fill="#c8102e" />
+  <text x="230" y="145" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">1</text>
+  <path d="M 205 138 L 175 138" stroke="#c8102e" stroke-width="4" stroke-dasharray="4" />
+
+  <!-- Líneas simuladas de bandeja -->
+  <rect x="230" y="190" width="330" height="24" rx="4" fill="#e8ebe9" />
+  <rect x="230" y="225" width="330" height="24" rx="4" fill="#e8ebe9" />
+  <rect x="230" y="260" width="330" height="24" rx="4" fill="#e8ebe9" />
+</svg>

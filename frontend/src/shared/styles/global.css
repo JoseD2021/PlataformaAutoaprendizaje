@@ -29,6 +29,14 @@ body {
 .btn--claro    { background: #fff; color: var(--color-verde); }
 .btn--verde    { background: var(--color-verde); color: #fff; }
 .btn--marca    { background: var(--color-marca); color: var(--color-verde); border-color: var(--color-marca); }
+.btn:disabled  {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-color: #aaa;
+  color: #666;
+  background: #eee;
+}
+
 
 /* ---------- Cabecera ---------- */
 .app-header { background: var(--color-marca); position: relative; padding-bottom: 1.5rem; }
@@ -115,13 +123,53 @@ body {
   font-size: 1.125rem; text-decoration: underline;
 }
 
+.navegacion-superior {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 1.25rem 0 .75rem;
+}
+
+.btn-enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  min-height: var(--tap-min);
+  padding: .25rem .5rem;
+  background: transparent;
+  border: 0;
+  color: var(--color-verde);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: .375rem;
+}
+
+.btn-enlace:hover {
+  background: #f1f5f2;
+}
+
+.separador-nav {
+  color: var(--color-borde);
+  font-weight: 700;
+  user-select: none;
+}
+
+
 .guias-lista {
   list-style: none; margin: 1.25rem 0 0; padding: 0; overflow: hidden;
   border: 1px solid var(--color-borde); border-radius: var(--radius);
 }
 .guias-lista li + li { border-top: 1px solid var(--color-borde); }
 
-.guia-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; min-height: 5rem; }
+.guia-item {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem; min-height: 5rem;
+  color: inherit; text-decoration: none;
+}
+.guia-item:hover { background: #fff1c2; }
 .guia-item--destacada { background: #fff1c2; }
 .guia-item__texto { flex: 1; display: flex; flex-direction: column; gap: .375rem; }
 .guia-item__texto strong { font-size: 1.375rem; }
@@ -130,3 +178,114 @@ body {
 .chip { font-size: 1rem; font-weight: 700; padding: .125rem .75rem; border-radius: 999px; }
 .chip--rojo { background: var(--color-rojo); color: #fff; }
 .chip--contorno { border: 2px solid var(--color-verde); background: #fff; }
+
+/* ---------- Guía paso a paso ---------- */
+.guia-paso {
+  background: #fff;
+  border: 2px solid var(--color-borde);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.guia-paso__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.paso-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: var(--color-marca);
+  color: var(--color-verde);
+  padding: .375rem 1rem;
+  border-radius: 999px;
+}
+
+.paso-restantes {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.guia-paso__titulo {
+  font-size: clamp(1.375rem, 4vw, 1.75rem);
+  margin: 1.25rem 0 .75rem;
+  color: var(--color-verde);
+}
+
+.guia-paso__imagen-marco {
+  margin: 1rem 0;
+  background: #f8faf9;
+  border: 2px solid var(--color-borde);
+  border-radius: var(--radius);
+  padding: .75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.guia-paso__imagen {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 22rem;
+  border-radius: .375rem;
+}
+
+.guia-paso__texto {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin: 1.25rem 0;
+  color: var(--color-verde);
+}
+
+.guia-paso__acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--color-borde);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 40rem) {
+  .guia-paso__acciones {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .guia-paso__acciones .btn {
+    width: 100%;
+  }
+}
+
+.guia-finalizada {
+  background: #f1f8f3;
+  border: 2px solid #2e7d32;
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.guia-finalizada h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: #1a3a2a;
+  margin: .5rem 0;
+}
+
+.guia-finalizada p {
+  font-size: 1.25rem;
+  color: #2e593d;
+  margin-bottom: 1.5rem;
+}

@@ -1,8 +1,53 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { AxiosResponse } from 'axios'
 import { InicioPage } from './InicioPage'
+import { httpClient } from '../../../../shared/http/client'
+
+const categoriasBackend = [
+  {
+    id: 'correo',
+    name: 'Correo Gmail',
+    slug: 'correo-gmail',
+    iconName: 'mail',
+    description: 'Entrar a tu correo, escribir un mensaje y mandar fotos a tu familia.',
+    isFeatured: true,
+  },
+  {
+    id: 'tramites',
+    name: 'Trámites en línea',
+    slug: 'tramites-en-linea',
+    iconName: 'landmark',
+    description: 'Citas médicas, certificados y pagos',
+    isFeatured: false,
+  },
+  {
+    id: 'documentos',
+    name: 'Documentos',
+    slug: 'documentos',
+    iconName: 'file-text',
+    description: 'Escribir una carta, guardar e imprimir',
+    isFeatured: false,
+  },
+  {
+    id: 'redes',
+    name: 'Redes sociales',
+    slug: 'redes-sociales',
+    iconName: 'users',
+    description: 'Facebook y WhatsApp Web',
+    isFeatured: false,
+  },
+  {
+    id: 'seguridad',
+    name: 'Seguridad en internet',
+    slug: 'seguridad-en-internet',
+    iconName: 'shield',
+    description: 'Contraseñas, estafas y cerrar sesión',
+    isFeatured: false,
+  },
+]
 
 function renderizar() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -16,6 +61,15 @@ function renderizar() {
 }
 
 describe('InicioPage', () => {
+  beforeEach(() => {
+    vi.spyOn(httpClient, 'get').mockImplementation(async (url) => {
+      if (url === '/categories') {
+        return { data: categoriasBackend } as AxiosResponse
+      }
+      return { data: [] } as AxiosResponse
+    })
+  })
+
   it('muestra el tema destacado y los otros temas', async () => {
     renderizar()
     expect(await screen.findByRole('heading', { name: 'Correo Gmail' })).toBeInTheDocument()
