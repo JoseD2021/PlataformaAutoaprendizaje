@@ -21,6 +21,20 @@ export class TypeOrmCategoryRepository extends CategoryRepository {
     return orm ? CategoryMapper.toDomain(orm) : null;
   }
 
+  async findBySlug(slug: string, excludeId?: string): Promise<Category | null> {
+    const query = this.repository
+      .createQueryBuilder('category')
+      .where('category.slug = :slug', { slug });
+
+    if (excludeId) {
+      query.andWhere('category.id != :excludeId', { excludeId });
+    }
+
+    const orm = await query.getOne();
+
+    return orm ? CategoryMapper.toDomain(orm) : null;
+  }
+
   async findAll(): Promise<Category[]> {
     const categories = await this.repository.find({
       order: { name: 'ASC' },

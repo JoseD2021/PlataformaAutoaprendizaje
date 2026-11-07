@@ -6,7 +6,10 @@ import {
   CATEGORY_REPOSITORY,
   CategoryRepository,
 } from '../../domain/repositories/category.repository';
-import { CategoryNotFoundError } from '../errors/category.errors';
+import {
+  CategoryNotFoundError,
+  CategorySlugAlreadyExistsError,
+} from '../errors/category.errors';
 
 export interface UpdateCategoryInput {
   id: string;
@@ -43,6 +46,12 @@ export class UpdateCategoryUseCase {
     }
 
     if (input.name !== undefined) {
+      const slug = Category.generateSlug(input.name);
+
+      if (await this.categories.findBySlug(slug, category.id)) {
+        throw new CategorySlugAlreadyExistsError();
+      }
+
       category.changeName(input.name);
     }
 

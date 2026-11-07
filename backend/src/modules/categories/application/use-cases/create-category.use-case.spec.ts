@@ -3,6 +3,9 @@ import { CannotManageCategoryError } from '../../domain/errors/category.errors';
 import { Category } from '../../domain/entities/category.entity';
 import { CategoryRepository } from '../../domain/repositories/category.repository';
 import {
+  CategorySlugAlreadyExistsError,
+} from '../errors/category.errors';
+import {
   CreateCategoryUseCase,
   type CreateCategoryInput,
 } from './create-category.use-case';
@@ -12,6 +15,14 @@ class InMemoryCategoryRepository extends CategoryRepository {
 
   async findById(id: string): Promise<Category | null> {
     return this.categories.find((category) => category.id === id) ?? null;
+  }
+
+  async findBySlug(slug: string, excludeId?: string): Promise<Category | null> {
+    return (
+      this.categories.find(
+        (category) => category.slug === slug && category.id !== excludeId,
+      ) ?? null
+    );
   }
 
   async findAll(): Promise<Category[]> {
@@ -64,6 +75,22 @@ describe('CreateCategoryUseCase', () => {
     ).rejects.toThrow(CannotManageCategoryError);
 
     expect(categories.categories).toHaveLength(0);
+  });
+
+  it('rechaza nombres que generan un slug existente', async () => {
+    await useCase.execute(
+      { name: 'Documentos' },
+      { permissions: [Permission.CATEGORIES_CREATE] },
+    );
+
+    await expect(
+      useCase.execute(
+        { name: 'documentos!!!' },
+        { permissions: [Permission.CATEGORIES_CREATE] },
+      ),
+    ).rejects.toThrow(CategorySlugAlreadyExistsError);
+
+    expect(categories.categories).toHaveLength(1);
   });
 
   it('propaga la validación de la entidad y no persiste categorías inválidas', async () => {

@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'categories' })
+@Index('UQ_categories_slug', ['slug'], { unique: true })
 export class CategoryOrmEntity {
   @PrimaryColumn('uuid')
   id: string;

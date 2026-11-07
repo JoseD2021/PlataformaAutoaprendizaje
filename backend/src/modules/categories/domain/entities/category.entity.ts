@@ -37,7 +37,7 @@ export class Category {
         return new Category({ ...props });
     }
 
-    private static generateSlug(name: string): string {
+    static generateSlug(name: string): string {
         return name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     }
 

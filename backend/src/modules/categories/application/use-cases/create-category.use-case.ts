@@ -7,6 +7,7 @@ import {
   CATEGORY_REPOSITORY,
   CategoryRepository,
 } from '../../domain/repositories/category.repository';
+import { CategorySlugAlreadyExistsError } from '../errors/category.errors';
 
 export interface CreateCategoryInput {
   name: string;
@@ -40,6 +41,10 @@ export class CreateCategoryUseCase {
       description: input.description,
       isFeatured: input.isFeatured,
     });
+
+    if (await this.categories.findBySlug(category.slug)) {
+      throw new CategorySlugAlreadyExistsError();
+    }
 
     await this.categories.save(category);
 

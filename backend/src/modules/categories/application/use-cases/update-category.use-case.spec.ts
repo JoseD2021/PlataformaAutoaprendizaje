@@ -2,7 +2,10 @@ import { Permission } from '../../../users/domain/enums/permission.enum';
 import { Category } from '../../domain/entities/category.entity';
 import { CannotManageCategoryError } from '../../domain/errors/category.errors';
 import { CategoryRepository } from '../../domain/repositories/category.repository';
-import { CategoryNotFoundError } from '../errors/category.errors';
+import {
+  CategoryNotFoundError,
+  CategorySlugAlreadyExistsError,
+} from '../errors/category.errors';
 import {
   UpdateCategoryUseCase,
   type UpdateCategoryInput,
@@ -15,6 +18,14 @@ class InMemoryCategoryRepository extends CategoryRepository {
 
   async findById(id: string): Promise<Category | null> {
     return this.categories.find((category) => category.id === id) ?? null;
+  }
+
+  async findBySlug(slug: string, excludeId?: string): Promise<Category | null> {
+    return (
+      this.categories.find(
+        (category) => category.slug === slug && category.id !== excludeId,
+      ) ?? null
+    );
   }
 
   async findAll(): Promise<Category[]> {
@@ -94,5 +105,24 @@ describe('UpdateCategoryUseCase', () => {
         { permissions: [Permission.CATEGORIES_MANAGE] },
       ),
     ).rejects.toThrow(CategoryNotFoundError);
+  });
+
+  it('rechaza cambiar el nombre a un slug existente en otra categoría', async () => {
+    categories.categories.push(
+      Category.create({
+        id: 'category-2',
+        name: 'Videos',
+        slug: '',
+      }),
+    );
+
+    await expect(
+      useCase.execute(
+        { id: 'category-1', name: 'Videos!!!' },
+        { permissions: [Permission.CATEGORIES_MANAGE] },
+      ),
+    ).rejects.toThrow(CategorySlugAlreadyExistsError);
+
+    expect((await categories.findById('category-1'))?.name).toBe('Documentos');
   });
 });

@@ -17,6 +17,14 @@ class InMemoryCategoryRepository extends CategoryRepository {
     return this.categories.find((category) => category.id === id) ?? null;
   }
 
+  async findBySlug(slug: string, excludeId?: string): Promise<Category | null> {
+    return (
+      this.categories.find(
+        (category) => category.slug === slug && category.id !== excludeId,
+      ) ?? null
+    );
+  }
+
   async findAll(): Promise<Category[]> {
     return [...this.categories];
   }
