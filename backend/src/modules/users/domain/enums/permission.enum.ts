@@ -17,6 +17,7 @@ export enum Permission {
   ROLES_UPDATE_PERMISSIONS = 'roles:update-permissions',
 
   CATEGORIES_CREATE = 'categories:create',
+  CATEGORIES_MANAGE = 'categories:manage',
   GUIDES_CREATE = 'guides:create',
 
   SESSIONS_READ_ONLINE = 'sessions:read-online',
