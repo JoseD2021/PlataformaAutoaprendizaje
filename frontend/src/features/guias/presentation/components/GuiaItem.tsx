@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ArrowRight, Clock } from 'lucide-react'
 import type { GuiaResumen } from '../../domain/entities'
 
@@ -5,7 +6,10 @@ const plural = (n: number, uno: string, varios: string) => `${n} ${n === 1 ? uno
 
 export function GuiaItem({ guia }: { guia: GuiaResumen }) {
   return (
-    <div className={`guia-item${guia.esMasPedida ? ' guia-item--destacada' : ''}`}>
+    <Link
+      to={`/guias/${guia.id}`}
+      className={`guia-item${guia.esMasPedida ? ' guia-item--destacada' : ''}`}
+    >
       <div className="guia-item__texto">
         <strong>{guia.titulo}</strong>
         <span className="guia-item__meta">
@@ -16,6 +20,6 @@ export function GuiaItem({ guia }: { guia: GuiaResumen }) {
         </span>
       </div>
       <ArrowRight aria-hidden size={20} />
-    </div>
+    </Link>
   )
 }
