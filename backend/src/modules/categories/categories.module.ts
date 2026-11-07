@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateCategoryUseCase } from './application/use-cases/create-category.use-case';
 import { GetAllCategoriesUseCase } from './application/use-cases/get-all-categories.use-case';
+import { UpdateCategoryUseCase } from './application/use-cases/update-category.use-case';
 import { CATEGORY_REPOSITORY } from './domain/repositories/category.repository';
 import { CategoryOrmEntity } from './infrastructure/persistence/category.orm-entity';
 import { TypeOrmCategoryRepository } from './infrastructure/persistence/typeorm-category.repository';
@@ -13,6 +14,7 @@ import { CategoriesController } from './presentation/controllers/categories.cont
   providers: [
     CreateCategoryUseCase,
     GetAllCategoriesUseCase,
+    UpdateCategoryUseCase,
     { provide: CATEGORY_REPOSITORY, useClass: TypeOrmCategoryRepository },
   ],
   exports: [CATEGORY_REPOSITORY],
