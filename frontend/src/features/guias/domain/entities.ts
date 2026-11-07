@@ -15,3 +15,19 @@ export interface GuiaResumen {
   esMasPedida: boolean
   etiqueta?: string   // ej. "Importante en computadores públicos"
 }
+
+export interface Paso {
+  id: string
+  numero: number
+  titulo: string
+  texto: string
+  imagenUrl: string
+  imagenAlt: string
+}
+
+export interface GuiaDetalle {
+  id: string
+  titulo: string
+  categoriaId: string
+  pasos: Paso[]
+}

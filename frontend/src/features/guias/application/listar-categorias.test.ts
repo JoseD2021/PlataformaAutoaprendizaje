@@ -11,6 +11,7 @@ const repoFalso: GuiasRepository = {
   listarCategorias: async () => [categoria],
   listarGuiasPorCategoria: async () => [],
   obtenerCategoria: async () => null,
+  obtenerGuia: async () => null,
 }
 
 describe('ListarCategorias', () => {
