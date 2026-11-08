@@ -62,10 +62,13 @@ describe('GuiasDeCategoriaPage', () => {
   })
 
   it('muestra el título de la categoría y las guías asociadas', async () => {
-    renderizar('correo')
+    renderizar('correo-gmail')
 
     expect(await screen.findByRole('heading', { name: 'Correo Gmail' })).toBeInTheDocument()
     expect(screen.getByText('Enviar un correo con una foto')).toBeInTheDocument()
+    expect(httpClient.get).toHaveBeenCalledWith('/guides', {
+      params: { categoriaId: 'correo', limit: 100 },
+    })
 
     const enlaceGuia = screen.getByRole('link', { name: /Enviar un correo con una foto/i })
     expect(enlaceGuia).toHaveAttribute('href', '/guias/enviar-correo-foto')

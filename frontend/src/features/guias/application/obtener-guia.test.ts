@@ -13,8 +13,8 @@ const guiaDetalle: GuiaDetalle = {
       numero: 1,
       titulo: 'Abre la ventana para escribir',
       texto: 'Haz clic en Redactar',
-      imagenUrl: '/guias/enviar-foto-paso-1.svg',
-      imagenAlt: 'Botón Redactar',
+      imagenUrl: '/img/paso1.png',
+      imagenAlt: 'Botón redactar',
     },
   ],
 }

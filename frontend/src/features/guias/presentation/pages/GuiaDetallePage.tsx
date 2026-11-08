@@ -127,13 +127,15 @@ export function GuiaDetallePage() {
         <section aria-live="polite" aria-atomic="true">
           <h2 className="guia-paso__titulo">{pasoActual.titulo}</h2>
 
-          <div className="guia-paso__imagen-marco">
-            <img
-              src={pasoActual.imagenUrl}
-              alt={pasoActual.imagenAlt}
-              className="guia-paso__imagen"
-            />
-          </div>
+          {pasoActual.imagenUrl && (
+            <div className="guia-paso__imagen-marco">
+              <img
+                src={pasoActual.imagenUrl}
+                alt={pasoActual.imagenAlt}
+                className="guia-paso__imagen"
+              />
+            </div>
+          )}
 
           <p className="guia-paso__texto">{pasoActual.texto}</p>
         </section>

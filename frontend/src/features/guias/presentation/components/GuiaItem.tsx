@@ -8,7 +8,7 @@ export function GuiaItem({ guia }: { guia: GuiaResumen }) {
   return (
     <Link
       to={`/guias/${guia.id}`}
-      className={`guia-item${guia.esMasPedida ? ' guia-item--destacada' : ''}`}
+      className="guia-item"
     >
       <div className="guia-item__texto">
         <strong>{guia.titulo}</strong>

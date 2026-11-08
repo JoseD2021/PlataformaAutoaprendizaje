@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { container } from '../../../../app/container'
 
-export function useGuiasPorCategoria(id: string) {
+export function useGuiasPorCategoria(categoriaId: string) {
   return useQuery({
-    queryKey: ['guias', id],
-    queryFn: () => container.listarGuiasPorCategoria.execute(id),
+    queryKey: ['guias', categoriaId],
+    queryFn: () => container.listarGuiasPorCategoria.execute(categoriaId),
+    enabled: Boolean(categoriaId),
   })
 }

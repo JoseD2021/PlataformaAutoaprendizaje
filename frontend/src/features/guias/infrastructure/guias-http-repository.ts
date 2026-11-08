@@ -6,7 +6,7 @@ import { httpClient } from '../../../shared/http/client'
 interface CategoriaBackendDto {
   id: string
   name: string
-  slug: string
+  slug?: string
   iconName: string
   description: string
   isFeatured: boolean
@@ -42,14 +42,8 @@ interface GuiaDetalleBackendDto extends GuiaResumenBackendDto {
   pasos: PasoGuiaBackendDto[]
 }
 
-function mapearPaso(pasoDto: PasoGuiaBackendDto, guiaId: string): Paso {
-  // Si el backend no tiene imagenUrl configurada aún, usamos las ilustraciones SVG existentes
-  const fallbackSvg =
-    guiaId === 'enviar-correo-foto'
-      ? `/guias/enviar-foto-paso-${pasoDto.orden}.svg`
-      : `/guias/enviar-foto-paso-${((pasoDto.orden - 1) % 4) + 1}.svg`
-
-  const imagenUrl = pasoDto.imagenUrl?.trim() ? pasoDto.imagenUrl : fallbackSvg
+function mapearPaso(pasoDto: PasoGuiaBackendDto): Paso {
+  const imagenUrl = pasoDto.imagenUrl?.trim() || '/svg/notfound.svg'
   const imagenAlt =
     pasoDto.pieImagen?.trim()
       ? pasoDto.pieImagen
@@ -74,7 +68,7 @@ function mapearGuiaDetalle(dto: GuiaDetalleBackendDto): GuiaDetalle {
     minutosEstimados: dto.minutosEstimados,
     esMasPedida: dto.esMasPedida,
     etiqueta: dto.etiqueta,
-    pasos: dto.pasos.map((paso) => mapearPaso(paso, dto.id)),
+    pasos: dto.pasos.map(mapearPaso),
   }
 }
 
