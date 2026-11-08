@@ -34,7 +34,6 @@ const categoriasBackend = [
   {
     id: 'redes',
     name: 'Redes sociales',
-    slug: 'redes-sociales',
     iconName: 'users',
     description: 'Facebook y WhatsApp Web',
     isFeatured: false,
@@ -83,8 +82,10 @@ describe('InicioPage', () => {
     renderizar()
     await screen.findByRole('heading', { name: 'Correo Gmail' })
     expect(screen.getByRole('link', { name: /Ver guías de Correo Gmail/ }))
-      .toHaveAttribute('href', '/categorias/correo')
+      .toHaveAttribute('href', '/categorias/correo-gmail')
     expect(screen.getByRole('link', { name: /Documentos/ }))
       .toHaveAttribute('href', '/categorias/documentos')
+    expect(screen.getByRole('link', { name: /Redes sociales/ }))
+      .toHaveAttribute('href', '/categorias/redes')
   })
 })

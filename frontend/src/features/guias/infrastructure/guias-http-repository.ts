@@ -6,7 +6,7 @@ import { httpClient } from '../../../shared/http/client'
 interface CategoriaBackendDto {
   id: string
   name: string
-  slug: string
+  slug?: string
   iconName: string
   description: string
   isFeatured: boolean

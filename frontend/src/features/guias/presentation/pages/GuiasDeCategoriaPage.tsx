@@ -8,7 +8,7 @@ import { GuiaItem } from '../components/GuiaItem'
 export function GuiasDeCategoriaPage() {
   const { id = '' } = useParams()
   const categoria = useCategoria(id)
-  const guias = useGuiasPorCategoria(id)
+  const guias = useGuiasPorCategoria(categoria.data?.id ?? '')
 
   const contenido = () => {
     if (categoria.isLoading || guias.isLoading) return <p role="status">Cargando guías…</p>
