@@ -2,6 +2,8 @@ export interface DemoStepData {
   shortTitle: string;
   action: string;
   description: string;
+  imageUrl?: string;
+  imageCaption?: string;
 }
 
 export interface DemoGuideData {
@@ -55,24 +57,32 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
         action: 'Haz clic en el botón Redactar',
         description:
           'Está arriba a la izquierda y tiene un lápiz dibujado. Se abrirá una ventana para escribir tu mensaje.',
+        imageUrl: '/guias/enviar-foto/paso-1.svg',
+        imageCaption: 'Ilustración con una vista de Gmail. El botón Redactar está arriba a la izquierda y tiene un lápiz dibujado.',
       },
       {
         shortTitle: 'Para',
-        action: 'Escribe a quién se lo envías',
+        action: 'Escribe a quién se lo envías en "Para"/"Destinatario"',
         description:
-          'En el campo Para, escribe el correo de la persona. En Asunto, escribe una frase corta, por ejemplo: Fotos.',
+          'Escríbelo por completo, por ejemplo: nieta.ana@correo.com. Después escribe un asunto corto y tu mensaje.',
+        imageUrl: '/guias/enviar-foto/paso-2.svg',
+        imageCaption: 'En la ventana de Mensaje nuevo, arriba hay un campo que dice Para/destinatario. Escribe ahí el correo de la persona a la que le envías el mensaje.',
       },
       {
         shortTitle: 'Adjuntar',
         action: 'Haz clic en el clip para agregar la foto',
         description:
           'Abajo de la ventana hay un ícono de clip. Haz clic, busca la foto en el computador y presiona Abrir.',
+        imageUrl: '/guias/enviar-foto/paso-3.svg',
+        imageCaption: 'En la ventana de Mensaje nuevo, abajo hay una fila de íconos. El clip es el que estás buscando.',
       },
       {
         shortTitle: 'Enviar',
-        action: 'Haz clic en el botón Enviar',
+        action: 'Revisa la foto y haz clic en Enviar',
         description:
-          'Es el botón azul de abajo a la izquierda. Verás un aviso que dice que el mensaje fue enviado.',
+          'Debes ver el nombre de la foto dentro del mensaje. Si aparece, haz clic en el botón azul Enviar. Verás un aviso que dice que el mensaje fue enviado.',
+        imageUrl: '/guias/enviar-foto/paso-4.svg',
+        imageCaption: 'El botón Enviar está en la parte inferior de la ventana de Mensaje nuevo. Es azul y dice Enviar. Seguramente está cerca al clip.',
       },
     ],
   },
