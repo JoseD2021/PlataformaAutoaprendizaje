@@ -20,7 +20,7 @@ const guiaBackendMock = {
       accion: 'Haz clic en el botón Redactar',
       descripcion:
         'Está arriba a la izquierda y tiene un lápiz dibujado. Se abrirá una ventana para escribir tu mensaje.',
-      imagenUrl: '/guias/enviar-foto-paso-1.svg',
+      imagenUrl: '/img/paso1.png',
       pieImagen:
         'Ilustración del botón Redactar en la esquina superior izquierda de la pantalla de Gmail',
     },
@@ -30,7 +30,7 @@ const guiaBackendMock = {
       accion: 'Escribe a quién se lo envías',
       descripcion:
         'En el campo Para, escribe el correo de la persona. En Asunto, escribe una frase corta, por ejemplo: Fotos.',
-      imagenUrl: '/guias/enviar-foto-paso-2.svg',
+      imagenUrl: '/img/paso2.png',
     },
     {
       orden: 3,
@@ -38,7 +38,7 @@ const guiaBackendMock = {
       accion: 'Haz clic en el clip para agregar la foto',
       descripcion:
         'Abajo de la ventana hay un ícono de clip. Haz clic, busca la foto en el computador y presiona Abrir.',
-      imagenUrl: '/guias/enviar-foto-paso-3.svg',
+      imagenUrl: '/img/paso3.png',
     },
     {
       orden: 4,
@@ -46,7 +46,7 @@ const guiaBackendMock = {
       accion: 'Haz clic en el botón Enviar',
       descripcion:
         'Es el botón azul de abajo a la izquierda. Verás un aviso que dice que el mensaje fue enviado.',
-      imagenUrl: '/guias/enviar-foto-paso-4.svg',
+      imagenUrl: '/img/paso4.png',
     },
   ],
 }
@@ -114,7 +114,7 @@ describe('GuiaDetallePage', () => {
       'Ilustración del botón Redactar en la esquina superior izquierda de la pantalla de Gmail',
     )
     expect(imagen).toBeInTheDocument()
-    expect(imagen).toHaveAttribute('src', '/guias/enviar-foto-paso-1.svg')
+    expect(imagen).toHaveAttribute('src', '/img/paso1.png')
 
     // El botón Atrás debe estar deshabilitado en el primer paso
     const botonAtras = screen.getByRole('button', { name: /Atrás/i })

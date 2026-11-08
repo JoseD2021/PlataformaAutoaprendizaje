@@ -158,7 +158,7 @@ describe('GuiasHttpRepository', () => {
     })
   })
 
-  it('obtenerGuia usa fallback de imagen y alt si el backend no envía imágenes', async () => {
+  it('obtenerGuia usa la imagen notfound si el backend no envía imagenUrl', async () => {
     const mockGuia = {
       id: 'enviar-correo-foto',
       titulo: 'Enviar un correo con una foto',
@@ -183,7 +183,7 @@ describe('GuiasHttpRepository', () => {
     const repo = new GuiasHttpRepository(httpMock)
     const resultado = await repo.obtenerGuia('enviar-correo-foto')
 
-    expect(resultado?.pasos[0].imagenUrl).toBe('/guias/enviar-foto-paso-1.svg')
+    expect(resultado?.pasos[0].imagenUrl).toBe('/svg/notfound.svg')
     expect(resultado?.pasos[0].imagenAlt).toBe('Ilustración del paso 1: Haz clic en el botón Redactar')
   })
 
