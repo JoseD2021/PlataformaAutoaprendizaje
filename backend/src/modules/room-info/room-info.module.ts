@@ -7,6 +7,7 @@ import { RoomScheduleOrmEntity } from './infrastructure/persistence/room-schedul
 import { TypeOrmRoomInfoRepository } from './infrastructure/persistence/typeorm-room-info.repository';
 import { RoomInfoSeedService } from './infrastructure/seeding/room-info-seed.service';
 import { RoomInfoController } from './presentation/controllers/room-info.controller';
+import { UpdateRoomInfoUseCase } from './application/use-cases/update-room-info.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([RoomScheduleOrmEntity, RoomRuleOrmEntity])],
@@ -14,6 +15,7 @@ import { RoomInfoController } from './presentation/controllers/room-info.control
   providers: [
     { provide: ROOM_INFO_REPOSITORY, useClass: TypeOrmRoomInfoRepository },
     GetRoomInfoUseCase,
+    UpdateRoomInfoUseCase,
     RoomInfoSeedService,
   ],
 })

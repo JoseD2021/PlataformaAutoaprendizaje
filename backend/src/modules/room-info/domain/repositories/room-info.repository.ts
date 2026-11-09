@@ -8,6 +8,7 @@ export abstract class RoomInfoRepository {
   abstract countRules(): Promise<number>;
   abstract saveSchedules(entries: ScheduleEntry[]): Promise<void>;
   abstract saveRules(rules: RoomRule[]): Promise<void>;
+  abstract replaceAll(schedules: ScheduleEntry[], rules: RoomRule[]): Promise<void>;
 }
 
 export const ROOM_INFO_REPOSITORY = Symbol('ROOM_INFO_REPOSITORY');

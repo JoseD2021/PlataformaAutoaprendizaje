@@ -201,6 +201,11 @@ export class InMemoryRoomInfoRepository extends RoomInfoRepository {
   async saveRules(rules: RoomRule[]): Promise<void> {
     this.rules.push(...rules);
   }
+
+  async replaceAll(schedules: ScheduleEntry[], rules: RoomRule[]): Promise<void> {
+    this.schedules = [...schedules];
+    this.rules = [...rules];
+  }
 }
 
 export class InMemoryRefreshTokenRepository extends RefreshTokenRepository {

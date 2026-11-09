@@ -24,6 +24,8 @@ export enum Permission {
   HELP_REQUESTS_READ = 'help-requests:read',
   HELP_REQUESTS_CREATE = 'help-requests:create',
   FAVORITES_MANAGE = 'favorites:manage',
+
+  ROOM_INFO_MANAGE = 'room-info:manage',
 }
 
 export const ALL_PERMISSIONS: Permission[] = Object.values(Permission);

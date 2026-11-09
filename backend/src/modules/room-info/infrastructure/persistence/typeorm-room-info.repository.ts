@@ -46,4 +46,18 @@ export class TypeOrmRoomInfoRepository extends RoomInfoRepository {
   async saveRules(rules: RoomRule[]): Promise<void> {
     await this.rules.save(rules.map((rule) => RoomInfoMapper.ruleToOrm(rule)));
   }
+
+    async replaceAll(schedules: ScheduleEntry[], rules: RoomRule[]): Promise<void> {
+    await this.schedules.manager.transaction(async (manager) => {
+      await manager.createQueryBuilder().delete().from(RoomScheduleOrmEntity).execute();
+      await manager.createQueryBuilder().delete().from(RoomRuleOrmEntity).execute();
+
+      if (schedules.length > 0) {
+        await manager.save(schedules.map((entry) => RoomInfoMapper.scheduleToOrm(entry)));
+      }
+      if (rules.length > 0) {
+        await manager.save(rules.map((rule) => RoomInfoMapper.ruleToOrm(rule)));
+      }
+    });
+  }
 }
