@@ -30,7 +30,9 @@ import {
   PaginatedGuides,
   PaginationOptions as GuidePaginationOptions,
 } from '../../src/modules/guides/domain/repositories/guide.repository';
-
+import { RoomRule } from '../../src/modules/room-info/domain/entities/room-rule.entity';
+import { ScheduleEntry } from '../../src/modules/room-info/domain/entities/schedule-entry.entity';
+import { RoomInfoRepository } from '../../src/modules/room-info/domain/repositories/room-info.repository';
 
 export class InMemoryUserRepository extends UserRepository {
   private readonly users = new Map<string, User>();
@@ -163,6 +165,41 @@ export class InMemoryGuideRepository extends GuideRepository {
 
   get all(): Guide[] {
     return [...this.guides.values()];
+  }
+}
+
+export class InMemoryRoomInfoRepository extends RoomInfoRepository {
+  private schedules: ScheduleEntry[];
+  private rules: RoomRule[];
+
+  constructor(seed: { schedules?: ScheduleEntry[]; rules?: RoomRule[] } = {}) {
+    super();
+    this.schedules = [...(seed.schedules ?? [])];
+    this.rules = [...(seed.rules ?? [])];
+  }
+
+  async findSchedules(): Promise<ScheduleEntry[]> {
+    return [...this.schedules].sort((a, b) => a.order - b.order);
+  }
+
+  async findRules(): Promise<RoomRule[]> {
+    return [...this.rules].sort((a, b) => a.order - b.order);
+  }
+
+  async countSchedules(): Promise<number> {
+    return this.schedules.length;
+  }
+
+  async countRules(): Promise<number> {
+    return this.rules.length;
+  }
+
+  async saveSchedules(entries: ScheduleEntry[]): Promise<void> {
+    this.schedules.push(...entries);
+  }
+
+  async saveRules(rules: RoomRule[]): Promise<void> {
+    this.rules.push(...rules);
   }
 }
 
@@ -311,4 +348,27 @@ export function makeRole(
   permissions: Permission[] = [],
 ): RoleDefinition {
   return new RoleDefinition(role, role, rank, permissions, new Date());
+}
+
+export function makeScheduleEntry(
+  overrides: Partial<Parameters<typeof ScheduleEntry.create>[0]> = {},
+): ScheduleEntry {
+  return ScheduleEntry.create({
+    id: 'schedule-1',
+    days: 'Lunes a viernes',
+    hours: '8:00 a.m. a 5:00 p.m.',
+    order: 1,
+    ...overrides,
+  });
+}
+
+export function makeRoomRule(
+  overrides: Partial<Parameters<typeof RoomRule.create>[0]> = {},
+): RoomRule {
+  return RoomRule.create({
+    id: 'rule-1',
+    text: 'Pide ayuda a un monitor si te pierdes.',
+    order: 1,
+    ...overrides,
+  });
 }
