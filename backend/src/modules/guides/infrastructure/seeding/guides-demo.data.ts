@@ -221,10 +221,10 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
       shortTitle: 'Confirmar',
       action: 'Haz clic en el botón Imprimir',
       description:
-        'Está abajo en la ventana. Después de hacer clic, espera unos segundos mientras la impresora prepara tu hoja.',
+        'Está abajo en la ventana. Antes de hacer clic, asegúrate de que ya haya una hoja en la bandeja de entrada de la impresora. Luego de hacer clic, espera unos segundos mientras la impresora prepara tu hoja.',
       imageUrl: '/guias/imprimir-documento/paso-4.svg',
       imageCaption:
-        'Ilustración de la parte inferior de la ventana de impresión. El botón Imprimir es azul y está a la izquierda del botón Cancelar.',
+        'Ilustración de la parte inferior de la ventana de impresión. El botón Imprimir está junto al botón Cancelar.',
     },
     {
       shortTitle: 'Retirar',
