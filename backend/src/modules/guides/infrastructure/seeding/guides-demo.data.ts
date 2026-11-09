@@ -182,4 +182,59 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
       },
     ],
   },
+  {
+  id: 'imprimir-documento',
+  title: 'Cómo imprimir un documento',
+  categorySlug: 'documentos',
+  estimatedMinutes: 3,
+  isMostRequested: false,
+  tag: null,
+  steps: [
+    {
+      shortTitle: 'Abrir',
+      action: 'Abre el documento que quieres imprimir',
+      description:
+        'Puede ser un recibo, un PDF o un archivo de Word. Haz doble clic sobre él y espera a que se vea completo en la pantalla.',
+      imageUrl: '/guias/imprimir-documento/paso-1.svg',
+      imageCaption:
+        'Ilustración de un documento abierto en la pantalla del computador, con el texto del recibo visible.',
+    },
+    {
+      shortTitle: 'Imprimir',
+      action: 'Presiona las teclas Ctrl + P al mismo tiempo',
+      description:
+        'Mantén apretada la tecla Ctrl y, sin soltarla, presiona la letra P. También puedes hacer clic en el ícono de la impresora que aparece arriba en el programa, si está disponible.',
+      imageUrl: '/guias/imprimir-documento/paso-2.svg',
+      imageCaption:
+        'Ilustración de un teclado con las teclas Ctrl y P resaltadas, junto al ícono de una impresora gris con una hoja saliendo.',
+    },
+    {
+      shortTitle: 'Revisar',
+      action: 'Revisa la impresora y las copias',
+      description:
+        'Se abrirá una ventana de impresión. Mira que arriba aparezca la impresora de la sala y que en "Copias" diga 1, a menos que necesites más.',
+      imageUrl: '/guias/imprimir-documento/paso-3.svg',
+      imageCaption:
+        'Ilustración de la ventana de impresión. Arriba hay un recuadro con el nombre de la impresora y debajo un campo con el número de copias.',
+    },
+    {
+      shortTitle: 'Confirmar',
+      action: 'Haz clic en el botón Imprimir',
+      description:
+        'Está abajo en la ventana. Antes de hacer clic, asegúrate de que ya haya una hoja en la bandeja de entrada de la impresora. Luego de hacer clic, espera unos segundos mientras la impresora prepara tu hoja.',
+      imageUrl: '/guias/imprimir-documento/paso-4.svg',
+      imageCaption:
+        'Ilustración de la parte inferior de la ventana de impresión. El botón Imprimir está junto al botón Cancelar.',
+    },
+    {
+      shortTitle: 'Retirar',
+      action: 'Recoge tu hoja de la bandeja de la impresora',
+      description:
+        'Cuando la impresora se detenga, toma la hoja de la bandeja con cuidado, sin meter la mano dentro de la máquina. Si no sale nada después de un minuto, avísale al monitor.',
+      imageUrl: '/guias/imprimir-documento/paso-5.svg',
+      imageCaption:
+        'Ilustración de una hoja en la bandeja de salida de la impresora, por la parte exterior.',
+    },
+  ],
+}
 ];
