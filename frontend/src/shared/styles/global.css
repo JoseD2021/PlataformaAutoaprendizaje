@@ -22,7 +22,7 @@ body {
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   min-height: var(--tap-min); min-width: var(--tap-min);
-  padding: .5rem 1.25rem; border-radius: .5rem; border: 2px solid var(--color-verde);
+  padding: 0rem 1.25rem; border-radius: .5rem; border: 2px solid var(--color-verde);
   font: inherit; font-size: 1.125rem; font-weight: 700; text-decoration: none; cursor: pointer;
 }
 .btn--contorno { background: transparent; color: var(--color-verde); }
@@ -82,7 +82,7 @@ body {
 .destacada {
   background: var(--color-verde); color: #fff;
   display: grid; grid-template-columns: 1fr auto; column-gap: 1.5rem; align-items: center;
-  padding: 1rem 1.5rem; margin-top: 1rem;
+  padding: 1rem 1.5rem; margin-top: 0;
 }
 .destacada > .etiqueta { grid-column: 1; justify-self: start; }
 .destacada > h2, .destacada > p { grid-column: 1; margin: .25rem 0; }
@@ -117,8 +117,9 @@ body {
 .tema-item__texto small { font-size: 1.125rem; }
 
 /* ---------- Página de listado ---------- */
-.contenedor { padding-bottom: 6rem; }
+.contenedor { padding-top: 1.5rem; padding-bottom: 6rem; }
 .contenedor h1 { font-size: clamp(1.75rem, 5vw, 2.25rem); margin: 0 0 .5rem; }
+.contenedor > .navegacion-superior:first-child { margin-top: 0; }
 .volver {
   display: inline-flex; align-items: center; gap: .375rem; margin: 1.5rem 0 1rem;
   min-height: var(--tap-min); color: var(--color-verde); font-weight: 700;

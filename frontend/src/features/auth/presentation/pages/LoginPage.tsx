@@ -2,12 +2,14 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { useAuth } from '../context/AuthContext'
+import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
+import { Navigate } from 'react-router-dom'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [enviando, setEnviando] = useState(false)
-  const { iniciarSesion, error } = useAuth()
+  const { usuario, iniciarSesion, error } = useAuth()
   const navigate = useNavigate()
 
   async function manejarEnvio(evento: FormEvent) {
@@ -23,8 +25,11 @@ export function LoginPage() {
     setEnviando(false)
   }
 
+  if (usuario) return <Navigate to="/" replace />
+
   return (
     <PageLayout>
+      <NavegacionVolver />
       <h1>Iniciar sesión</h1>
       <form className="formulario" onSubmit={manejarEnvio}>
         <div className="campo">

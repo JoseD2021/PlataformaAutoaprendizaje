@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { useAuth } from '../context/AuthContext'
+import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
 
 export function RegistroPage() {
   const [nombreCompleto, setNombreCompleto] = useState('')
@@ -26,6 +27,7 @@ export function RegistroPage() {
 
   return (
     <PageLayout>
+      <NavegacionVolver />
       <h1>Crear una cuenta</h1>
       <form className="formulario" onSubmit={manejarEnvio}>
         <div className="campo">
