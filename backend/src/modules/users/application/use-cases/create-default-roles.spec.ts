@@ -21,6 +21,8 @@ describe('CreateDefaultRolesUseCase', () => {
       Permission.SESSIONS_READ_ONLINE,
       Permission.HELP_REQUESTS_READ,
       Permission.ROOM_INFO_MANAGE,
+      Permission.GUIDES_CREATE,
+      Permission.GUIDES_MANAGE,
     ]);
     expect(createdRoles[2].permissions).toEqual([
       Permission.FAVORITES_MANAGE,

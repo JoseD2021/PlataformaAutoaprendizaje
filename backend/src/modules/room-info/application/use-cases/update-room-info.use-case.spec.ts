@@ -3,7 +3,7 @@ import {
   CannotManageRoomInfoError,
   InvalidRoomInfoError,
 } from '../../domain/errors/room-info.errors';
-import { MAX_ROOM_RULES, MAX_ROOM_SCHEDULES } from '../../domain/room-info.limits';
+import { MAX_ROOM_RULES, MAX_ROOM_SCHEDULES } from '../../domain/constants/room-info.limits';
 import { UpdateRoomInfoUseCase } from './update-room-info.use-case';
 import {
   InMemoryRoomInfoRepository,

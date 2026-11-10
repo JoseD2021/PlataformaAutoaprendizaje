@@ -11,7 +11,7 @@ import {
   ROOM_INFO_REPOSITORY,
   RoomInfoRepository,
 } from '../../domain/repositories/room-info.repository';
-import { MAX_ROOM_RULES, MAX_ROOM_SCHEDULES } from '../../domain/room-info.limits';
+import { MAX_ROOM_RULES, MAX_ROOM_SCHEDULES } from '../../domain/constants/room-info.limits';
 import type { RoomInfoModel } from '../models/room-info-view.model';
 
 export interface UpdateRoomInfoInput {

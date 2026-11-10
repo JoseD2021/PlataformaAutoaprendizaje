@@ -33,6 +33,8 @@ import {
 import { RoomRule } from '../../src/modules/room-info/domain/entities/room-rule.entity';
 import { ScheduleEntry } from '../../src/modules/room-info/domain/entities/schedule-entry.entity';
 import { RoomInfoRepository } from '../../src/modules/room-info/domain/repositories/room-info.repository';
+import { CategoryLookup } from '../../src/modules/guides/application/ports/category-lookup.port';
+
 
 export class InMemoryUserRepository extends UserRepository {
   private readonly users = new Map<string, User>();
@@ -165,6 +167,20 @@ export class InMemoryGuideRepository extends GuideRepository {
 
   get all(): Guide[] {
     return [...this.guides.values()];
+  }
+}
+
+export class FakeCategoryLookup extends CategoryLookup {
+  constructor(private readonly bySlug: Record<string, string> = {}) {
+    super();
+  }
+
+  async findIdBySlug(slug: string): Promise<string | null> {
+    return this.bySlug[slug] ?? null;
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    return Object.values(this.bySlug).includes(id);
   }
 }
 

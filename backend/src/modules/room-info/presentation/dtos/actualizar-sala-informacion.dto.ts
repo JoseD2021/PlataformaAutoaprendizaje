@@ -8,7 +8,7 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-import { MAX_ROOM_RULES, MAX_ROOM_SCHEDULES } from '../../domain/room-info.limits';
+import { MAX_ROOM_RULES, MAX_ROOM_SCHEDULES } from '../../domain/constants/room-info.limits';
 import { HorarioSalaRequestDto } from './horario-sala-request.dto';
 
 export class ActualizarSalaInformacionDto {
