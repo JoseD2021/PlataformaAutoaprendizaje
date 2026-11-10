@@ -9,7 +9,7 @@ interface AuthContextValor {
   usuario: Usuario | null
   cargando: boolean
   error: string | null
-  iniciarSesion: (credenciales: Credenciales) => Promise<void>
+  iniciarSesion: (credenciales: Credenciales) => Promise<Usuario>
   registrar: (datos: DatosRegistro) => Promise<void>
   cerrarSesion: () => Promise<void>
 }
@@ -37,11 +37,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener(EVENTO_SESION_EXPIRADA, manejarSesionExpirada)
   }, [])
 
-  async function iniciarSesion(credenciales: Credenciales) {
+  async function iniciarSesion(credenciales: Credenciales): Promise<Usuario> {
     setError(null)
     try {
       const sesion = await container.iniciarSesion.execute(credenciales)
       setUsuario(sesion.usuario)
+      return sesion.usuario
     } catch (err) {
       setError(obtenerMensajeError(err))
       throw err

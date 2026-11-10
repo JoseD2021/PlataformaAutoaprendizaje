@@ -5,6 +5,7 @@ import { GuiasDeCategoriaPage } from '../features/guias/presentation/pages/Guias
 import { GuiaDetallePage } from '../features/guias/presentation/pages/GuiaDetallePage'
 import { LoginPage } from '../features/auth/presentation/pages/LoginPage'
 import { RegistroPage } from '../features/auth/presentation/pages/RegistroPage'
+import { AdminPanelPage } from '../features/admin/presentation/pages/AdminPanelPage'
 import { RaizLayout } from './RaizLayout'
 
 export const router = createBrowserRouter([
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
       { path: '/guias/:id', element: <GuiaDetallePage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/registro', element: <RegistroPage /> },
+      { path: '/admin', element: <AdminPanelPage /> },
     ]
   }
 ])
