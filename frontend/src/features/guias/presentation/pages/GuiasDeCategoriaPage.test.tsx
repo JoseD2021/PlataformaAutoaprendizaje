@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AxiosResponse } from 'axios'
 import { GuiasDeCategoriaPage } from './GuiasDeCategoriaPage'
 import { httpClient } from '../../../../shared/http/client'
+import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
 
 const categoriasBackendMock = [
   {
@@ -38,12 +39,14 @@ function renderizar(categoriaId: string = 'correo') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={[`/categorias/${categoriaId}`]}>
-        <Routes>
-          <Route path="/categorias/:id" element={<GuiasDeCategoriaPage />} />
-          <Route path="/" element={<div>Inicio</div>} />
-        </Routes>
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[`/categorias/${categoriaId}`]}>
+          <Routes>
+            <Route path="/categorias/:id" element={<GuiasDeCategoriaPage />} />
+            <Route path="/" element={<div>Inicio</div>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
     </QueryClientProvider>,
   )
 }

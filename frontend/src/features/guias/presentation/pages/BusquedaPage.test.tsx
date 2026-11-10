@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AxiosResponse } from 'axios'
 import { BusquedaPage } from './BusquedaPage'
 import { httpClient } from '../../../../shared/http/client'
+import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
 
 const resultadosBackend = {
   items: [
@@ -31,13 +32,15 @@ function renderizar(ruta = '/buscar?q=foto') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={[ruta]}>
-        <Routes>
-          <Route path="/buscar" element={<BusquedaPage />} />
-          <Route path="/" element={<div>Inicio</div>} />
-          <Route path="/guias/:id" element={<div>Detalle de guía</div>} />
-        </Routes>
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[ruta]}>
+          <Routes>
+            <Route path="/buscar" element={<BusquedaPage />} />
+            <Route path="/" element={<div>Inicio</div>} />
+            <Route path="/guias/:id" element={<div>Detalle de guía</div>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
     </QueryClientProvider>,
   )
 }

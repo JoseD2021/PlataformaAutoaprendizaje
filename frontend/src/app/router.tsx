@@ -3,6 +3,8 @@ import { InicioPage } from '../features/guias/presentation/pages/InicioPage'
 import { BusquedaPage } from '../features/guias/presentation/pages/BusquedaPage'
 import { GuiasDeCategoriaPage } from '../features/guias/presentation/pages/GuiasDeCategoriaPage'
 import { GuiaDetallePage } from '../features/guias/presentation/pages/GuiaDetallePage'
+import { LoginPage } from '../features/auth/presentation/pages/LoginPage'
+import { RegistroPage } from '../features/auth/presentation/pages/RegistroPage'
 import { RaizLayout } from './RaizLayout'
 
 export const router = createBrowserRouter([
@@ -13,6 +15,8 @@ export const router = createBrowserRouter([
       { path: '/buscar', element: <BusquedaPage /> },
       { path: '/categorias/:id', element: <GuiasDeCategoriaPage /> },
       { path: '/guias/:id', element: <GuiaDetallePage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/registro', element: <RegistroPage /> },
     ]
   }
 ])

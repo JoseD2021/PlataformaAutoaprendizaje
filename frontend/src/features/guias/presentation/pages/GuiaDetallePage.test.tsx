@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { GuiaDetallePage } from './GuiaDetallePage'
 import { httpClient } from '../../../../shared/http/client'
+import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
 
 const guiaBackendMock = {
   id: 'enviar-correo-foto',
@@ -74,12 +75,14 @@ function renderizar(guiaId: string = 'enviar-correo-foto') {
 
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={[`/guias/${guiaId}`]}>
-        <Routes>
-          <Route path="/guias/:id" element={<GuiaDetallePage />} />
-          <Route path="/" element={<div>Inicio</div>} />
-        </Routes>
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[`/guias/${guiaId}`]}>
+          <Routes>
+            <Route path="/guias/:id" element={<GuiaDetallePage />} />
+            <Route path="/" element={<div>Inicio</div>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
     </QueryClientProvider>,
   )
 }
