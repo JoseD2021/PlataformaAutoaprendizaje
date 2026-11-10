@@ -23,6 +23,7 @@ import {
 
 import { Guide } from '../../src/modules/guides/domain/entities/guide.entity';
 import { GuideStep } from '../../src/modules/guides/domain/entities/guide-step.entity';
+import { GuideImage } from '../../src/modules/guides/domain/entities/guide-image.entity';
 import { GuideStatus } from '../../src/modules/guides/domain/enums/guide-status.enum';
 import {
   GuideFilters,
@@ -30,6 +31,7 @@ import {
   PaginatedGuides,
   PaginationOptions as GuidePaginationOptions,
 } from '../../src/modules/guides/domain/repositories/guide.repository';
+import { GuideImageRepository } from '../../src/modules/guides/domain/repositories/guide-image.repository';
 import { RoomRule } from '../../src/modules/room-info/domain/entities/room-rule.entity';
 import { ScheduleEntry } from '../../src/modules/room-info/domain/entities/schedule-entry.entity';
 import { RoomInfoRepository } from '../../src/modules/room-info/domain/repositories/room-info.repository';
@@ -167,6 +169,29 @@ export class InMemoryGuideRepository extends GuideRepository {
 
   get all(): Guide[] {
     return [...this.guides.values()];
+  }
+}
+
+export class InMemoryGuideImageRepository extends GuideImageRepository {
+  private readonly images = new Map<string, GuideImage>();
+
+  constructor(seed: GuideImage[] = []) {
+    super();
+    seed.forEach((image) => this.images.set(image.id, image));
+  }
+
+  async save(image: GuideImage): Promise<GuideImage> {
+    this.images.set(image.id, image);
+
+    return image;
+  }
+
+  async findById(id: string): Promise<GuideImage | null> {
+    return this.images.get(id) ?? null;
+  }
+
+  get all(): GuideImage[] {
+    return [...this.images.values()];
   }
 }
 
@@ -359,6 +384,18 @@ export function makeGuide(overrides: Partial<Parameters<typeof Guide.create>[0]>
     estimatedMinutes: 3,
     status: GuideStatus.PUBLISHED,
     steps: [makeGuideStep()],
+    ...overrides,
+  });
+}
+
+export function makeGuideImage(
+  overrides: Partial<Parameters<typeof GuideImage.create>[0]> = {},
+): GuideImage {
+  return GuideImage.create({
+    id: '8d9b7d6e-4b1a-4f3e-9c2a-1b2c3d4e5f60',
+    fileName: 'paso-1.png',
+    mimeType: 'image/png',
+    data: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
     ...overrides,
   });
 }

@@ -23,3 +23,9 @@ export class CannotManageGuideError extends DomainError {
     super('CANNOT_MANAGE_GUIDE', message, 'forbidden');
   }
 }
+
+export class InvalidGuideImageError extends DomainError {
+  constructor(message: string) {
+    super('INVALID_GUIDE_IMAGE', message, 'validation');
+  }
+}
