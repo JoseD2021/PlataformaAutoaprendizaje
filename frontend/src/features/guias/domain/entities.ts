@@ -36,3 +36,10 @@ export interface GuiaDetalle {
   esMasPedida?: boolean
   etiqueta?: string
 }
+
+export interface ResultadoBusquedaGuia {
+  id: string
+  titulo: string
+  minutosEstimados: number
+  nombreCategoria: string
+}

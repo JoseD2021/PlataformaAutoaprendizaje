@@ -27,6 +27,7 @@ export class GuideMapper {
       ),
       createdAt: new Date(orm.createdAt),
       updatedAt: new Date(orm.updatedAt),
+      searchKeywords: orm.searchKeywords,
     });
   }
 
@@ -41,6 +42,7 @@ export class GuideMapper {
     orm.status = guide.status;
     orm.createdAt = guide.createdAt;
     orm.updatedAt = guide.updatedAt;
+    orm.searchKeywords = guide.searchKeywords;
     orm.steps = guide.steps.map((step) => {
       const stepOrm = new GuideStepOrmEntity();
       stepOrm.id = step.id;

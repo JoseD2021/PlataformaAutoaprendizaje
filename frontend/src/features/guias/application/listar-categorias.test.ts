@@ -12,6 +12,7 @@ const repoFalso: GuiasRepository = {
   listarGuiasPorCategoria: async () => [],
   obtenerCategoria: async () => null,
   obtenerGuia: async () => null,
+  buscarGuias: async () => ({ items: [], total: 0, pagina: 1, totalPaginas: 0 }),
 }
 
 describe('ListarCategorias', () => {

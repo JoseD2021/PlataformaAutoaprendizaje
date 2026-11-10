@@ -1,5 +1,6 @@
 import type { Guide } from '../entities/guide.entity';
 import type { GuideStatus } from '../enums/guide-status.enum';
+import { GuideSearchCriteria, GuideSearchPage } from './guide-search.types';
 
 export interface GuideFilters {
   categoryId?: string;
@@ -23,6 +24,7 @@ export abstract class GuideRepository {
   abstract save(guide: Guide): Promise<Guide>;
   abstract paginate(filters: GuideFilters, options: PaginationOptions): Promise<PaginatedGuides>;
   abstract delete(id: string): Promise<void>;
+  abstract search(criteria: GuideSearchCriteria): Promise<GuideSearchPage>;
 }
 
 export const GUIDE_REPOSITORY = Symbol('GUIDE_REPOSITORY');

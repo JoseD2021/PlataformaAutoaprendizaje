@@ -13,7 +13,8 @@ import {
 import { GuideStepOrmEntity } from './guide-step.orm-entity';
 import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
-@Entity({ name: 'guides' })
+@Index('idx_guides_search_doc_trgm', { synchronize: false })
+@Entity('guides')
 export class GuideOrmEntity {
   @PrimaryColumn({ type: 'varchar', length: 80 })
   id: string;
@@ -50,4 +51,18 @@ export class GuideOrmEntity {
 
   @OneToMany(() => GuideStepOrmEntity, (step) => step.guide, { cascade: true })
   steps: Relation<GuideStepOrmEntity>[];
+
+  @Column({ name: 'search_keywords', type: 'text', default: '' })
+  searchKeywords: string;
+
+  @Column({
+    name: 'search_doc',
+    type: 'text',
+    generatedType: 'STORED',
+    asExpression: "f_unaccent(lower(title || ' ' || search_keywords))",
+    select: false,
+    insert: false,
+    update: false,
+  })
+  searchDoc: string;
 }

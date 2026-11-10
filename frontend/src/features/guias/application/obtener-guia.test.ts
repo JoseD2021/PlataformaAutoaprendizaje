@@ -24,6 +24,7 @@ const repoFalso: GuiasRepository = {
   listarGuiasPorCategoria: async () => [],
   obtenerCategoria: async () => null,
   obtenerGuia: async (id: string) => (id === guiaDetalle.id ? guiaDetalle : null),
+  buscarGuias: async () => ({ items: [], total: 0, pagina: 1, totalPaginas: 0 }),
 }
 
 describe('ObtenerGuia', () => {

@@ -11,6 +11,7 @@ import { GuidesController } from './presentation/controllers/guides.controller';
 import { CategoriesModule } from '../categories/categories.module';
 import { CATEGORY_LOOKUP } from './application/ports/category-lookup.port';
 import { CategoryRepositoryLookup } from './infrastructure/categories/category-repository.lookup';
+import { SearchGuidesUseCase } from './application/use-cases/search-guides.use-case';
 
 
 const repositories = [
@@ -18,7 +19,7 @@ const repositories = [
   { provide: CATEGORY_LOOKUP, useClass: CategoryRepositoryLookup },
 ];
 
-const useCases = [ListGuidesUseCase, GetGuideUseCase];
+const useCases = [ListGuidesUseCase, GetGuideUseCase, SearchGuidesUseCase];
 
 @Module({
     imports: [TypeOrmModule.forFeature([GuideOrmEntity, GuideStepOrmEntity]), CategoriesModule],

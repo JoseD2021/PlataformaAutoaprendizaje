@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios'
-import type { GuiasRepository } from '../domain/guias-repository'
-import type { Categoria, GuiaDetalle, GuiaResumen, Paso } from '../domain/entities'
+import type { GuiasRepository, PaginaBusquedaGuias } from '../domain/guias-repository'
+import type { Categoria, GuiaDetalle, GuiaResumen, Paso, ResultadoBusquedaGuia } from '../domain/entities'
 import { httpClient } from '../../../shared/http/client'
 
 interface CategoriaBackendDto {
@@ -40,6 +40,21 @@ interface PasoGuiaBackendDto {
 
 interface GuiaDetalleBackendDto extends GuiaResumenBackendDto {
   pasos: PasoGuiaBackendDto[]
+}
+
+interface ResultadoBusquedaBackendDto {
+  id: string
+  title: string
+  estimatedMinutes: number
+  categoryName: string
+}
+
+interface BusquedaGuiasBackendDto {
+  items: ResultadoBusquedaBackendDto[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
 function mapearPaso(pasoDto: PasoGuiaBackendDto): Paso {
@@ -124,6 +139,35 @@ export class GuiasHttpRepository implements GuiasRepository {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         return null
+      }
+      throw error
+    }
+  }
+
+  async buscarGuias(consulta: string, pagina: number, limite: number): Promise<PaginaBusquedaGuias> {
+    try {
+      const { data } = await this.http.get<BusquedaGuiasBackendDto>('/guides/search', {
+        params: { q: consulta, page: pagina, limit: limite },
+      })
+
+      const items: ResultadoBusquedaGuia[] = data.items.map((item) => ({
+        id: item.id,
+        titulo: item.title,
+        minutosEstimados: item.estimatedMinutes,
+        nombreCategoria: item.categoryName,
+      }))
+
+      return {
+        items,
+        total: data.total,
+        pagina: data.page,
+        totalPaginas: data.totalPages,
+      }
+    } catch (error) {
+      // 400 = consulta inválida para el backend (p. ej. solo palabras vacías):
+      // la tratamos como "sin resultados" en lugar de un error de red.
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        return { items: [], total: 0, pagina, totalPaginas: 0 }
       }
       throw error
     }
