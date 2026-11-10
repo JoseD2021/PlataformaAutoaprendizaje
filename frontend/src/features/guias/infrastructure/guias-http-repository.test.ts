@@ -187,6 +187,81 @@ describe('GuiasHttpRepository', () => {
     expect(resultado?.pasos[0].imagenAlt).toBe('Ilustración del paso 1: Haz clic en el botón Redactar')
   })
 
+  it('buscarGuias llama a /guides/search y mapea los campos del backend', async () => {
+    const mockRespuesta = {
+      items: [
+        {
+          id: 'enviar-correo-foto',
+          title: 'Enviar un correo con una foto',
+          estimatedMinutes: 3,
+          categoryName: 'Correo',
+        },
+      ],
+      total: 1,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+    }
+
+    const httpMock = {
+      get: vi.fn().mockResolvedValue({ data: mockRespuesta } as AxiosResponse),
+    } as unknown as AxiosInstance
+
+    const repo = new GuiasHttpRepository(httpMock)
+    const resultado = await repo.buscarGuias('mandar foto', 1, 10)
+
+    expect(httpMock.get).toHaveBeenCalledWith('/guides/search', {
+      params: { q: 'mandar foto', page: 1, limit: 10 },
+    })
+    expect(resultado).toEqual({
+      items: [
+        {
+          id: 'enviar-correo-foto',
+          titulo: 'Enviar un correo con una foto',
+          minutosEstimados: 3,
+          nombreCategoria: 'Correo',
+        },
+      ],
+      total: 1,
+      pagina: 1,
+      totalPaginas: 1,
+    })
+  })
+
+  it('buscarGuias devuelve una página vacía si la API responde 400', async () => {
+    const error400 = new AxiosError('Bad Request', 'ERR_BAD_REQUEST')
+    error400.response = {
+      status: 400,
+      statusText: 'Bad Request',
+      data: { message: 'La búsqueda no contiene palabras válidas' },
+      headers: {},
+      config: {} as InternalAxiosRequestConfig,
+    }
+    vi.spyOn(axios, 'isAxiosError').mockReturnValue(true)
+
+    const httpMock = {
+      get: vi.fn().mockRejectedValue(error400),
+    } as unknown as AxiosInstance
+
+    const repo = new GuiasHttpRepository(httpMock)
+    const resultado = await repo.buscarGuias('de la', 1, 10)
+
+    expect(resultado).toEqual({ items: [], total: 0, pagina: 1, totalPaginas: 0 })
+  })
+
+  it('buscarGuias relanza el error si no es 400', async () => {
+    vi.spyOn(axios, 'isAxiosError').mockReturnValue(false)
+    const error500 = new Error('Error de servidor')
+
+    const httpMock = {
+      get: vi.fn().mockRejectedValue(error500),
+    } as unknown as AxiosInstance
+
+    const repo = new GuiasHttpRepository(httpMock)
+
+    await expect(repo.buscarGuias('foto', 1, 10)).rejects.toThrow('Error de servidor')
+  })
+
   it('obtenerGuia devuelve null si la API responde 404', async () => {
     const error404 = crearAxiosError404()
     vi.spyOn(axios, 'isAxiosError').mockReturnValue(true)

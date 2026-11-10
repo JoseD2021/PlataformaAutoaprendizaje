@@ -71,6 +71,8 @@ body {
 .buscador input::placeholder { color: #4a4a4a; opacity: 1; } /* contraste suficiente */
 .buscador input:focus-visible { outline: none; box-shadow: none; }
 .buscador:focus-within { outline: 4px solid #111; outline-offset: 2px; }
+.buscador-aviso { font-size: var(--fs-base); font-weight: 700; margin: .5rem 0 0; }
+.busqueda-mas { display: flex; flex-direction: column; align-items: flex-start; gap: .75rem; margin-top: 1.25rem; }
 
 /* ---------- Tarjeta destacada ---------- */
 .etiqueta {
