@@ -292,6 +292,64 @@ body {
   margin-bottom: 1.5rem;
 }
 
+/* ---------- Usuario autenticado ---------- */
+.usuario-activo {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-verde);
+}
+
+/* ---------- Formularios (login / registro) ---------- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 28rem;
+  margin-top: 1.5rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: .375rem;
+}
+
+.campo label {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-verde);
+}
+
+.campo input {
+  min-height: var(--tap-min);
+  font: inherit;
+  font-size: var(--fs-base);
+  color: var(--color-verde);
+  background: #fff;
+  border: 2px solid var(--color-verde);
+  border-radius: .5rem;
+  padding: .5rem .75rem;
+}
+
+.campo small {
+  font-size: 1rem;
+  color: #333;
+}
+
+.formulario-error {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--color-rojo);
+  margin: 0;
+}
+
+.formulario-enlace {
+  font-size: var(--fs-base);
+  margin-top: 1.25rem;
+}
+
 /* ---------- Horario y normas ---------- */
 .boton-flotante {
   position: fixed; right: 1rem; bottom: 1rem; z-index: 5;

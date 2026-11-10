@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AxiosResponse } from 'axios'
 import { InicioPage } from './InicioPage'
 import { httpClient } from '../../../../shared/http/client'
+import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
 
 const categoriasBackend = [
   {
@@ -52,9 +53,11 @@ function renderizar() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter>
-        <InicioPage />
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter>
+          <InicioPage />
+        </MemoryRouter>
+      </AuthProvider>
     </QueryClientProvider>,
   )
 }
