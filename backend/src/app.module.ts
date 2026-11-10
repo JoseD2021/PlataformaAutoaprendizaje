@@ -7,6 +7,7 @@ import { UsersModule } from './modules/users/users.module';
 import { buildTypeOrmOptions } from './shared/infrastructure/database/typeorm-options';
 import { HealthController } from './shared/presentation/health.controller';
 import { GuidesModule } from './modules/guides/guides.module';
+import { RoomInfoModule } from './modules/room-info/room-info.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { GuidesModule } from './modules/guides/guides.module';
     AuthModule,
     GuidesModule,
     CategoriesModule,
+    RoomInfoModule,
   ],
   controllers: [HealthController],
 })
