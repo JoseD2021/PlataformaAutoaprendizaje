@@ -75,6 +75,7 @@ describe('SearchGuidesUseCase', () => {
       new SearchGuidesUseCase(repo).execute({ q: ' a ', page: 1, limit: 10 }),
     ).rejects.toThrow(InvalidSearchQueryError);
 
-    expect(repo.search).not.toHaveBeenCalled();
+    const searchMock = repo['search'] as jest.Mock;
+    expect(searchMock).not.toHaveBeenCalled();
   });
 });
