@@ -1,9 +1,5 @@
+import { SPANISH_STOPWORDS } from '../constants/stopwords';
 import { InvalidSearchQueryError } from '../errors/guide.errors';
-
-const STOPWORDS = new Set([
-  'a', 'al', 'como', 'con', 'de', 'del', 'el', 'en', 'la', 'las', 'lo', 'los',
-  'mi', 'me', 'para', 'por', 'que', 'quiero', 'un', 'una', 'unos', 'unas', 'y',
-]);
 
 const MAX_TOKENS = 8;
 const MAX_LENGTH = 100;
@@ -31,7 +27,7 @@ export class SearchQuery {
       .split(/\s+/)
       .filter((w) => w.length >= 2);
 
-    const meaningful = words.filter((w) => !STOPWORDS.has(w));
+    const meaningful = words.filter((w) => !SPANISH_STOPWORDS.has(w));
     const tokens = [...new Set(meaningful.length > 0 ? meaningful : words)].slice(0, MAX_TOKENS);
 
     if (tokens.length === 0) {

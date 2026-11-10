@@ -7,6 +7,7 @@ import { Guide } from '../../domain/entities/guide.entity';
 import { GuideStatus } from '../../domain/enums/guide-status.enum';
 import { GUIDE_REPOSITORY, GuideRepository } from '../../domain/repositories/guide.repository';
 import { GUIDES_DEMO_DATA } from './guides-demo.data';
+import { generateGuideKeywords } from '../../domain/services/guide-keywords-generator';
 
 /**
  * Siembra las guías de demostración de forma idempotente.
@@ -56,6 +57,10 @@ export class GuidesSeedService implements OnApplicationBootstrap {
           steps: data.steps.map((step, index) =>
             GuideStep.create({ id: randomUUID(), position: index + 1, ...step }),
           ),
+          searchKeywords: generateGuideKeywords({
+            title: data.title,
+            tag: data.tag
+          }),
         });
 
         await this.guides.save(guide);
