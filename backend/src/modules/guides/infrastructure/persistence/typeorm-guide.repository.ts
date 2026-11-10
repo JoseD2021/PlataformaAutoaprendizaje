@@ -11,6 +11,9 @@ import {
 import { GuideMapper } from './guide.mapper';
 import { GuideOrmEntity } from './guide.orm-entity';
 import { GuideStepOrmEntity } from './guide-step.orm-entity';
+import { GuideSearchCriteria, GuideSearchPage } from '../../domain/repositories/guide-search.types';
+
+const MIN_TOKEN_SIMILARITY = 0.5;
 
 @Injectable()
 export class TypeOrmGuideRepository extends GuideRepository {
@@ -73,5 +76,37 @@ export class TypeOrmGuideRepository extends GuideRepository {
 
   async delete(id: string): Promise<void> {
     await this.repository.delete({ id });
+  }
+
+  async search({ query, categoryId, page, limit }: GuideSearchCriteria): Promise<GuideSearchPage> {
+    const rows: Array<Record<string, any>> = await this.repository.manager.query(
+      `
+    WITH q AS (SELECT unnest($1::text[]) AS token)
+    SELECT g.id, g.title, g.estimated_minutes, c.name AS category_name,
+           AVG(word_similarity(q.token, g.search_doc)) AS score,
+           COUNT(*) OVER() AS total
+    FROM guides g
+    JOIN categories c ON c.id = g.category_id
+    CROSS JOIN q
+    WHERE g.status = 'published'
+      AND ($2::text IS NULL OR g.category_id::text = $2)
+    GROUP BY g.id, c.name
+    HAVING MAX(word_similarity(q.token, g.search_doc)) >= $3
+    ORDER BY score DESC, g.title ASC
+    LIMIT $4 OFFSET $5
+    `,
+      [query.tokens, categoryId ?? null, MIN_TOKEN_SIMILARITY, limit, (page - 1) * limit],
+    );
+
+    return {
+      total: rows.length > 0 ? Number(rows[0].total) : 0,
+      items: rows.map((r) => ({
+        id: r.id,
+        title: r.title,
+        estimatedMinutes: Number(r.estimated_minutes),
+        categoryName: r.category_name,
+        score: Number(r.score),
+      })),
+    };
   }
 }

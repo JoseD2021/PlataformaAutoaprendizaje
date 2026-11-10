@@ -13,6 +13,7 @@ export interface GuideProps {
   steps?: GuideStep[];
   createdAt?: Date;
   updatedAt?: Date;
+  searchKeywords?: string;
 }
 
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -27,6 +28,7 @@ export class Guide {
   readonly steps: readonly GuideStep[];
   readonly createdAt: Date;
   readonly updatedAt: Date;
+  readonly searchKeywords: string;
   private _status: GuideStatus;
 
   private constructor(props: Required<Omit<GuideProps, 'tag'>> & { tag: string | null }) {
@@ -40,6 +42,7 @@ export class Guide {
     this.steps = props.steps;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+    this.searchKeywords = props.searchKeywords;
   }
 
   get status(): GuideStatus {
@@ -95,6 +98,7 @@ export class Guide {
       steps,
       createdAt: props.createdAt ?? now,
       updatedAt: props.updatedAt ?? now,
+      searchKeywords: props.searchKeywords ?? ''
     });
   }
 

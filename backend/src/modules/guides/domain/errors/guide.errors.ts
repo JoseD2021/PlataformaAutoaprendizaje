@@ -11,3 +11,9 @@ export class InvalidGuideStepError extends DomainError {
     super('INVALID_GUIDE_STEP', message, 'validation');
   }
 }
+
+export class InvalidSearchQueryError extends DomainError {
+  constructor(message: string) {
+    super('INVALID_SEARCH_QUERY', message, 'validation');
+  }
+}
