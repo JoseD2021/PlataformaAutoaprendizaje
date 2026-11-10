@@ -16,4 +16,8 @@ export class CategoryRepositoryLookup extends CategoryLookup {
 
     return category ? category.id : null;
   }
+  
+  async existsById(id: string): Promise<boolean> {
+    return (await this.categories.findById(id)) !== null;
+  }
 }

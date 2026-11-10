@@ -1,0 +1,1 @@
+export const MAX_GUIDE_STEPS = 30;

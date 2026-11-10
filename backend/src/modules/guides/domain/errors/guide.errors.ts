@@ -17,3 +17,9 @@ export class InvalidSearchQueryError extends DomainError {
     super('INVALID_SEARCH_QUERY', message, 'validation');
   }
 }
+
+export class CannotManageGuideError extends DomainError {
+  constructor(message = 'No tienes permiso para gestionar guías.') {
+    super('CANNOT_MANAGE_GUIDE', message, 'forbidden');
+  }
+}
