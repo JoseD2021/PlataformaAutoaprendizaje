@@ -115,7 +115,7 @@ body {
 .tema-item__texto small { font-size: 1.125rem; }
 
 /* ---------- Página de listado ---------- */
-.contenedor { padding-bottom: 2rem; }
+.contenedor { padding-bottom: 6rem; }
 .contenedor h1 { font-size: clamp(1.75rem, 5vw, 2.25rem); margin: 0 0 .5rem; }
 .volver {
   display: inline-flex; align-items: center; gap: .375rem; margin: 1.5rem 0 1rem;
@@ -289,3 +289,26 @@ body {
   color: #2e593d;
   margin-bottom: 1.5rem;
 }
+
+/* ---------- Horario y normas ---------- */
+.boton-flotante {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 5;
+  box-shadow: 0 2px 8px rgb(0 0 0 / .35);
+}
+
+.sala-dialog {
+  width: calc(100% - 2rem); max-width: 36rem; padding: 1.5rem;
+  border: 3px solid var(--color-verde); border-radius: var(--radius);
+  background: #fff; color: var(--color-verde);
+}
+.sala-dialog::backdrop { background: rgb(0 0 0 / .6); }
+.sala-dialog h2 { font-size: clamp(1.5rem, 4vw, 2rem); margin: 0 0 1rem; }
+.sala-dialog h3 { font-size: var(--fs-lg); margin: 1.25rem 0 .5rem; }
+
+.horarios { margin: 0; }
+.horarios div { padding: .5rem 0; border-bottom: 1px solid var(--color-borde); }
+.horarios dt { font-weight: 700; font-size: 1.375rem; }
+.horarios dd { margin: 0; font-size: 1.375rem; }
+
+.normas { margin: 0 0 1.5rem; padding-left: 1.5rem; font-size: var(--fs-base); }
+.normas li + li { margin-top: .5rem; }
