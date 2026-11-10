@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,10 +11,14 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNoContentResponse,
@@ -23,11 +28,13 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import type { AuthenticatedUser } from '../../../../shared/application/models/authenticated-user.model';
 import { CurrentUser } from '../../../../shared/presentation/decorators/current-user.decorator';
 import { RequirePermissions } from '../../../../shared/presentation/decorators/require-permissions.decorator';
 import { ApiErrorResponseDto } from '../../../../shared/presentation/dto/api-error-response.dto';
 import { Permission } from '../../../users/domain/enums/permission.enum';
+import { MAX_GUIDE_IMAGE_SIZE_BYTES } from '../../domain/constants/guide-image.limits';
 import type { GuideInput } from '../../application/models/guide-input';
 import { ChangeGuideStatusUseCase } from '../../application/use-cases/change-guide-status.use-case';
 import { CreateGuideUseCase } from '../../application/use-cases/create-guide.use-case';
@@ -35,8 +42,10 @@ import { DeleteGuideUseCase } from '../../application/use-cases/delete-guide.use
 import { GetManagedGuideUseCase } from '../../application/use-cases/get-managed-guide.use-case';
 import { ListManagedGuidesUseCase } from '../../application/use-cases/list-managed-guides.use-case';
 import { UpdateGuideUseCase } from '../../application/use-cases/update-guide.use-case';
+import { UploadGuideImageUseCase } from '../../application/use-cases/upload-guide-image.use-case';
 import { CambiarEstadoGuiaDto } from '../dtos/cambiar-estado-guia.dto';
 import { statusDesdeEstado } from '../dtos/estado-guia';
+import { GuiaImagenResponseDto } from '../dtos/guia-imagen-response.dto';
 import {
   GuiaGestionDetalleResponseDto,
   PaginatedGuiasGestionResponseDto,
@@ -44,6 +53,13 @@ import {
 import { GuiaRequestDto } from '../dtos/guia-request.dto';
 import { GuideIdParamDto } from '../dtos/guide-id-param.dto';
 import { ListManagedGuidesQueryDto } from '../dtos/list-managed-guides-query.dto';
+
+interface UploadedGuideImageFile {
+  originalname: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+}
 
 function toGuideInput(dto: GuiaRequestDto): GuideInput {
   return {
@@ -74,6 +90,7 @@ export class GuidesManagementController {
     private readonly updateGuide: UpdateGuideUseCase,
     private readonly changeGuideStatus: ChangeGuideStatusUseCase,
     private readonly deleteGuide: DeleteGuideUseCase,
+    private readonly uploadGuideImage: UploadGuideImageUseCase,
   ) {}
 
   @Get()
@@ -140,6 +157,58 @@ export class GuidesManagementController {
     });
 
     return GuiaGestionDetalleResponseDto.from(guide);
+  }
+
+  @Post('images')
+  @RequirePermissions(Permission.GUIDES_CREATE)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      defParamCharset: 'utf8',
+      limits: { fileSize: MAX_GUIDE_IMAGE_SIZE_BYTES, files: 1 },
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['file'],
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  @ApiOperation({
+    summary: 'Subir una imagen para un paso de guía',
+    description:
+      'Guarda la imagen en la base de datos y devuelve su id y la url pública. Usa esa url en el campo imagenUrl del paso al crear o editar la guía. Formatos permitidos: PNG, JPEG, WEBP y GIF, hasta 5 MB.',
+  })
+  @ApiCreatedResponse({ type: GuiaImagenResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiResponse({ status: 413, type: ApiErrorResponseDto })
+  @ApiResponse({ status: 422, type: ApiErrorResponseDto })
+  async uploadImage(
+    @UploadedFile() file: UploadedGuideImageFile | undefined,
+    @CurrentUser() actor: AuthenticatedUser,
+  ): Promise<GuiaImagenResponseDto> {
+    if (!file) {
+      throw new BadRequestException({
+        code: 'IMAGE_FILE_REQUIRED',
+        message: 'Debes adjuntar una imagen en el campo "file".',
+      });
+    }
+
+    const image = await this.uploadGuideImage.execute(
+      {
+        fileName: file.originalname,
+        mimeType: file.mimetype,
+        data: file.buffer,
+      },
+      { permissions: actor.permissions },
+    );
+
+    return GuiaImagenResponseDto.from(image);
   }
 
   @Put(':id')
