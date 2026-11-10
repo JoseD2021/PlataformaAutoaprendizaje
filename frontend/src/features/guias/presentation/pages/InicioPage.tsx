@@ -1,4 +1,5 @@
 import { PageLayout } from '../../../../shared/components/PageLayout'
+import { SeccionFavoritos } from '../../../favoritos/presentation/components/SeccionFavoritos'
 import { CategoriaDestacada } from '../components/CategoriaDestacada'
 import { CategoriaItem } from '../components/CategoriaItem'
 import { HeroBusqueda } from '../components/HeroBusqueda'
@@ -15,6 +16,7 @@ export function InicioPage() {
     const otras = data.filter((c) => !c.esDestacada)
     return (
       <>
+        <SeccionFavoritos />
         {destacada && <CategoriaDestacada categoria={destacada} />}
         <h2 className="otros-temas">Otros temas</h2>
         <ul className="temas-lista">

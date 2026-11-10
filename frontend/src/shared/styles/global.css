@@ -373,3 +373,10 @@ body {
 
 .normas { margin: 0 0 1.5rem; padding-left: 1.5rem; font-size: var(--fs-base); }
 .normas li + li { margin-top: .5rem; }
+
+/* ---------- Favoritos ---------- */
+.favoritos { margin-bottom: 1.5rem; }
+.favoritos h2 { font-size: var(--fs-lg); margin: 0 0 .75rem; }
+.favoritos .guias-lista { margin-top: 0; }
+.btn-favorito { margin: .5rem 0 1rem; }
+.estado-favorito { margin: .5rem 0 0; font-weight: 700; }
