@@ -1,31 +1,30 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { PageLayout } from '../../../../shared/components/PageLayout'
-import { useAuth } from '../context/AuthContext'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
-import { Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [enviando, setEnviando] = useState(false)
   const { usuario, iniciarSesion, error } = useAuth()
-  const navigate = useNavigate()
 
   async function manejarEnvio(evento: FormEvent) {
     evento.preventDefault()
     setEnviando(true)
     try {
-      const usuario = await iniciarSesion({ email, password })
-      navigate(usuario.rol === 'administrador' ? '/admin' : '/')
+      await iniciarSesion({ email, password })
     } catch {
+      // el mensaje de error lo expone el contexto
+    } finally {
       setEnviando(false)
-      return
     }
-    setEnviando(false)
   }
 
-  if (usuario) return <Navigate to="/" replace />
+  if (usuario) {
+    return <Navigate to={usuario.rol === 'administrador' ? '/admin' : '/'} replace />
+  }
 
   return (
     <PageLayout>
