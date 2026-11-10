@@ -19,6 +19,7 @@ export enum Permission {
   CATEGORIES_CREATE = 'categories:create',
   CATEGORIES_MANAGE = 'categories:manage',
   GUIDES_CREATE = 'guides:create',
+  GUIDES_MANAGE = 'guides:manage',
 
   SESSIONS_READ_ONLINE = 'sessions:read-online',
   HELP_REQUESTS_READ = 'help-requests:read',
