@@ -14,8 +14,8 @@ export function LoginPage() {
     evento.preventDefault()
     setEnviando(true)
     try {
-      await iniciarSesion({ email, password })
-      navigate('/')
+      const usuario = await iniciarSesion({ email, password })
+      navigate(usuario.rol === 'administrador' ? '/admin' : '/')
     } catch {
       setEnviando(false)
       return

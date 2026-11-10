@@ -26,6 +26,7 @@ function renderizar() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<div>Inicio</div>} />
+          <Route path="/admin" element={<div>Panel admin</div>} />
         </Routes>
       </MemoryRouter>
     </AuthProvider>,
@@ -67,6 +68,37 @@ describe('LoginPage', () => {
 
     await waitFor(() => expect(screen.getByText('Inicio')).toBeInTheDocument())
     expect(obtenerTokens()).toEqual({ accessToken: 'a', refreshToken: 'r' })
+  })
+
+  it('redirige al panel admin cuando el usuario tiene rol administrador', async () => {
+    vi.spyOn(httpClient, 'post').mockResolvedValue({
+      data: {
+        user: {
+          id: 'u-admin',
+          email: 'admin@clena.local',
+          fullName: 'Admin CLENA',
+          role: 'administrador',
+          isActive: true,
+        },
+        tokens: {
+          accessToken: 'a',
+          refreshToken: 'r',
+          tokenType: 'Bearer',
+          accessTokenExpiresIn: 900,
+          refreshTokenExpiresIn: 604800,
+        },
+      },
+    } as AxiosResponse)
+
+    renderizar()
+
+    fireEvent.change(screen.getByLabelText('Correo electrónico'), {
+      target: { value: 'admin@clena.local' },
+    })
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'Secreta123' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
+
+    await waitFor(() => expect(screen.getByText('Panel admin')).toBeInTheDocument())
   })
 
   it('muestra un error cuando las credenciales son inválidas', async () => {
