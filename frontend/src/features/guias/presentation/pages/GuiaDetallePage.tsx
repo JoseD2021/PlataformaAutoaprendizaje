@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CheckCircle2, Home } from 'lucide-react'
 import { PageLayout } from '../../../../shared/components/PageLayout'
+import { BotonFavorito } from '../../../favoritos/presentation/components/BotonFavorito'
 import { useGuia } from '../hooks/useGuia'
 
 export function GuiaDetallePage() {
@@ -188,7 +189,12 @@ export function GuiaDetallePage() {
           <Home aria-hidden size={20} /> Volver al inicio
         </Link>
       </nav>
-      {guia && <h1 id="titulo-guia">{guia.titulo}</h1>}
+      {guia && (
+        <div className="guia-detalle__encabezado">
+          <h1 id="titulo-guia">{guia.titulo}</h1>
+          <BotonFavorito guiaId={guia.id} />
+        </div>
+      )}
       {renderizarContenido()}
     </PageLayout>
   )
