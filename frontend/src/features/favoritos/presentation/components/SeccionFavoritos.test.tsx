@@ -67,7 +67,7 @@ describe('SeccionFavoritos', () => {
     expect(screen.getByText('Enviar un correo con una foto')).toBeInTheDocument()
   })
 
-  it('muestra solo las primeras 4 guías y un enlace a "ver todos" si hay más favoritos', async () => {
+  it('muestra solo las primeras 3 guías y un enlace a "ver todos" si hay más favoritos', async () => {
     guardarTokens({ accessToken: 'a', refreshToken: 'r' })
     const favoritosBackend = Array.from({ length: 6 }, (_, i) => ({
       id: `guia-${i + 1}`,
@@ -87,8 +87,8 @@ describe('SeccionFavoritos', () => {
 
     await screen.findByRole('heading', { name: 'Mis favoritos' })
     expect(screen.getByText('Guía 1')).toBeInTheDocument()
-    expect(screen.getByText('Guía 4')).toBeInTheDocument()
-    expect(screen.queryByText('Guía 5')).not.toBeInTheDocument()
+    expect(screen.getByText('Guía 3')).toBeInTheDocument()
+    expect(screen.queryByText('Guía 4')).not.toBeInTheDocument()
 
     const enlaceVerTodos = screen.getByRole('link', { name: 'Ver todos mis favoritos (6)' })
     expect(enlaceVerTodos).toHaveAttribute('href', '/favoritos')

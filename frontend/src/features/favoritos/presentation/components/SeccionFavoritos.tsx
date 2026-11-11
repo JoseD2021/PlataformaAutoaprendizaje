@@ -3,7 +3,7 @@ import { GuiaItem } from '../../../guias/presentation/components/GuiaItem'
 import { useAuth } from '../../../auth/presentation/context/AuthContext'
 import { useFavoritos } from '../hooks/useFavoritos'
 
-const LIMITE_FAVORITOS_INICIO = 4
+const LIMITE_FAVORITOS_INICIO = 3
 
 export function SeccionFavoritos() {
   const { usuario } = useAuth()
