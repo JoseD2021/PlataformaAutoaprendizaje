@@ -6,7 +6,7 @@ import type { AxiosResponse } from 'axios'
 import { BotonFavorito } from './BotonFavorito'
 import { httpClient } from '../../../../shared/http/client'
 import { guardarTokens, limpiarTokens } from '../../../../shared/http/token-storage'
-import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
+import { AuthProvider, useAuth } from '../../../auth/presentation/context/AuthContext'
 
 const usuarioBackend = {
   id: 'u1',
@@ -26,6 +26,18 @@ function renderizar(guiaId = 'enviar-correo-foto') {
         </MemoryRouter>
       </AuthProvider>
     </QueryClientProvider>,
+  )
+}
+
+function ArnesConCerrarSesion({ guiaId }: { guiaId: string }) {
+  const { cerrarSesion } = useAuth()
+  return (
+    <>
+      <BotonFavorito guiaId={guiaId} />
+      <button type="button" onClick={() => cerrarSesion()}>
+        Cerrar sesión (prueba)
+      </button>
+    </>
   )
 }
 
@@ -96,5 +108,50 @@ describe('BotonFavorito', () => {
       await screen.findByRole('button', { name: 'Guardar en favoritos' }),
     ).toBeInTheDocument()
     expect(httpClient.delete).toHaveBeenCalledWith('/favorites/enviar-correo-foto')
+  })
+
+  it('al cerrar sesión deja de mostrarse como favorito aunque haya quedado en caché', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+
+    vi.spyOn(httpClient, 'get').mockImplementation(async (url) => {
+      if (url === '/auth/me') return { data: usuarioBackend } as AxiosResponse
+      if (url === '/favorites') {
+        return {
+          data: [
+            {
+              id: 'enviar-correo-foto',
+              titulo: 'Enviar un correo con una foto',
+              categoriaId: 'correo',
+              totalPasos: 4,
+              minutosEstimados: 3,
+              esMasPedida: true,
+            },
+          ],
+        } as AxiosResponse
+      }
+      throw new Error(`url inesperada: ${url}`)
+    })
+    vi.spyOn(httpClient, 'post').mockResolvedValue({} as AxiosResponse)
+
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    render(
+      <QueryClientProvider client={client}>
+        <AuthProvider>
+          <MemoryRouter>
+            <ArnesConCerrarSesion guiaId="enviar-correo-foto" />
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryClientProvider>,
+    )
+
+    expect(
+      await screen.findByRole('button', { name: 'Guardada en favoritos' }),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión (prueba)' }))
+
+    expect(
+      await screen.findByRole('button', { name: 'Guardar en favoritos' }),
+    ).toBeInTheDocument()
   })
 })

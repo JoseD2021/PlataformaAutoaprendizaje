@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { RegistroPage } from './RegistroPage'
 import { httpClient } from '../../../../shared/http/client'
@@ -20,15 +21,18 @@ function crearError409(mensaje: string): AxiosError {
 }
 
 function renderizar() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <AuthProvider>
-      <MemoryRouter initialEntries={['/registro']}>
-        <Routes>
-          <Route path="/registro" element={<RegistroPage />} />
-          <Route path="/" element={<div>Inicio</div>} />
-        </Routes>
-      </MemoryRouter>
-    </AuthProvider>,
+    <QueryClientProvider client={client}>
+      <AuthProvider>
+        <MemoryRouter initialEntries={['/registro']}>
+          <Routes>
+            <Route path="/registro" element={<RegistroPage />} />
+            <Route path="/" element={<div>Inicio</div>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    </QueryClientProvider>,
   )
 }
 
