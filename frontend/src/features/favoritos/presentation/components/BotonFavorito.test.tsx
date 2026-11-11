@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AxiosResponse } from 'axios'
 import { BotonFavorito } from './BotonFavorito'
@@ -20,7 +21,9 @@ function renderizar(guiaId = 'enviar-correo-foto') {
   return render(
     <QueryClientProvider client={client}>
       <AuthProvider>
-        <BotonFavorito guiaId={guiaId} />
+        <MemoryRouter>
+          <BotonFavorito guiaId={guiaId} />
+        </MemoryRouter>
       </AuthProvider>
     </QueryClientProvider>,
   )
@@ -31,10 +34,17 @@ describe('BotonFavorito', () => {
     limpiarTokens()
   })
 
-  it('no muestra nada si no hay sesión activa', () => {
-    const { container } = renderizar()
+  it('sin sesión, el botón siempre se muestra y al hacer clic abre el modal de inicio de sesión', async () => {
+    renderizar()
 
-    expect(container.firstChild).toBeNull()
+    const boton = await screen.findByRole('button', { name: 'Guardar en favoritos' })
+    fireEvent.click(boton)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Inicia sesión para guardar favoritos' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Iniciar sesión' })).toHaveAttribute('href', '/login')
+    expect(screen.getByRole('link', { name: 'Regístrate' })).toHaveAttribute('href', '/registro')
   })
 
   it('permite marcar y desmarcar una guía como favorita', async () => {

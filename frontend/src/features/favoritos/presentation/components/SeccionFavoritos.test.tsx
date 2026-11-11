@@ -67,6 +67,60 @@ describe('SeccionFavoritos', () => {
     expect(screen.getByText('Enviar un correo con una foto')).toBeInTheDocument()
   })
 
+  it('muestra solo las primeras 4 guías y un enlace a "ver todos" si hay más favoritos', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    const favoritosBackend = Array.from({ length: 6 }, (_, i) => ({
+      id: `guia-${i + 1}`,
+      titulo: `Guía ${i + 1}`,
+      categoriaId: 'correo',
+      totalPasos: 1,
+      minutosEstimados: 1,
+      esMasPedida: false,
+    }))
+    vi.spyOn(httpClient, 'get').mockImplementation(async (url) => {
+      if (url === '/auth/me') return { data: usuarioBackend } as AxiosResponse
+      if (url === '/favorites') return { data: favoritosBackend } as AxiosResponse
+      throw new Error(`url inesperada: ${url}`)
+    })
+
+    renderizar()
+
+    await screen.findByRole('heading', { name: 'Mis favoritos' })
+    expect(screen.getByText('Guía 1')).toBeInTheDocument()
+    expect(screen.getByText('Guía 4')).toBeInTheDocument()
+    expect(screen.queryByText('Guía 5')).not.toBeInTheDocument()
+
+    const enlaceVerTodos = screen.getByRole('link', { name: 'Ver todos mis favoritos (6)' })
+    expect(enlaceVerTodos).toHaveAttribute('href', '/favoritos')
+  })
+
+  it('no muestra el enlace "ver todos" si los favoritos no superan el límite', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    vi.spyOn(httpClient, 'get').mockImplementation(async (url) => {
+      if (url === '/auth/me') return { data: usuarioBackend } as AxiosResponse
+      if (url === '/favorites') {
+        return {
+          data: [
+            {
+              id: 'enviar-correo-foto',
+              titulo: 'Enviar un correo con una foto',
+              categoriaId: 'correo',
+              totalPasos: 4,
+              minutosEstimados: 3,
+              esMasPedida: true,
+            },
+          ],
+        } as AxiosResponse
+      }
+      throw new Error(`url inesperada: ${url}`)
+    })
+
+    renderizar()
+
+    await screen.findByRole('heading', { name: 'Mis favoritos' })
+    expect(screen.queryByRole('link', { name: /Ver todos mis favoritos/ })).not.toBeInTheDocument()
+  })
+
   it('no muestra nada si hay sesión pero no hay favoritos guardados', async () => {
     guardarTokens({ accessToken: 'a', refreshToken: 'r' })
     vi.spyOn(httpClient, 'get').mockImplementation(async (url) => {
