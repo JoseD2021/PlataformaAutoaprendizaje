@@ -8,6 +8,7 @@ import { buildTypeOrmOptions } from './shared/infrastructure/database/typeorm-op
 import { HealthController } from './shared/presentation/health.controller';
 import { GuidesModule } from './modules/guides/guides.module';
 import { RoomInfoModule } from './modules/room-info/room-info.module';
+import { FavoritesModule } from './modules/favorites/favorites.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RoomInfoModule } from './modules/room-info/room-info.module';
     GuidesModule,
     CategoriesModule,
     RoomInfoModule,
+    FavoritesModule,
   ],
   controllers: [HealthController],
 })

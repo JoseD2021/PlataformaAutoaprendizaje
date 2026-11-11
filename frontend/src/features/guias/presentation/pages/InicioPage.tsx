@@ -1,4 +1,5 @@
 import { PageLayout } from '../../../../shared/components/PageLayout'
+import { SeccionFavoritos } from '../../../favoritos/presentation/components/SeccionFavoritos'
 import { CategoriaDestacada } from '../components/CategoriaDestacada'
 import { CategoriaItem } from '../components/CategoriaItem'
 import { HeroBusqueda } from '../components/HeroBusqueda'
@@ -16,6 +17,7 @@ export function InicioPage() {
     return (
       <>
         {destacada && <CategoriaDestacada categoria={destacada} />}
+        <SeccionFavoritos />
         <h2 className="otros-temas">Otros temas</h2>
         <ul className="temas-lista">
           {otras.map((c) => <li key={c.id}><CategoriaItem categoria={c} /></li>)}
