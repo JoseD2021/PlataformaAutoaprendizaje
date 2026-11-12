@@ -28,6 +28,10 @@ import { ListarCategoriasGestion } from '../features/gestion/application/listar-
 import { CrearCategoria } from '../features/gestion/application/crear-categoria'
 import { ActualizarCategoria } from '../features/gestion/application/actualizar-categoria'
 import { EliminarCategoria } from '../features/gestion/application/eliminar-categoria'
+import { AdminHttpRepository } from '../features/admin/infrastructure/admin-http-repository'
+import { ListarUsuarios } from '../features/admin/application/listar-usuarios'
+import { CambiarRolUsuario } from '../features/admin/application/cambiar-rol-usuario'
+import { ListarRoles } from '../features/admin/application/listar-roles'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
   const repo = repoOverride ?? new GuiasHttpRepository(httpClient)
@@ -35,6 +39,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const authRepo = new AuthHttpRepository(httpClient)
   const gestionRepo = new GestionHttpRepository(httpClient)
   const favoritosRepo = new FavoritosHttpRepository(httpClient)
+  const adminRepo = new AdminHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
     listarCategorias: new ListarCategorias(repo),
@@ -59,6 +64,9 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     crearCategoria: new CrearCategoria(gestionRepo),
     actualizarCategoria: new ActualizarCategoria(gestionRepo),
     eliminarCategoria: new EliminarCategoria(gestionRepo),
+    listarUsuarios: new ListarUsuarios(adminRepo),
+    cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
+    listarRoles: new ListarRoles(adminRepo),
   }
 }
 
