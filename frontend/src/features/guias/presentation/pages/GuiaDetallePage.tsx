@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CheckCircle2, Home } from 'lucide-react'
 import { PageLayout } from '../../../../shared/components/PageLayout'
-import { BotonFavorito } from '../../../favoritos/presentation/components/BotonFavorito'
 import { useGuia } from '../hooks/useGuia'
 
 export function GuiaDetallePage() {
@@ -190,16 +189,6 @@ export function GuiaDetallePage() {
         </Link>
       </nav>
       {guia && <h1 id="titulo-guia">{guia.titulo}</h1>}
-      {guia && (
-        <BotonFavorito
-          guia={{
-            guiaId: guia.id,
-            titulo: guia.titulo,
-            minutosEstimados: guia.minutosEstimados ?? 0,
-            totalPasos: guia.pasos.length,
-          }}
-        />
-      )}
       {renderizarContenido()}
     </PageLayout>
   )
