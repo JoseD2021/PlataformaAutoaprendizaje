@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { container } from '../../../../app/container'
 import { EVENTO_SESION_EXPIRADA } from '../../../../shared/http/client'
 import { obtenerMensajeError } from '../../../../shared/http/obtener-mensaje-error'
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [cargando, setCargando] = useState(() => Boolean(obtenerTokens()))
   const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (!obtenerTokens()) return
@@ -32,10 +34,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    const manejarSesionExpirada = () => setUsuario(null)
+    const manejarSesionExpirada = () => {
+      setUsuario(null)
+      queryClient.clear()
+    }
     window.addEventListener(EVENTO_SESION_EXPIRADA, manejarSesionExpirada)
     return () => window.removeEventListener(EVENTO_SESION_EXPIRADA, manejarSesionExpirada)
-  }, [])
+  }, [queryClient])
 
   async function iniciarSesion(credenciales: Credenciales): Promise<Usuario> {
     setError(null)
@@ -66,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await container.cerrarSesion.execute(tokens.refreshToken).catch(() => undefined)
     }
     setUsuario(null)
+    queryClient.clear()
   }
 
   return (

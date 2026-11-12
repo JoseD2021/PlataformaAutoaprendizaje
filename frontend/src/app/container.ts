@@ -13,12 +13,16 @@ import { CerrarSesion } from '../features/auth/application/cerrar-sesion'
 import { IniciarSesion } from '../features/auth/application/iniciar-sesion'
 import { ObtenerPerfil } from '../features/auth/application/obtener-perfil'
 import { RegistrarUsuario } from '../features/auth/application/registrar-usuario'
+import { FavoritosHttpRepository } from '../features/favoritos/infrastructure/favoritos-http-repository'
+import { AgregarFavorito } from '../features/favoritos/application/agregar-favorito'
+import { ListarFavoritos } from '../features/favoritos/application/listar-favoritos'
+import { QuitarFavorito } from '../features/favoritos/application/quitar-favorito'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
   const repo = repoOverride ?? new GuiasHttpRepository(httpClient)
   const salaRepo = new SalaHttpRepository()
   const authRepo = new AuthHttpRepository(httpClient)
-
+  const favoritosRepo = new FavoritosHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
     listarCategorias: new ListarCategorias(repo),
@@ -30,6 +34,9 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     registrarUsuario: new RegistrarUsuario(authRepo),
     cerrarSesion: new CerrarSesion(authRepo),
     obtenerPerfil: new ObtenerPerfil(authRepo),
+    listarFavoritos: new ListarFavoritos(favoritosRepo),
+    agregarFavorito: new AgregarFavorito(favoritosRepo),
+    quitarFavorito: new QuitarFavorito(favoritosRepo),
   }
 }
 

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AxiosResponse } from 'axios'
 import { AdminPanelPage } from './AdminPanelPage'
 import { httpClient } from '../../../../shared/http/client'
@@ -8,15 +9,18 @@ import { guardarTokens, limpiarTokens } from '../../../../shared/http/token-stor
 import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
 
 function renderizar() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <AuthProvider>
-      <MemoryRouter initialEntries={['/admin']}>
-        <Routes>
-          <Route path="/admin" element={<AdminPanelPage />} />
-          <Route path="/" element={<div>Inicio</div>} />
-        </Routes>
-      </MemoryRouter>
-    </AuthProvider>,
+    <QueryClientProvider client={client}>
+      <AuthProvider>
+        <MemoryRouter initialEntries={['/admin']}>
+          <Routes>
+            <Route path="/admin" element={<AdminPanelPage />} />
+            <Route path="/" element={<div>Inicio</div>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    </QueryClientProvider>,
   )
 }
 

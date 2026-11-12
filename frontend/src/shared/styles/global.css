@@ -120,6 +120,15 @@ body {
 .contenedor { padding-top: 1.5rem; padding-bottom: 6rem; }
 .contenedor h1 { font-size: clamp(1.75rem, 5vw, 2.25rem); margin: 0 0 .5rem; }
 .contenedor > .navegacion-superior:first-child { margin-top: 0; }
+
+.guia-detalle__encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.guia-detalle__encabezado h1 { margin: 0; }
 .volver {
   display: inline-flex; align-items: center; gap: .375rem; margin: 1.5rem 0 1rem;
   min-height: var(--tap-min); color: var(--color-verde); font-weight: 700;

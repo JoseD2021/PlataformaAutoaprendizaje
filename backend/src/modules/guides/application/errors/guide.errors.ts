@@ -17,3 +17,9 @@ export class GuideCategoryNotFoundError extends ApplicationError {
     super('GUIDE_CATEGORY_NOT_FOUND', 'La categoría indicada no existe.', 422);
   }
 }
+
+export class GuideImageNotFoundError extends ApplicationError {
+  constructor() {
+    super('GUIDE_IMAGE_NOT_FOUND', 'La imagen solicitada no existe.', 404);
+  }
+}

@@ -23,6 +23,7 @@ import {
 
 import { Guide } from '../../src/modules/guides/domain/entities/guide.entity';
 import { GuideStep } from '../../src/modules/guides/domain/entities/guide-step.entity';
+import { GuideImage } from '../../src/modules/guides/domain/entities/guide-image.entity';
 import { GuideStatus } from '../../src/modules/guides/domain/enums/guide-status.enum';
 import {
   GuideFilters,
@@ -30,10 +31,13 @@ import {
   PaginatedGuides,
   PaginationOptions as GuidePaginationOptions,
 } from '../../src/modules/guides/domain/repositories/guide.repository';
+import { GuideImageRepository } from '../../src/modules/guides/domain/repositories/guide-image.repository';
 import { RoomRule } from '../../src/modules/room-info/domain/entities/room-rule.entity';
 import { ScheduleEntry } from '../../src/modules/room-info/domain/entities/schedule-entry.entity';
 import { RoomInfoRepository } from '../../src/modules/room-info/domain/repositories/room-info.repository';
 import { CategoryLookup } from '../../src/modules/guides/application/ports/category-lookup.port';
+import { Favorite } from '../../src/modules/favorites/domain/entities/favorite.entity';
+import { FavoriteRepository } from '../../src/modules/favorites/domain/repositories/favorite.repository';
 
 
 export class InMemoryUserRepository extends UserRepository {
@@ -167,6 +171,71 @@ export class InMemoryGuideRepository extends GuideRepository {
 
   get all(): Guide[] {
     return [...this.guides.values()];
+  }
+}
+
+export class InMemoryGuideImageRepository extends GuideImageRepository {
+  private readonly images = new Map<string, GuideImage>();
+
+  constructor(seed: GuideImage[] = []) {
+    super();
+    seed.forEach((image) => this.images.set(image.id, image));
+  }
+
+  async save(image: GuideImage): Promise<GuideImage> {
+    this.images.set(image.id, image);
+
+    return image;
+  }
+
+  async findById(id: string): Promise<GuideImage | null> {
+    return this.images.get(id) ?? null;
+  }
+
+  get all(): GuideImage[] {
+    return [...this.images.values()];
+  }
+}
+
+export class InMemoryFavoriteRepository extends FavoriteRepository {
+  private readonly favorites: Favorite[] = [];
+
+  constructor(seed: Favorite[] = []) {
+    super();
+    this.favorites.push(...seed);
+  }
+
+  async exists(userId: string, guideId: string): Promise<boolean> {
+    return this.favorites.some((f) => f.userId === userId && f.guideId === guideId);
+  }
+
+  async add(favorite: Favorite): Promise<void> {
+    const already = await this.exists(favorite.userId, favorite.guideId);
+
+    if (!already) {
+      this.favorites.push(favorite);
+    }
+  }
+
+  async remove(userId: string, guideId: string): Promise<void> {
+    const index = this.favorites.findIndex(
+      (f) => f.userId === userId && f.guideId === guideId,
+    );
+
+    if (index >= 0) {
+      this.favorites.splice(index, 1);
+    }
+  }
+
+  async listGuideIdsByUser(userId: string): Promise<string[]> {
+    return this.favorites
+      .filter((f) => f.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map((f) => f.guideId);
+  }
+
+  get all(): Favorite[] {
+    return [...this.favorites];
   }
 }
 
@@ -363,6 +432,18 @@ export function makeGuide(overrides: Partial<Parameters<typeof Guide.create>[0]>
   });
 }
 
+export function makeGuideImage(
+  overrides: Partial<Parameters<typeof GuideImage.create>[0]> = {},
+): GuideImage {
+  return GuideImage.create({
+    id: '8d9b7d6e-4b1a-4f3e-9c2a-1b2c3d4e5f60',
+    fileName: 'paso-1.png',
+    mimeType: 'image/png',
+    data: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+    ...overrides,
+  });
+}
+
 export function makeRole(
   role: Role,
   rank: number,
@@ -379,6 +460,16 @@ export function makeScheduleEntry(
     days: 'Lunes a viernes',
     hours: '8:00 a.m. a 5:00 p.m.',
     order: 1,
+    ...overrides,
+  });
+}
+
+export function makeFavorite(
+  overrides: Partial<Parameters<typeof Favorite.create>[0]> = {},
+): Favorite {
+  return Favorite.create({
+    userId: 'user-1',
+    guideId: 'enviar-correo-foto',
     ...overrides,
   });
 }
