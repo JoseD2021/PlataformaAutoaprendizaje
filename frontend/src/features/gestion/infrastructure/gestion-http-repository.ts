@@ -76,15 +76,15 @@ function mapearDetalle(dto: GuiaDetalleDto): GuiaGestionDetalle {
     esMasPedida: dto.esMasPedida,
     etiqueta: dto.etiqueta ?? '',
     palabrasClave: dto.palabrasClave ?? '',
-    pasos: [...dto.pasos]
-      .sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0))
-      .map((p) => ({
-        tituloCorto: p.tituloCorto,
-        accion: p.accion,
-        descripcion: p.descripcion,
-        imagenUrl: p.imagenUrl ?? '',
-        pieImagen: p.pieImagen ?? '',
-      })),
+    pasos: dto.pasos
+    .toSorted((a, b) => (a.orden ?? 0) - (b.orden ?? 0))
+    .map((p) => ({
+      tituloCorto: p.tituloCorto,
+      accion: p.accion,
+      descripcion: p.descripcion,
+      imagenUrl: p.imagenUrl ?? '',
+      pieImagen: p.pieImagen ?? '',
+    })),
   }
 }
 

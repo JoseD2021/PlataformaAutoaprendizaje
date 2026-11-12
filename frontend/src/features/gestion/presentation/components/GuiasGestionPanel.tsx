@@ -83,6 +83,8 @@ export function GuiasGestionPanel({ estado }: { estado: EstadoGuia }) {
                   <td>{nombreCategoria(g.categoriaId)}</td>
                   <td>{g.totalPasos}</td>
                   <td>{g.minutosEstimados}</td>
+                  {/* La celda no es un control; los botones y el enlace de adentro ya tienen texto visible. */}
+                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                   <td>
                     <div className="gestion-acciones">
                       <Link to={`/gestion/guias/${encodeURIComponent(g.id)}`} className="btn btn--claro btn-sm">
