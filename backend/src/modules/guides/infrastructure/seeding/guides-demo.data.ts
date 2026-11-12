@@ -300,5 +300,69 @@ export const GUIDES_DEMO_DATA: DemoGuideData[] = [
           'Ilustración de la ventana Guardar como, con el nombre del archivo escrito, la carpeta Documentos seleccionada y el botón Guardar resaltado.',
       },
     ],
-  }
+  },
+  {
+    id: 'tabla-sencilla-excel',
+    title: 'Hacer una tabla sencilla en Excel',
+    categorySlug: 'documentos',
+    estimatedMinutes: 6,
+    isMostRequested: false,
+    tag: null,
+    steps: [
+      {
+        shortTitle: 'Abrir',
+        action: 'Abre el programa Excel',
+        description:
+          'Haz clic en el botón de inicio de Windows, abajo a la izquierda, escribe la palabra Excel y haz clic en el programa que aparece con una letra X verde.',
+        imageUrl: '/guias/tabla-sencilla-excel/paso-1.png',
+        imageCaption:
+          'Ilustración del menú de inicio de Windows con la palabra Excel escrita y el ícono verde de Excel resaltado.',
+      },
+      {
+        shortTitle: 'Nuevo',
+        action: 'Haz clic en Libro en blanco',
+        description:
+          'Elige la primera opción, llamada "Libro en blanco". Verás una pantalla llena de cuadritos: cada cuadrito se llama celda.',
+        imageUrl: '/guias/tabla-sencilla-excel/paso-2.png',
+        imageCaption:
+          'Ilustración de la pantalla de inicio de Excel con el recuadro "Libro en blanco" resaltado.',
+      },
+      {
+        shortTitle: 'Títulos',
+        action: 'Escribe los títulos de tus columnas',
+        description:
+          'Haz clic en la primera celda de arriba a la izquierda y escribe un título, por ejemplo "Nombre". Presiona la tecla Tab para pasar a la celda de la derecha y escribe otro, por ejemplo "Teléfono".',
+        imageUrl: '/guias/tabla-sencilla-excel/paso-3.png',
+        imageCaption:
+          'Ilustración de una hoja de Excel con las palabras Nombre y Teléfono escritas en las dos primeras celdas de la fila de arriba.',
+      },
+      {
+        shortTitle: 'Datos',
+        action: 'Escribe los datos debajo de cada título',
+        description:
+          'Haz clic en la celda que está debajo de "Nombre", escribe un dato y presiona la tecla Enter para bajar a la siguiente celda. Repite hasta terminar la columna y luego haz lo mismo con la otra.',
+        imageUrl: '/guias/tabla-sencilla-excel/paso-4.png',
+        imageCaption:
+          'Ilustración de una hoja de Excel con tres filas de nombres y teléfonos escritas debajo de los títulos.',
+      },
+      {
+        shortTitle: 'Bordes',
+        action: 'Ponle líneas a tu tabla',
+        description:
+          'Mantén apretado el botón izquierdo del ratón y arrastra desde la primera celda hasta la última con datos, para pintarlas todas. Luego busca arriba el ícono de cuadrícula llamado "Bordes" y elige "Todos los bordes".',
+        imageUrl: '/guias/tabla-sencilla-excel/paso-5.png',
+        imageCaption:
+          'Ilustración de una tabla de Excel seleccionada en azul y el menú Bordes abierto con la opción "Todos los bordes" resaltada.',
+      },
+      {
+        shortTitle: 'Guardar',
+        action: 'Presiona Ctrl + S y guarda tu archivo',
+        description:
+          'Mantén apretada la tecla Ctrl y presiona la letra S. En "Nombre de archivo" escribe un nombre que recuerdes, elige la carpeta Documentos a la izquierda y haz clic en Guardar. Cuando veas el nombre arriba de la pantalla, tu tabla quedó guardada y no se perderá.',
+        imageUrl: '/guias/tabla-sencilla-excel/paso-6.png',
+        imageCaption:
+          'Ilustración de la ventana Guardar como de Excel, con el nombre escrito, la carpeta Documentos seleccionada y el botón Guardar resaltado.',
+      },
+    ],
+  },
 ];
