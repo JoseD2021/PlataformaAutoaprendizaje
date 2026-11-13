@@ -106,7 +106,7 @@ export function RegistroPage() {
         <button
           type="submit"
           className="btn btn--verde"
-          disabled={enviando || !terminos}
+          disabled={enviando || !terminos || !aceptaTerminos}
         >
           {enviando ? 'Creando cuenta…' : 'Crear cuenta'}
         </button>

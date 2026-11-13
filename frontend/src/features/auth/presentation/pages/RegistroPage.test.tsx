@@ -137,6 +137,20 @@ describe('RegistroPage', () => {
     )
   })
 
+  it('mantiene deshabilitado el botón hasta aceptar el aviso de privacidad', async () => {
+    simularTerminosPrivacidad()
+    renderizar()
+
+    const checkbox = await screen.findByLabelText(/He leído y acepto el aviso de privacidad/)
+    const boton = screen.getByRole('button', { name: 'Crear cuenta' })
+
+    expect(boton).toBeDisabled()
+
+    fireEvent.click(checkbox)
+
+    expect(boton).toBeEnabled()
+  })
+
   it('permite leer el aviso de privacidad antes de aceptarlo', async () => {
     simularTerminosPrivacidad()
     renderizar()
