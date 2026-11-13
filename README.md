@@ -2,6 +2,18 @@
 
 Plataforma de autoaprendizaje es una aplicación web diseñada para adultos mayores y usuarios con poca experiencia digital que buscan aprender de forma autónoma tareas informáticas básicas (correo, búsqueda en internet, documentos, redes sociales). El sistema ofrece un catálogo de guías paso a paso administrable por el personal, cuestionarios interactivos, seguimiento del progreso por lección y registro de solicitudes de ayuda presencial, todo enmarcado en un diseño accesible con alto contraste, letra grande y navegación por teclado.
 
+## Integrantes
+- JOSE DAVID MARTINEZ FERNANDEZ [Scrum master, Development Team]
+- GABRIEL OMAR PAEZ ROLONG [Product Owner, Development Team]
+- ALFREDO DE JESUS TOUS VILLAREAL [Development Team]
+
+## Equipo de origen
+
+G2
+- Jesus Arteaga
+- Carlos Salja
+- Jose Mercado
+- Juan Villalba
 
 ## Prerrequisitos
 
