@@ -61,6 +61,8 @@ export class AuthHttpRepository implements AuthRepository {
       email: datos.email,
       password: datos.password,
       fullName: datos.nombreCompleto,
+      privacyTermsAccepted: datos.aceptaTerminos,
+      privacyTermsVersion: datos.versionTerminosPrivacidad,
     })
     return mapearUsuario(data)
   }

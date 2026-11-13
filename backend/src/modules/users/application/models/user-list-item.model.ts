@@ -7,6 +7,8 @@ export interface UserListItem {
   fullName: string;
   role: Role;
   isActive: boolean;
+  privacyTermsAcceptedAt: Date | null;
+  privacyTermsVersion: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,6 +20,8 @@ export function toUserListItem(user: User): UserListItem {
     fullName: user.fullName,
     role: user.role,
     isActive: user.isActive,
+    privacyTermsAcceptedAt: user.privacyTermsAcceptedAt,
+    privacyTermsVersion: user.privacyTermsVersion,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

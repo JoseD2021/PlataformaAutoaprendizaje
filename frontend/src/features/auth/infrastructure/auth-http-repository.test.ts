@@ -63,12 +63,16 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       password: 'Secreta123',
       nombreCompleto: 'Ana Pérez',
+      aceptaTerminos: true,
+      versionTerminosPrivacidad: '1.0',
     })
 
     expect(httpMock.post).toHaveBeenCalledWith('/auth/register', {
       email: 'ana@clena.local',
       password: 'Secreta123',
       fullName: 'Ana Pérez',
+      privacyTermsAccepted: true,
+      privacyTermsVersion: '1.0',
     })
     expect(resultado).toEqual({
       id: 'u2',

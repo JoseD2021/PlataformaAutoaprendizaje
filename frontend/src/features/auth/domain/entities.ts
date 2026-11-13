@@ -28,4 +28,6 @@ export interface DatosRegistro {
   email: string
   password: string
   nombreCompleto: string
+  aceptaTerminos: boolean
+  versionTerminosPrivacidad: string
 }

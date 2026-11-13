@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEmail, IsString, Length, Matches, MaxLength } from 'class-validator';
+import {
+  Equals,
+  IsBoolean,
+  IsEmail,
+  IsString,
+  Length,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 
 export class RegisterDto {
   @ApiProperty({ example: 'usuario@clena.local', maxLength: 254 })
@@ -29,4 +37,25 @@ export class RegisterDto {
   @IsString()
   @Length(2, 120)
   fullName: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Indica si el usuario aceptó el aviso de privacidad vigente.',
+  })
+  @IsBoolean()
+  @Equals(true, {
+    message: 'Debes aceptar el aviso de privacidad para crear una cuenta.',
+  })
+  privacyTermsAccepted: boolean;
+
+  @ApiProperty({
+    example: '1.0',
+    maxLength: 32,
+    description:
+      'Versión del aviso de privacidad que el usuario revisó y aceptó. Debe coincidir con la vigente.',
+  })
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value))
+  @IsString()
+  @Length(1, 32)
+  privacyTermsVersion: string;
 }

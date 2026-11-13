@@ -32,6 +32,8 @@ import { AdminHttpRepository } from '../features/admin/infrastructure/admin-http
 import { ListarUsuarios } from '../features/admin/application/listar-usuarios'
 import { CambiarRolUsuario } from '../features/admin/application/cambiar-rol-usuario'
 import { ListarRoles } from '../features/admin/application/listar-roles'
+import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
+import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
   const repo = repoOverride ?? new GuiasHttpRepository(httpClient)
@@ -40,6 +42,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const gestionRepo = new GestionHttpRepository(httpClient)
   const favoritosRepo = new FavoritosHttpRepository(httpClient)
   const adminRepo = new AdminHttpRepository(httpClient)
+  const privacidadRepo = new PrivacidadHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
     listarCategorias: new ListarCategorias(repo),
@@ -67,6 +70,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     listarUsuarios: new ListarUsuarios(adminRepo),
     cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
     listarRoles: new ListarRoles(adminRepo),
+    obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
   }
 }
 

@@ -12,6 +12,8 @@ export interface UserProps {
   fullName: string;
   role: Role;
   isActive: boolean;
+  privacyTermsAcceptedAt: Date | null;
+  privacyTermsVersion: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +25,8 @@ export interface CreateUserProps {
   fullName: string;
   role: Role;
   isActive?: boolean;
+  privacyTermsAcceptedAt?: Date | null;
+  privacyTermsVersion?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -43,6 +47,18 @@ export class User {
     }
 
     const now = props.createdAt ?? new Date();
+    const privacyTermsAcceptedAt = props.privacyTermsAcceptedAt ?? null;
+    const privacyTermsVersion = User.normalizePrivacyTermsVersion(props.privacyTermsVersion);
+
+    if (privacyTermsAcceptedAt !== null && Number.isNaN(privacyTermsAcceptedAt.getTime())) {
+      throw new InvalidUserError('La fecha de aceptación del aviso de privacidad no es válida.');
+    }
+
+    if ((privacyTermsAcceptedAt === null) !== (privacyTermsVersion === null)) {
+      throw new InvalidUserError(
+        'La aceptación del aviso de privacidad debe incluir la fecha y la versión.',
+      );
+    }
 
     return new User({
       id: props.id,
@@ -51,6 +67,8 @@ export class User {
       fullName,
       role: props.role,
       isActive: props.isActive ?? true,
+      privacyTermsAcceptedAt,
+      privacyTermsVersion,
       createdAt: now,
       updatedAt: props.updatedAt ?? now,
     });
@@ -70,6 +88,16 @@ export class User {
     }
 
     return fullName;
+  }
+
+  private static normalizePrivacyTermsVersion(rawVersion: string | null | undefined): string | null {
+    if (typeof rawVersion !== 'string') {
+      return null;
+    }
+
+    const version = rawVersion.trim();
+
+    return version.length > 0 ? version : null;
   }
 
   get id(): string {
@@ -94,6 +122,14 @@ export class User {
 
   get isActive(): boolean {
     return this.props.isActive;
+  }
+
+  get privacyTermsAcceptedAt(): Date | null {
+    return this.props.privacyTermsAcceptedAt;
+  }
+
+  get privacyTermsVersion(): string | null {
+    return this.props.privacyTermsVersion;
   }
 
   get createdAt(): Date {
