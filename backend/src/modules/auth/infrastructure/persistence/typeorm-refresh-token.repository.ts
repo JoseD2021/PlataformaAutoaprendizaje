@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import { InvalidTokenError } from '../../application/errors/auth.errors';
 import { RefreshToken } from '../../domain/entities/refresh-token.entity';
 import { RefreshTokenRepository } from '../../domain/repositories/refresh-token.repository';
 import { RefreshTokenMapper } from './refresh-token.mapper';
@@ -22,9 +23,20 @@ export class TypeOrmRefreshTokenRepository extends RefreshTokenRepository {
   }
 
   async save(refreshToken: RefreshToken): Promise<RefreshToken> {
-    const saved = await this.repository.save(RefreshTokenMapper.toOrm(refreshToken));
+    try {
+      const saved = await this.repository.save(
+        RefreshTokenMapper.toOrm(refreshToken),
+      );
 
-    return RefreshTokenMapper.toDomain(saved);
+      return RefreshTokenMapper.toDomain(saved);
+    } catch (error) {
+      if (TypeOrmRefreshTokenRepository.isForeignKeyViolation(error)) {
+        // El usuario de la sesión pudo eliminarse entre la validación y el guardado.
+        throw new InvalidTokenError();
+      }
+
+      throw error;
+    }
   }
 
   async revokeAllForUser(userId: string): Promise<void> {
@@ -32,5 +44,15 @@ export class TypeOrmRefreshTokenRepository extends RefreshTokenRepository {
       { userId, revokedAt: IsNull() },
       { revokedAt: new Date() },
     );
+  }
+
+  private static isForeignKeyViolation(error: unknown): boolean {
+    const candidate = error as {
+      code?: string;
+      driverError?: { code?: string };
+    };
+    const code = candidate?.driverError?.code ?? candidate?.code;
+
+    return code === '23503';
   }
 }

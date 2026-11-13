@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
+import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
 
 @Entity({ name: 'refresh_tokens' })
 export class RefreshTokenOrmEntity {
@@ -8,6 +17,17 @@ export class RefreshTokenOrmEntity {
   @Index()
   @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
+
+  @ManyToOne(() => UserOrmEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'FK_refresh_tokens_user',
+  })
+  user?: UserOrmEntity;
 
   @Column({ name: 'token_hash', type: 'varchar', length: 64 })
   tokenHash: string;
