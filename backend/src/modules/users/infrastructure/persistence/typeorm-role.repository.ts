@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RoleInUseError } from '../../application/errors/user.errors';
 import { RoleDefinition } from '../../domain/entities/role-definition.entity';
 import type { Role } from '../../domain/enums/role.enum';
 import { RoleRepository } from '../../domain/repositories/role.repository';
@@ -35,6 +36,24 @@ export class TypeOrmRoleRepository extends RoleRepository {
   }
 
   async delete(role: Role): Promise<void> {
-    await this.repository.delete({ role });
+    try {
+      await this.repository.delete({ role });
+    } catch (error) {
+      if (TypeOrmRoleRepository.isForeignKeyViolation(error)) {
+        throw new RoleInUseError(role);
+      }
+
+      throw error;
+    }
+  }
+
+  private static isForeignKeyViolation(error: unknown): boolean {
+    const candidate = error as {
+      code?: string;
+      driverError?: { code?: string };
+    };
+    const code = candidate?.driverError?.code ?? candidate?.code;
+
+    return code === '23503';
   }
 }
