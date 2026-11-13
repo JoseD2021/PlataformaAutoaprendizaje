@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RoleOrmEntity } from './role.orm-entity';
 
 @Entity({ name: 'users' })
 export class UserOrmEntity {
@@ -25,6 +28,14 @@ export class UserOrmEntity {
   @Index()
   @Column({ type: 'varchar', length: 32 })
   role: string;
+
+  @ManyToOne(() => RoleOrmEntity, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
+  @JoinColumn({
+    name: 'role',
+    referencedColumnName: 'role',
+    foreignKeyConstraintName: 'FK_users_role',
+  })
+  roleDefinition?: RoleOrmEntity;
 
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
