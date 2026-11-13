@@ -1,0 +1,28 @@
+/* Panel de administración: prioriza funcionalidad sobre la letra grande del público. */
+.contenedor:has(> .admin) { max-width: 64rem; }
+.admin { font-size: 1rem; }
+
+.btn-sm { min-height: 2.5rem; padding: .25rem .75rem; font-size: 1rem; }
+
+.admin-barra { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1rem 0; }
+.admin-mensaje { color: var(--color-rojo); font-weight: 700; margin: .75rem 0; }
+.admin-aviso { font-weight: 700; margin: .75rem 0; }
+.admin-chip { margin-left: .5rem; font-size: .875rem; }
+.admin-nota { display: block; margin-top: .25rem; }
+.admin-solo-lectores {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+}
+
+.admin-tabla-marco { overflow-x: auto; border: 1px solid var(--color-borde); border-radius: var(--radius); }
+.admin-tabla { width: 100%; border-collapse: collapse; background: #fff; }
+.admin-tabla th, .admin-tabla td {
+  text-align: left; padding: .75rem; border-bottom: 1px solid var(--color-borde); vertical-align: middle;
+}
+.admin-tabla th { background: #f4f1e6; }
+.admin-tabla tbody tr:last-child td { border-bottom: 0; }
+.admin-tabla select {
+  min-height: 2.5rem; font: inherit; font-size: 1rem; color: var(--color-verde);
+  background: #fff; border: 2px solid var(--color-verde); border-radius: .5rem; padding: .25rem .5rem;
+}
+
+.admin-paginacion { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
