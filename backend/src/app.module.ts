@@ -9,6 +9,7 @@ import { HealthController } from './shared/presentation/health.controller';
 import { GuidesModule } from './modules/guides/guides.module';
 import { RoomInfoModule } from './modules/room-info/room-info.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
+import { PrivacyModule } from './modules/privacy/privacy.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
     CategoriesModule,
     RoomInfoModule,
     FavoritesModule,
+    PrivacyModule,
   ],
   controllers: [HealthController],
 })

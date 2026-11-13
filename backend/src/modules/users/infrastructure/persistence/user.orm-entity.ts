@@ -40,6 +40,12 @@ export class UserOrmEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
+  @Column({ name: 'privacy_terms_accepted_at', type: 'timestamptz', nullable: true })
+  privacyTermsAcceptedAt: Date | null;
+
+  @Column({ name: 'privacy_terms_version', type: 'varchar', length: 32, nullable: true })
+  privacyTermsVersion: string | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 

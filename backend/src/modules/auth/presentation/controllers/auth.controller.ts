@@ -59,6 +59,8 @@ export class AuthController {
       email: dto.email,
       password: dto.password,
       fullName: dto.fullName,
+      privacyTermsAccepted: dto.privacyTermsAccepted,
+      privacyTermsVersion: dto.privacyTermsVersion,
     });
 
     return UserResponseDto.from(user);

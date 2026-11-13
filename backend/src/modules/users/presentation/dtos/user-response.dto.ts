@@ -7,6 +7,8 @@ export interface UserResponseSource {
   fullName: string;
   role: Role;
   isActive: boolean;
+  privacyTermsAcceptedAt: Date | null;
+  privacyTermsVersion: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,6 +29,20 @@ export class UserResponseDto {
   @ApiProperty({ example: true })
   isActive: boolean;
 
+  @ApiProperty({
+    format: 'date-time',
+    nullable: true,
+    description: 'Fecha en que el usuario aceptó el aviso de privacidad.',
+  })
+  privacyTermsAcceptedAt: Date | null;
+
+  @ApiProperty({
+    nullable: true,
+    example: '1.0',
+    description: 'Versión del aviso de privacidad aceptada por el usuario.',
+  })
+  privacyTermsVersion: string | null;
+
   @ApiProperty({ format: 'date-time' })
   createdAt: Date;
 
@@ -40,6 +56,8 @@ export class UserResponseDto {
     dto.fullName = source.fullName;
     dto.role = source.role;
     dto.isActive = source.isActive;
+    dto.privacyTermsAcceptedAt = source.privacyTermsAcceptedAt;
+    dto.privacyTermsVersion = source.privacyTermsVersion;
     dto.createdAt = source.createdAt;
     dto.updatedAt = source.updatedAt;
 

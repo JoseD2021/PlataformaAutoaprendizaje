@@ -3,20 +3,37 @@ import { Link, useNavigate } from 'react-router-dom'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { useAuth } from '../context/AuthContext'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
+import { useTerminosPrivacidad } from '../../../privacidad/presentation/hooks/useTerminosPrivacidad'
+import { AceptarAvisoPrivacidad } from '../../../privacidad/presentation/components/AceptarAvisoPrivacidad'
 
 export function RegistroPage() {
   const [nombreCompleto, setNombreCompleto] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [aceptaTerminos, setAceptaTerminos] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const { registrar, error } = useAuth()
   const navigate = useNavigate()
+  const {
+    data: terminos,
+    isLoading: cargandoTerminos,
+    isError: errorTerminos,
+  } = useTerminosPrivacidad()
 
   async function manejarEnvio(evento: FormEvent) {
     evento.preventDefault()
+
+    if (!terminos) return
+
     setEnviando(true)
     try {
-      await registrar({ nombreCompleto, email, password })
+      await registrar({
+        nombreCompleto,
+        email,
+        password,
+        aceptaTerminos,
+        versionTerminosPrivacidad: terminos.version,
+      })
       navigate('/')
     } catch {
       setEnviando(false)
@@ -66,12 +83,31 @@ export function RegistroPage() {
           />
           <small>Debe incluir una mayúscula, una minúscula y un número.</small>
         </div>
+
+        {terminos && (
+          <AceptarAvisoPrivacidad
+            terminos={terminos}
+            aceptado={aceptaTerminos}
+            onCambio={setAceptaTerminos}
+          />
+        )}
+        {cargandoTerminos && <p role="status">Cargando el aviso de privacidad…</p>}
+        {errorTerminos && (
+          <p className="formulario-error" role="alert">
+            No pudimos cargar el aviso de privacidad. Recarga la página para intentarlo de nuevo.
+          </p>
+        )}
+
         {error && (
           <p className="formulario-error" role="alert">
             {error}
           </p>
         )}
-        <button type="submit" className="btn btn--verde" disabled={enviando}>
+        <button
+          type="submit"
+          className="btn btn--verde"
+          disabled={enviando || !terminos}
+        >
           {enviando ? 'Creando cuenta…' : 'Crear cuenta'}
         </button>
       </form>

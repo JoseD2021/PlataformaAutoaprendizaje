@@ -23,6 +23,22 @@ describe('User', () => {
     it('exige un hash de contraseña', () => {
       expect(() => makeUser({ passwordHash: '' })).toThrow(InvalidUserError);
     });
+
+    it('guarda la fecha y la versión del aviso de privacidad aceptado', () => {
+      const acceptedAt = new Date('2026-11-12T10:00:00.000Z');
+      const user = makeUser({
+        privacyTermsAcceptedAt: acceptedAt,
+        privacyTermsVersion: '  1.0  ',
+      });
+
+      expect(user.privacyTermsAcceptedAt).toEqual(acceptedAt);
+      expect(user.privacyTermsVersion).toBe('1.0');
+    });
+
+    it('rechaza una aceptación sin fecha o sin versión', () => {
+      expect(() => makeUser({ privacyTermsVersion: '1.0' })).toThrow(InvalidUserError);
+      expect(() => makeUser({ privacyTermsAcceptedAt: new Date() })).toThrow(InvalidUserError);
+    });
   });
 
   describe('changeRole', () => {

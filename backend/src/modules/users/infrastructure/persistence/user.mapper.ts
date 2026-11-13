@@ -11,6 +11,10 @@ export class UserMapper {
       fullName: orm.fullName,
       role: orm.role as Role,
       isActive: orm.isActive,
+      privacyTermsAcceptedAt: orm.privacyTermsAcceptedAt
+        ? new Date(orm.privacyTermsAcceptedAt)
+        : null,
+      privacyTermsVersion: orm.privacyTermsVersion ?? null,
       createdAt: new Date(orm.createdAt),
       updatedAt: new Date(orm.updatedAt),
     });
@@ -24,6 +28,8 @@ export class UserMapper {
     orm.fullName = user.fullName;
     orm.role = user.role;
     orm.isActive = user.isActive;
+    orm.privacyTermsAcceptedAt = user.privacyTermsAcceptedAt;
+    orm.privacyTermsVersion = user.privacyTermsVersion;
     orm.createdAt = user.createdAt;
     orm.updatedAt = user.updatedAt;
 
