@@ -21,6 +21,7 @@ async function bootstrap() {
     .addTag('Roles y permisos')
     .addTag('Guías')
     .addTag('Sala')
+    .addTag('Privacidad')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
