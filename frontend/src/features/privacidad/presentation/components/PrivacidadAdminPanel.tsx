@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { ArrowDown, ArrowUp, Plus, Save, Trash2 } from 'lucide-react'
 import { obtenerMensajeError } from '../../../../shared/http/obtener-mensaje-error'
 import type { SeccionTerminosPrivacidad, TerminosPrivacidad } from '../../domain/entities'
@@ -25,10 +25,12 @@ export function PrivacidadAdminPanel() {
   const [form, setForm] = useState<TerminosPrivacidad | null>(null)
   const [aviso, setAviso] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [cargadoVersion, setCargadoVersion] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (data && !form) setForm(clonar(data))
-  }, [data, form])
+  if (data && cargadoVersion !== data.version) {
+    setForm(clonar(data))
+    setCargadoVersion(data.version)
+  }
 
   if (isLoading) return <p role="status">Cargando aviso de privacidad…</p>
   if (isError || !data || !form) {
@@ -38,29 +40,29 @@ export function PrivacidadAdminPanel() {
   const actual = form
 
   function actualizarCampo<K extends keyof TerminosPrivacidad>(campo: K, valor: TerminosPrivacidad[K]) {
-    setForm((actual) => (actual ? { ...actual, [campo]: valor } : actual))
+    setForm((prev) => (prev ? { ...prev, [campo]: valor } : prev))
   }
 
   function actualizarSeccion(indice: number, seccion: SeccionTerminosPrivacidad) {
-    setForm((actual) =>
-      actual ? { ...actual, secciones: actual.secciones.map((s, i) => (i === indice ? seccion : s)) } : actual,
+    setForm((prev) =>
+      prev ? { ...prev, secciones: prev.secciones.map((s, i) => (i === indice ? seccion : s)) } : prev,
     )
   }
 
   function agregarSeccion() {
-    setForm((actual) =>
-      actual
-        ? { ...actual, secciones: [...actual.secciones, { titulo: '', parrafos: [''] }] }
-        : actual,
+    setForm((prev) =>
+      prev
+        ? { ...prev, secciones: [...prev.secciones, { titulo: '', parrafos: [''] }] }
+        : prev,
     )
   }
 
   function eliminarSeccion(indice: number) {
-    setForm((actual) => (actual ? { ...actual, secciones: actual.secciones.filter((_, i) => i !== indice) } : actual))
+    setForm((prev) => (prev ? { ...prev, secciones: prev.secciones.filter((_, i) => i !== indice) } : prev))
   }
 
   function moverSeccion(indice: number, dir: -1 | 1) {
-    setForm((actual) => (actual ? { ...actual, secciones: mover(actual.secciones, indice, indice + dir) } : actual))
+    setForm((prev) => (prev ? { ...prev, secciones: mover(prev.secciones, indice, indice + dir) } : prev))
   }
 
   function cambiarParrafo(seccionIdx: number, parrafoIdx: number, valor: string) {

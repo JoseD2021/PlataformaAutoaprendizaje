@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { ArrowDown, ArrowUp, Plus, Save, Trash2 } from 'lucide-react'
 import { obtenerMensajeError } from '../../../../shared/http/obtener-mensaje-error'
 import type { HorarioDia, InformacionSala } from '../../domain/entities'
@@ -26,20 +26,18 @@ function mover<T>(lista: T[], desde: number, hacia: number): T[] {
 export function HorarioSalaPanel() {
   const { data, isLoading, isError } = useInformacionSala()
   const actualizar = useActualizarInformacionSala()
+  const [cargada, setCargada] = useState<InformacionSala | null>(null)
   const [horarios, setHorarios] = useState<HorarioDia[]>([])
   const [normas, setNormas] = useState<string[]>([])
   const [aviso, setAviso] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [cargado, setCargado] = useState(false)
 
-  useEffect(() => {
-    if (data && !cargado) {
-      const copia = clonarInfo(data)
-      setHorarios(copia.horarios)
-      setNormas(copia.normas)
-      setCargado(true)
-    }
-  }, [data, cargado])
+  if (data && data !== cargada) {
+    setCargada(data)
+    const copia = clonarInfo(data)
+    setHorarios(copia.horarios)
+    setNormas(copia.normas)
+  }
 
   if (isLoading) return <p role="status">Cargando información de la sala…</p>
   if (isError || !data) {
