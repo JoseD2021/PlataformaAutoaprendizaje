@@ -10,6 +10,7 @@ import { ActualizarInformacionSala } from '../features/sala/application/actualiz
 import { ObtenerInformacionSala } from '../features/sala/application/obtener-informacion-sala'
 import { SalaHttpRepository } from '../features/sala/infrastructure/sala-http-repository'
 import { AuthHttpRepository } from '../features/auth/infrastructure/auth-http-repository'
+import { AceptarTerminosPrivacidad } from '../features/auth/application/aceptar-terminos-privacidad'
 import { CerrarSesion } from '../features/auth/application/cerrar-sesion'
 import { IniciarSesion } from '../features/auth/application/iniciar-sesion'
 import { ObtenerPerfil } from '../features/auth/application/obtener-perfil'
@@ -59,6 +60,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     registrarUsuario: new RegistrarUsuario(authRepo),
     cerrarSesion: new CerrarSesion(authRepo),
     obtenerPerfil: new ObtenerPerfil(authRepo),
+    aceptarTerminosPrivacidad: new AceptarTerminosPrivacidad(authRepo),
     listarFavoritos: new ListarFavoritos(favoritosRepo),
     agregarFavorito: new AgregarFavorito(favoritosRepo),
     quitarFavorito: new QuitarFavorito(favoritosRepo),

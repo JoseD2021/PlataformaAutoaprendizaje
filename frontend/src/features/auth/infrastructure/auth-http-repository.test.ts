@@ -42,6 +42,8 @@ describe('AuthHttpRepository', () => {
       nombreCompleto: 'Ana Pérez',
       rol: 'usuario',
       activo: true,
+      versionTerminosPrivacidad: null,
+      requiereAceptarTerminosPrivacidad: false,
     })
     expect(obtenerTokens()).toEqual({ accessToken: 'access-1', refreshToken: 'refresh-1' })
   })
@@ -80,6 +82,8 @@ describe('AuthHttpRepository', () => {
       nombreCompleto: 'Ana Pérez',
       rol: 'usuario',
       activo: true,
+      versionTerminosPrivacidad: null,
+      requiereAceptarTerminosPrivacidad: false,
     })
   })
 
@@ -118,6 +122,8 @@ describe('AuthHttpRepository', () => {
       nombreCompleto: 'Admin',
       rol: 'administrador',
       activo: true,
+      versionTerminosPrivacidad: null,
+      requiereAceptarTerminosPrivacidad: false,
     })
   })
 })
