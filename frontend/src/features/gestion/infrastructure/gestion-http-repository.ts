@@ -200,6 +200,10 @@ export class GestionHttpRepository implements GestionRepository {
     await this.http.patch(`/categories/${encodeURIComponent(id)}`, aPayloadCategoria(datos))
   }
 
+  async quitarDestacado(id: string): Promise<void> {
+    await this.http.patch(`/categories/${encodeURIComponent(id)}`, { isFeatured: false })
+  }
+
   async eliminarCategoria(id: string): Promise<void> {
     try {
       await this.http.delete(`/categories/${encodeURIComponent(id)}`)

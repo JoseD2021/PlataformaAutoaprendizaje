@@ -8,7 +8,14 @@ export class ActualizarCategoria {
     this.repo = repo
   }
 
-  execute(id: string, datos: DatosCategoria) {
-    return this.repo.actualizarCategoria(id, datos)
+  async execute(id: string, datos: DatosCategoria): Promise<void> {
+    if (datos.esDestacada) {
+      const anteriores = await this.repo.listarCategorias()
+      for (const categoria of anteriores.filter((c) => c.esDestacada && c.id !== id)) {
+        await this.repo.quitarDestacado(categoria.id)
+      }
+    }
+
+    await this.repo.actualizarCategoria(id, datos)
   }
 }

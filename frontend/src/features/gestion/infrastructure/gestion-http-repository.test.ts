@@ -114,6 +114,14 @@ describe('GestionHttpRepository', () => {
     })
   })
 
+  it('quita el destacado de una categoría con un PATCH parcial', async () => {
+    const { repo, http } = crearRepo()
+
+    await repo.quitarDestacado('c1')
+
+    expect(http.patch).toHaveBeenCalledWith('/categories/c1', { isFeatured: false })
+  })
+
   it('explica por qué no se puede eliminar una categoría con guías', async () => {
     const { repo, http } = crearRepo()
     http.delete.mockRejectedValue(

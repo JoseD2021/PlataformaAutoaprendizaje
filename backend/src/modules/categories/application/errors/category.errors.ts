@@ -15,3 +15,13 @@ export class CategorySlugAlreadyExistsError extends ApplicationError {
     );
   }
 }
+
+export class CategoryAlreadyFeaturedError extends ApplicationError {
+  constructor() {
+    super(
+      'CATEGORY_ALREADY_FEATURED',
+      'Ya existe una categoría destacada. Desmárcala antes de destacar otra.',
+      409,
+    );
+  }
+}

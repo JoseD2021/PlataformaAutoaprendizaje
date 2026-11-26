@@ -13,7 +13,7 @@
 }
 .gestion-pestanas { display: flex; gap: .5rem; flex-wrap: wrap; }
 .gestion-pestana[aria-current='page'] { background: var(--color-verde); color: #fff; }
-.gestion-acciones { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.gestion-acciones { display: flex; gap: .5rem; flex-wrap: wrap;}
 
 .gestion-mensaje { color: var(--color-rojo); font-weight: 700; margin: .75rem 0; }
 .gestion-aviso { font-weight: 700; margin: .5rem 0; }

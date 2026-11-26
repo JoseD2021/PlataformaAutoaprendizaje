@@ -3,6 +3,7 @@ import { Category } from '../../domain/entities/category.entity';
 import { CannotManageCategoryError } from '../../domain/errors/category.errors';
 import { CategoryRepository } from '../../domain/repositories/category.repository';
 import {
+  CategoryAlreadyFeaturedError,
   CategoryNotFoundError,
   CategorySlugAlreadyExistsError,
 } from '../errors/category.errors';
@@ -24,6 +25,14 @@ class InMemoryCategoryRepository extends CategoryRepository {
     return (
       this.categories.find(
         (category) => category.slug === slug && category.id !== excludeId,
+      ) ?? null
+    );
+  }
+
+  async findFeatured(excludeId?: string): Promise<Category | null> {
+    return (
+      this.categories.find(
+        (category) => category.isFeatured && category.id !== excludeId,
       ) ?? null
     );
   }
@@ -105,6 +114,37 @@ describe('UpdateCategoryUseCase', () => {
         { permissions: [Permission.CATEGORIES_MANAGE] },
       ),
     ).rejects.toThrow(CategoryNotFoundError);
+  });
+
+  it('rechaza destacar otra categoría cuando ya hay una destacada', async () => {
+    categories.categories.push(
+      Category.create({
+        id: 'category-2',
+        name: 'Correo',
+        slug: '',
+        isFeatured: true,
+      }),
+    );
+
+    await expect(
+      useCase.execute(
+        { id: 'category-1', isFeatured: true },
+        { permissions: [Permission.CATEGORIES_MANAGE] },
+      ),
+    ).rejects.toThrow(CategoryAlreadyFeaturedError);
+
+    expect((await categories.findById('category-2'))?.isFeatured).toBe(true);
+  });
+
+  it('permite volver a destacar la misma categoría', async () => {
+    categories.categories[0].changeIsFeatured(true);
+
+    await expect(
+      useCase.execute(
+        { id: 'category-1', isFeatured: true },
+        { permissions: [Permission.CATEGORIES_MANAGE] },
+      ),
+    ).resolves.toMatchObject({ id: 'category-1', isFeatured: true });
   });
 
   it('rechaza cambiar el nombre a un slug existente en otra categoría', async () => {

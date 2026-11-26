@@ -3,6 +3,7 @@ import { CannotManageCategoryError } from '../../domain/errors/category.errors';
 import { Category } from '../../domain/entities/category.entity';
 import { CategoryRepository } from '../../domain/repositories/category.repository';
 import {
+  CategoryAlreadyFeaturedError,
   CategorySlugAlreadyExistsError,
 } from '../errors/category.errors';
 import {
@@ -21,6 +22,14 @@ class InMemoryCategoryRepository extends CategoryRepository {
     return (
       this.categories.find(
         (category) => category.slug === slug && category.id !== excludeId,
+      ) ?? null
+    );
+  }
+
+  async findFeatured(excludeId?: string): Promise<Category | null> {
+    return (
+      this.categories.find(
+        (category) => category.isFeatured && category.id !== excludeId,
       ) ?? null
     );
   }
@@ -89,6 +98,22 @@ describe('CreateCategoryUseCase', () => {
         { permissions: [Permission.CATEGORIES_CREATE] },
       ),
     ).rejects.toThrow(CategorySlugAlreadyExistsError);
+
+    expect(categories.categories).toHaveLength(1);
+  });
+
+  it('rechaza crear una segunda categoría destacada', async () => {
+    await useCase.execute(
+      { name: 'Correo', isFeatured: true },
+      { permissions: [Permission.CATEGORIES_CREATE] },
+    );
+
+    await expect(
+      useCase.execute(
+        { name: 'Documentos', isFeatured: true },
+        { permissions: [Permission.CATEGORIES_CREATE] },
+      ),
+    ).rejects.toThrow(CategoryAlreadyFeaturedError);
 
     expect(categories.categories).toHaveLength(1);
   });

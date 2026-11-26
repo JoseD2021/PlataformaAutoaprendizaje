@@ -19,5 +19,6 @@ export interface GestionRepository {
   listarCategorias(): Promise<CategoriaGestion[]>
   crearCategoria(datos: DatosCategoria): Promise<void>
   actualizarCategoria(id: string, datos: DatosCategoria): Promise<void>
+  quitarDestacado(id: string): Promise<void>
   eliminarCategoria(id: string): Promise<void>
 }
