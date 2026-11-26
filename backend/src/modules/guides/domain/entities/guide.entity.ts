@@ -23,7 +23,7 @@ export class Guide {
   readonly title: string;
   readonly categoryId: string;
   readonly estimatedMinutes: number;
-  readonly isMostRequested: boolean;
+  private _isMostRequested: boolean;
   readonly tag: string | null;
   readonly steps: readonly GuideStep[];
   readonly createdAt: Date;
@@ -36,7 +36,7 @@ export class Guide {
     this.title = props.title;
     this.categoryId = props.categoryId;
     this.estimatedMinutes = props.estimatedMinutes;
-    this.isMostRequested = props.isMostRequested;
+    this._isMostRequested = props.isMostRequested;
     this.tag = props.tag;
     this._status = props.status;
     this.steps = props.steps;
@@ -47,6 +47,14 @@ export class Guide {
 
   get status(): GuideStatus {
     return this._status;
+  }
+
+  get isMostRequested(): boolean {
+    return this._isMostRequested;
+  }
+
+  changeIsMostRequested(isMostRequested: boolean): void {
+    this._isMostRequested = isMostRequested;
   }
 
   get totalSteps(): number {

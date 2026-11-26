@@ -36,6 +36,7 @@ import { ApiErrorResponseDto } from '../../../../shared/presentation/dto/api-err
 import { Permission } from '../../../users/domain/enums/permission.enum';
 import { MAX_GUIDE_IMAGE_SIZE_BYTES } from '../../domain/constants/guide-image.limits';
 import type { GuideInput } from '../../application/models/guide-input';
+import { ChangeGuideMostRequestedUseCase } from '../../application/use-cases/cambiar-mas-pedida-guia.use-case';
 import { ChangeGuideStatusUseCase } from '../../application/use-cases/change-guide-status.use-case';
 import { CreateGuideUseCase } from '../../application/use-cases/create-guide.use-case';
 import { DeleteGuideUseCase } from '../../application/use-cases/delete-guide.use-case';
@@ -43,6 +44,7 @@ import { GetManagedGuideUseCase } from '../../application/use-cases/get-managed-
 import { ListManagedGuidesUseCase } from '../../application/use-cases/list-managed-guides.use-case';
 import { UpdateGuideUseCase } from '../../application/use-cases/update-guide.use-case';
 import { UploadGuideImageUseCase } from '../../application/use-cases/upload-guide-image.use-case';
+import { ActualizarMasPedidaGuiaDto } from '../dtos/actualizar-mas-pedida-guia.dto';
 import { CambiarEstadoGuiaDto } from '../dtos/cambiar-estado-guia.dto';
 import { statusDesdeEstado } from '../dtos/estado-guia';
 import { GuiaImagenResponseDto } from '../dtos/guia-imagen-response.dto';
@@ -89,6 +91,7 @@ export class GuidesManagementController {
     private readonly createGuide: CreateGuideUseCase,
     private readonly updateGuide: UpdateGuideUseCase,
     private readonly changeGuideStatus: ChangeGuideStatusUseCase,
+    private readonly changeGuideMostRequested: ChangeGuideMostRequestedUseCase,
     private readonly deleteGuide: DeleteGuideUseCase,
     private readonly uploadGuideImage: UploadGuideImageUseCase,
   ) {}
@@ -223,6 +226,7 @@ export class GuidesManagementController {
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   @ApiForbiddenResponse({ type: ApiErrorResponseDto })
   @ApiResponse({ status: 404, type: ApiErrorResponseDto })
+  @ApiResponse({ status: 409, type: ApiErrorResponseDto })
   @ApiResponse({ status: 422, type: ApiErrorResponseDto })
   async update(
     @Param() params: GuideIdParamDto,
@@ -232,6 +236,32 @@ export class GuidesManagementController {
     const guide = await this.updateGuide.execute(params.id, toGuideInput(dto), {
       permissions: actor.permissions,
     });
+
+    return GuiaGestionDetalleResponseDto.from(guide);
+  }
+
+  @Patch(':id/most-requested')
+  @RequirePermissions(Permission.GUIDES_MANAGE)
+  @ApiOperation({
+    summary: 'Marcar o desmarcar una guía como «La más pedida»',
+    description: 'Solo puede haber una guía más pedida por categoría.',
+  })
+  @ApiOkResponse({ type: GuiaGestionDetalleResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiResponse({ status: 404, type: ApiErrorResponseDto })
+  @ApiResponse({ status: 409, type: ApiErrorResponseDto })
+  async cambiarMasPedida(
+    @Param() params: GuideIdParamDto,
+    @Body() dto: ActualizarMasPedidaGuiaDto,
+    @CurrentUser() actor: AuthenticatedUser,
+  ): Promise<GuiaGestionDetalleResponseDto> {
+    const guide = await this.changeGuideMostRequested.execute(
+      params.id,
+      dto.esMasPedida,
+      { permissions: actor.permissions },
+    );
 
     return GuiaGestionDetalleResponseDto.from(guide);
   }

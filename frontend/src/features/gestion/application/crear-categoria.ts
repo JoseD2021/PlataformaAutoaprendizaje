@@ -8,7 +8,14 @@ export class CrearCategoria {
     this.repo = repo
   }
 
-  execute(datos: DatosCategoria) {
-    return this.repo.crearCategoria(datos)
+  async execute(datos: DatosCategoria): Promise<void> {
+    if (datos.esDestacada) {
+      const anteriores = await this.repo.listarCategorias()
+      for (const categoria of anteriores.filter((c) => c.esDestacada)) {
+        await this.repo.quitarDestacado(categoria.id)
+      }
+    }
+
+    await this.repo.crearCategoria(datos)
   }
 }

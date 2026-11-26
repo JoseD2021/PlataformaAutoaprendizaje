@@ -7,7 +7,10 @@ import {
   CATEGORY_REPOSITORY,
   CategoryRepository,
 } from '../../domain/repositories/category.repository';
-import { CategorySlugAlreadyExistsError } from '../errors/category.errors';
+import {
+  CategoryAlreadyFeaturedError,
+  CategorySlugAlreadyExistsError,
+} from '../errors/category.errors';
 
 export interface CreateCategoryInput {
   name: string;
@@ -31,6 +34,10 @@ export class CreateCategoryUseCase {
       throw new CannotManageCategoryError(
         'No tienes permiso para crear categorías.',
       );
+    }
+
+    if (input.isFeatured === true && (await this.categories.findFeatured())) {
+      throw new CategoryAlreadyFeaturedError();
     }
 
     const category = Category.create({

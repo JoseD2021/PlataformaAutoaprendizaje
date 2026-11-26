@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { Pencil, Plus, Trash2, X } from 'lucide-react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { Check, Pencil, Plus, Trash2, X } from 'lucide-react'
 import type { CategoriaGestion, DatosCategoria } from '../../domain/entities'
 import { useCategoriasGestion, useMutacionesGestion } from '../hooks/useGestion'
 import { mensajeDeError } from '../mensaje-error'
@@ -14,12 +14,24 @@ const ICONOS = [
 
 const VACIO: DatosCategoria = { nombre: '', icono: 'file-text', descripcion: '', esDestacada: false }
 
+interface ConfirmacionDestacada {
+  id: string | null
+  datos: DatosCategoria
+  anteriores: string[]
+}
+
 export function CategoriasGestionPanel() {
   const categorias = useCategoriasGestion()
   const { crearCategoria, actualizarCategoria, eliminarCategoria } = useMutacionesGestion()
   const [editandoId, setEditandoId] = useState<string | null>(null)
   const [datos, setDatos] = useState<DatosCategoria>(VACIO)
   const [error, setError] = useState<string | null>(null)
+  const [confirmacion, setConfirmacion] = useState<ConfirmacionDestacada | null>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    if (confirmacion) dialogRef.current?.showModal()
+  }, [confirmacion])
 
   const enviando = crearCategoria.isPending || actualizarCategoria.isPending
   const opcionesIcono = ICONOS.some((i) => i.valor === datos.icono)
@@ -38,19 +50,49 @@ export function CategoriasGestionPanel() {
     setError(null)
   }
 
-  async function guardar(evento: FormEvent) {
-    evento.preventDefault()
+  async function guardarCambios(id: string | null, datosGuardar: DatosCategoria) {
     setError(null)
     try {
-      if (editandoId) {
-        await actualizarCategoria.mutateAsync({ id: editandoId, datos })
+      if (id) {
+        await actualizarCategoria.mutateAsync({ id, datos: datosGuardar })
       } else {
-        await crearCategoria.mutateAsync(datos)
+        await crearCategoria.mutateAsync(datosGuardar)
       }
       cancelar()
     } catch (e) {
       setError(mensajeDeError(e))
     }
+  }
+
+  function guardar(evento: FormEvent) {
+    evento.preventDefault()
+    const anteriores = (categorias.data ?? []).filter(
+      (c) => c.esDestacada && c.id !== editandoId,
+    )
+
+    if (datos.esDestacada && anteriores.length > 0) {
+      setConfirmacion({
+        id: editandoId,
+        datos,
+        anteriores: anteriores.map((c) => c.nombre),
+      })
+      return
+    }
+
+    void guardarCambios(editandoId, datos)
+  }
+
+  async function confirmarGuardado() {
+    if (!confirmacion) return
+    const { id, datos: datosGuardar } = confirmacion
+    dialogRef.current?.close()
+    setConfirmacion(null)
+    await guardarCambios(id, datosGuardar)
+  }
+
+  function cancelarConfirmacion() {
+    dialogRef.current?.close()
+    setConfirmacion(null)
   }
 
   async function borrar(c: CategoriaGestion) {
@@ -126,6 +168,40 @@ export function CategoriasGestionPanel() {
           )}
         </div>
       </form>
+
+      {confirmacion && (
+        <dialog
+          ref={dialogRef}
+          className="gestion-dialog"
+          aria-labelledby="destacada-titulo"
+          onClose={() => setConfirmacion(null)}
+        >
+          <h2 id="destacada-titulo">Cambiar la categoría destacada</h2>
+          <p>
+            Se quitará el destacado de{' '}
+            <strong>{confirmacion.anteriores.map((nombre) => `«${nombre}»`).join(', ')}</strong>.
+          </p>
+          <p>Solo puede haber una categoría destacada a la vez.</p>
+          <div className="gestion-acciones">
+            <button
+              type="button"
+              className="btn btn--claro btn-sm"
+              onClick={cancelarConfirmacion}
+              disabled={enviando}
+            >
+              <X aria-hidden size={16} /> Cancelar
+            </button>
+            <button
+              type="button"
+              className="btn btn--verde btn-sm"
+              onClick={() => void confirmarGuardado()}
+              disabled={enviando}
+            >
+              <Check aria-hidden size={16} /> {enviando ? 'Guardando…' : 'Continuar'}
+            </button>
+          </div>
+        </dialog>
+      )}
 
       <h2>Categorías existentes</h2>
       {categorias.isLoading && <p role="status">Cargando categorías…</p>}

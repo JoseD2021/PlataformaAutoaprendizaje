@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Users } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
-import { useAuth } from '../../../auth/presentation/context/AuthContext'
 import { CategoriasGestionPanel } from '../components/CategoriasGestionPanel'
 import { GuiasGestionPanel } from '../components/GuiasGestionPanel'
 import '../gestion.css'
@@ -17,13 +16,12 @@ const PESTANAS: { id: Pestana; texto: string }[] = [
 ]
 
 export function GestionPage() {
-  const { usuario } = useAuth()
   const [pestana, setPestana] = useState<Pestana>('publicadas')
 
   return (
     <PageLayout>
       <div className="gestion">
-        <NavegacionVolver conAtras={false} />
+        <NavegacionVolver conAtras={false} conAccionesAdmin />
         <h1>Gestión de contenidos</h1>
 
         <div className="gestion-barra">
@@ -42,11 +40,6 @@ export function GestionPage() {
           </nav>
 
           <div className="gestion-acciones">
-            {usuario?.rol === 'administrador' && (
-              <Link to="/admin" className="btn btn--claro btn-sm">
-                <Users aria-hidden size={16} /> Usuarios y roles
-              </Link>
-            )}
             <Link to="/gestion/guias/nueva" className="btn btn--verde btn-sm">
               <Plus aria-hidden size={16} /> Nueva guía
             </Link>

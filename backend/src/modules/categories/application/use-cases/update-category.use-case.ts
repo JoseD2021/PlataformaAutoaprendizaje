@@ -7,6 +7,7 @@ import {
   CategoryRepository,
 } from '../../domain/repositories/category.repository';
 import {
+  CategoryAlreadyFeaturedError,
   CategoryNotFoundError,
   CategorySlugAlreadyExistsError,
 } from '../errors/category.errors';
@@ -61,6 +62,10 @@ export class UpdateCategoryUseCase {
 
     if (input.description !== undefined) {
       category.changeDescription(input.description);
+    }
+
+    if (input.isFeatured === true && (await this.categories.findFeatured(category.id))) {
+      throw new CategoryAlreadyFeaturedError();
     }
 
     if (input.isFeatured !== undefined) {

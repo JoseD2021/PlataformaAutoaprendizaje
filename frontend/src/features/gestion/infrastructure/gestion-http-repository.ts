@@ -53,6 +53,17 @@ interface CategoriaDto {
   isFeatured: boolean
 }
 
+interface GuiaImagenDto {
+  url: string
+}
+
+const URL_API = import.meta.env.VITE_API_URL ?? '/api/v1'
+
+function urlImagenPublica(url: string): string {
+  if (/^https?:\/\//i.test(url) || !/^https?:\/\//i.test(URL_API)) return url
+  return new URL(url, URL_API).toString()
+}
+
 function mapearResumen(dto: GuiaResumenDto): GuiaGestionResumen {
   return {
     id: dto.id,
@@ -154,12 +165,25 @@ export class GestionHttpRepository implements GestionRepository {
     await this.http.put(`/management/guides/${encodeURIComponent(id)}`, aPayloadGuia(datos))
   }
 
+  async subirImagen(archivo: File): Promise<string> {
+    const cuerpo = new FormData()
+    cuerpo.append('file', archivo)
+    const { data } = await this.http.post<GuiaImagenDto>('/management/guides/images', cuerpo)
+    return urlImagenPublica(data.url)
+  }
+
   async eliminarGuia(id: string): Promise<void> {
     await this.http.delete(`/management/guides/${encodeURIComponent(id)}`)
   }
 
   async cambiarEstadoGuia(id: string, estado: EstadoGuia): Promise<void> {
     await this.http.patch(`/management/guides/${encodeURIComponent(id)}/status`, { estado })
+  }
+
+  async quitarMasPedida(id: string): Promise<void> {
+    await this.http.patch(`/management/guides/${encodeURIComponent(id)}/most-requested`, {
+      esMasPedida: false,
+    })
   }
 
   async listarCategorias(): Promise<CategoriaGestion[]> {
@@ -180,6 +204,10 @@ export class GestionHttpRepository implements GestionRepository {
 
   async actualizarCategoria(id: string, datos: DatosCategoria): Promise<void> {
     await this.http.patch(`/categories/${encodeURIComponent(id)}`, aPayloadCategoria(datos))
+  }
+
+  async quitarDestacado(id: string): Promise<void> {
+    await this.http.patch(`/categories/${encodeURIComponent(id)}`, { isFeatured: false })
   }
 
   async eliminarCategoria(id: string): Promise<void> {

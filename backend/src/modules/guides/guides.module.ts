@@ -17,6 +17,7 @@ import { CATEGORY_LOOKUP } from './application/ports/category-lookup.port';
 import { CategoryRepositoryLookup } from './infrastructure/categories/category-repository.lookup';
 import { SearchGuidesUseCase } from './application/use-cases/search-guides.use-case';
 import { ChangeGuideStatusUseCase } from './application/use-cases/change-guide-status.use-case';
+import { ChangeGuideMostRequestedUseCase } from './application/use-cases/cambiar-mas-pedida-guia.use-case';
 import { CreateGuideUseCase } from './application/use-cases/create-guide.use-case';
 import { DeleteGuideUseCase } from './application/use-cases/delete-guide.use-case';
 import { GetGuideImageUseCase } from './application/use-cases/get-guide-image.use-case';
@@ -41,6 +42,7 @@ const useCases = [
   CreateGuideUseCase,
   UpdateGuideUseCase,
   ChangeGuideStatusUseCase,
+  ChangeGuideMostRequestedUseCase,
   DeleteGuideUseCase,
   UploadGuideImageUseCase,
   GetGuideImageUseCase,

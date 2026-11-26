@@ -13,7 +13,7 @@
 }
 .gestion-pestanas { display: flex; gap: .5rem; flex-wrap: wrap; }
 .gestion-pestana[aria-current='page'] { background: var(--color-verde); color: #fff; }
-.gestion-acciones { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.gestion-acciones { display: flex; gap: .5rem; flex-wrap: wrap;}
 
 .gestion-mensaje { color: var(--color-rojo); font-weight: 700; margin: .75rem 0; }
 .gestion-aviso { font-weight: 700; margin: .5rem 0; }
@@ -57,6 +57,17 @@
   background: #fff; border: 2px solid var(--color-verde); border-radius: .5rem; padding: .5rem .75rem;
 }
 .campo textarea { resize: vertical; }
+.gestion-form .campo .gestion-etiqueta-archivo { display: inline-flex; align-items: center; gap: .35rem; }
+.gestion-form .campo input[type='file'] {
+  font: inherit; font-size: 1rem; color: var(--color-verde);
+  min-height: var(--tap-min); border: none; padding: 0;
+}
+.gestion-form .campo input[type='file']::file-selector-button {
+  font: inherit; font-size: 1rem; min-height: 2rem; margin-right: .75rem;
+  color: var(--color-verde); background: #fff;
+  border: 2px solid var(--color-verde); border-radius: .5rem; padding: .25rem .75rem;
+  cursor: pointer;
+}
 .gestion-fila { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
 .campo--check { flex-direction: row; align-items: center; gap: .5rem; }
 .campo--check input { width: 1.5rem; height: 1.5rem; min-height: 0; }
@@ -66,3 +77,13 @@
   background: #fff; border: 2px solid var(--color-borde); border-radius: var(--radius);
 }
 .gestion-paso legend { font-weight: 800; padding: 0 .5rem; }
+
+.gestion-dialog {
+  width: calc(100% - 2rem); max-width: 32rem; padding: 1.5rem;
+  background: #fff; color: var(--color-verde); font-size: 1rem;
+  border: 3px solid var(--color-verde); border-radius: var(--radius);
+}
+.gestion-dialog::backdrop { background: rgb(0 0 0 / .6); }
+.gestion-dialog h2 { margin: 0 0 1rem; font-size: 1.375rem; }
+.gestion-dialog p { line-height: 1.5; margin: .5rem 0; }
+.gestion-dialog .gestion-acciones { margin-top: 1.25rem; }

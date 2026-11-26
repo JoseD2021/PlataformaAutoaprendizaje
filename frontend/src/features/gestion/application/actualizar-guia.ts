@@ -1,5 +1,6 @@
 import type { DatosGuia } from '../domain/entities'
 import type { GestionRepository } from '../domain/gestion-repository'
+import { quitarMasPedidaAnterior } from './mas-pedida'
 
 export class ActualizarGuia {
   private readonly repo: GestionRepository
@@ -8,7 +9,10 @@ export class ActualizarGuia {
     this.repo = repo
   }
 
-  execute(id: string, datos: DatosGuia) {
-    return this.repo.actualizarGuia(id, datos)
+  async execute(id: string, datos: DatosGuia): Promise<void> {
+    if (datos.esMasPedida) {
+      await quitarMasPedidaAnterior(this.repo, datos, id)
+    }
+    await this.repo.actualizarGuia(id, datos)
   }
 }

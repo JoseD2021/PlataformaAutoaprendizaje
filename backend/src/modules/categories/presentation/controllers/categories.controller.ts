@@ -65,6 +65,7 @@ export class CategoriesController {
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiResponse({ status: 409, type: ApiErrorResponseDto })
   @ApiResponse({ status: 422, type: ApiErrorResponseDto })
   async create(
     @Body() dto: CreateCategoryDto,
@@ -86,6 +87,7 @@ export class CategoriesController {
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   @ApiForbiddenResponse({ type: ApiErrorResponseDto })
   @ApiResponse({ status: 404, type: ApiErrorResponseDto })
+  @ApiResponse({ status: 409, type: ApiErrorResponseDto })
   @ApiResponse({ status: 422, type: ApiErrorResponseDto })
   async update(
     @Param() params: CategoryIdParamDto,
