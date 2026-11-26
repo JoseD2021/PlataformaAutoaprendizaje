@@ -10,6 +10,7 @@ import { GuidesModule } from './modules/guides/guides.module';
 import { RoomInfoModule } from './modules/room-info/room-info.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
 import { PrivacyModule } from './modules/privacy/privacy.module';
+import { HelpRequestsModule } from './modules/help-requests/help-requests.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PrivacyModule } from './modules/privacy/privacy.module';
     RoomInfoModule,
     FavoritesModule,
     PrivacyModule,
+    HelpRequestsModule,
   ],
   controllers: [HealthController],
 })

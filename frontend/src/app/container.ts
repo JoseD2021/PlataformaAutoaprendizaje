@@ -39,6 +39,10 @@ import { ListarRoles } from '../features/admin/application/listar-roles'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
 import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
+import { AyudaHttpRepository } from '../features/ayuda/infrastructure/ayuda-http-repository'
+import { PedirAyuda } from '../features/ayuda/application/pedir-ayuda'
+import { ListarAyudasPendientes } from '../features/ayuda/application/listar-ayudas-pendientes'
+import { MarcarAyudaAtendida } from '../features/ayuda/application/marcar-ayuda-atendida'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
   const repo = repoOverride ?? new GuiasHttpRepository(httpClient)
@@ -48,6 +52,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const favoritosRepo = new FavoritosHttpRepository(httpClient)
   const adminRepo = new AdminHttpRepository(httpClient)
   const privacidadRepo = new PrivacidadHttpRepository(httpClient)
+  const ayudaRepo = new AyudaHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
     actualizarInformacionSala: new ActualizarInformacionSala(salaRepo),
@@ -80,6 +85,9 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
     listarRoles: new ListarRoles(adminRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
+    pedirAyuda: new PedirAyuda(ayudaRepo),
+    listarAyudasPendientes: new ListarAyudasPendientes(ayudaRepo),
+    marcarAyudaAtendida: new MarcarAyudaAtendida(ayudaRepo),
     actualizarTerminosPrivacidad: new ActualizarTerminosPrivacidad(privacidadRepo),
   }
 }

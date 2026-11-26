@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { Usuario } from '../../features/auth/domain/entities'
 import { PageLayout } from './PageLayout'
 
@@ -15,11 +16,13 @@ vi.mock('../../features/auth/presentation/context/AuthContext', () => ({
 
 function renderizar() {
   render(
-    <MemoryRouter>
-      <PageLayout>
-        <p>Contenido</p>
-      </PageLayout>
-    </MemoryRouter>,
+    <QueryClientProvider client={new QueryClient()}>
+      <MemoryRouter>
+        <PageLayout>
+          <p>Contenido</p>
+        </PageLayout>
+      </MemoryRouter>
+    </QueryClientProvider>,
   )
 }
 

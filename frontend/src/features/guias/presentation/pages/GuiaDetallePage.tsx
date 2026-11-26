@@ -174,8 +174,16 @@ export function GuiaDetallePage() {
     )
   }
 
+  const contextoAyuda = guia
+    ? {
+        guiaId: guia.id,
+        guiaTitulo: guia.titulo,
+        paso: guiaCompletada || guia.pasos.length === 0 ? undefined : pasoActualIndice + 1,
+      }
+    : undefined
+
   return (
-    <PageLayout>
+    <PageLayout contextoAyuda={contextoAyuda}>
       <nav className="navegacion-superior" aria-label="Navegación de retorno">
         <button
           type="button"
