@@ -36,9 +36,11 @@ export function PageLayout({ hero, children }: { hero?: ReactNode; children: Rea
                 <LogIn aria-hidden size={18} /> Iniciar sesión
               </Link>
             )}
-            <button type="button" className="btn btn--claro">
-              <CircleHelp aria-hidden size={18} /> Pedir ayuda
-            </button>
+            {!esPersonal && (
+              <button type="button" className="btn btn--claro">
+                <CircleHelp aria-hidden size={18} /> Pedir ayuda
+              </button>
+            )}
           </div>
         </div>
         {hero && <div className="app-header__hero">{hero}</div>}
