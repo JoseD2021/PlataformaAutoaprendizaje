@@ -162,4 +162,24 @@ export class User {
     this.props.privacyTermsVersion = normalizedVersion;
     this.props.updatedAt = acceptedAt;
   }
+
+  changePasswordHash(passwordHash: string, now: Date = new Date()): void {
+    if (typeof passwordHash !== 'string' || passwordHash.trim().length === 0) {
+      throw new InvalidUserError('El usuario debe tener una contraseña cifrada.');
+    }
+
+    this.props.passwordHash = passwordHash;
+    this.props.updatedAt = now;
+  }
+
+  changeFullName(fullName: string, now: Date = new Date()): void {
+    const normalizedFullName = User.normalizeFullName(fullName);
+
+    if (normalizedFullName === this.props.fullName) {
+      return;
+    }
+
+    this.props.fullName = normalizedFullName;
+    this.props.updatedAt = now;
+  }
 }
