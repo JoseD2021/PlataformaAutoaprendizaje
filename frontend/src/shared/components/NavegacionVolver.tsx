@@ -33,7 +33,7 @@ export function NavegacionVolver({
         <>
           <span className="separador-nav" aria-hidden>·</span>
           <Link to="/admin" className="btn-enlace">
-            <Users aria-hidden size={18} /> Usuarios y roles
+            <Users aria-hidden size={18} /> Gestionar usuarios
           </Link>
           <span className="separador-nav" aria-hidden>·</span>
           <Link to="/gestion" className="btn-enlace">
@@ -42,6 +42,10 @@ export function NavegacionVolver({
           <span className="separador-nav" aria-hidden>·</span>
           <button type="button" className="btn-enlace">
             <Clock aria-hidden size={18} /> Horario de la sala
+          </button>
+          <span className="separador-nav" aria-hidden>·</span>
+          <button type="button" className="btn-enlace">
+            <FileText aria-hidden size={18} /> Gestionar roles
           </button>
           <span className="separador-nav" aria-hidden>·</span>
           <button type="button" className="btn-enlace">
