@@ -23,3 +23,13 @@ export class GuideImageNotFoundError extends ApplicationError {
     super('GUIDE_IMAGE_NOT_FOUND', 'La imagen solicitada no existe.', 404);
   }
 }
+
+export class GuideAlreadyMostRequestedError extends ApplicationError {
+  constructor() {
+    super(
+      'GUIDE_ALREADY_MOST_REQUESTED',
+      'Ya existe una guía marcada como «La más pedida» en esa categoría. Desmárcala antes de marcar otra.',
+      409,
+    );
+  }
+}

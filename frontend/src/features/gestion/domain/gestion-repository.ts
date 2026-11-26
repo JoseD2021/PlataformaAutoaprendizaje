@@ -15,6 +15,7 @@ export interface GestionRepository {
   subirImagen(archivo: File): Promise<string>
   eliminarGuia(id: string): Promise<void>
   cambiarEstadoGuia(id: string, estado: EstadoGuia): Promise<void>
+  quitarMasPedida(id: string): Promise<void>
 
   listarCategorias(): Promise<CategoriaGestion[]>
   crearCategoria(datos: DatosCategoria): Promise<void>

@@ -136,6 +136,18 @@ export class InMemoryGuideRepository extends GuideRepository {
     return this.guides.has(id);
   }
 
+  async findMostRequestedByCategory(
+    categoryId: string,
+    excludeId?: string,
+  ): Promise<Guide | null> {
+    return (
+      [...this.guides.values()].find(
+        (guide) =>
+          guide.categoryId === categoryId && guide.isMostRequested && guide.id !== excludeId,
+      ) ?? null
+    );
+  }
+
   async save(guide: Guide): Promise<Guide> {
     this.guides.set(guide.id, guide);
 

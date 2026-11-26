@@ -21,6 +21,10 @@ export interface PaginatedGuides {
 export abstract class GuideRepository {
   abstract findById(id: string): Promise<Guide | null>;
   abstract existsById(id: string): Promise<boolean>;
+  abstract findMostRequestedByCategory(
+    categoryId: string,
+    excludeId?: string,
+  ): Promise<Guide | null>;
   abstract save(guide: Guide): Promise<Guide>;
   abstract paginate(filters: GuideFilters, options: PaginationOptions): Promise<PaginatedGuides>;
   abstract delete(id: string): Promise<void>;

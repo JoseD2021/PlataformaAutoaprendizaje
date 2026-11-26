@@ -180,6 +180,12 @@ export class GestionHttpRepository implements GestionRepository {
     await this.http.patch(`/management/guides/${encodeURIComponent(id)}/status`, { estado })
   }
 
+  async quitarMasPedida(id: string): Promise<void> {
+    await this.http.patch(`/management/guides/${encodeURIComponent(id)}/most-requested`, {
+      esMasPedida: false,
+    })
+  }
+
   async listarCategorias(): Promise<CategoriaGestion[]> {
     const { data } = await this.http.get<CategoriaDto[]>('/categories')
     return data.map((c) => ({

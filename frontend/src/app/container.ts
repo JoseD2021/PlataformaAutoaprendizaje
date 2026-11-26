@@ -25,6 +25,7 @@ import { ActualizarGuia } from '../features/gestion/application/actualizar-guia'
 import { SubirImagenGuia } from '../features/gestion/application/subir-imagen-guia'
 import { EliminarGuia } from '../features/gestion/application/eliminar-guia'
 import { CambiarEstadoGuia } from '../features/gestion/application/cambiar-estado-guia'
+import { QuitarMasPedida } from '../features/gestion/application/quitar-mas-pedida'
 import { ListarCategoriasGestion } from '../features/gestion/application/listar-categorias-gestion'
 import { CrearCategoria } from '../features/gestion/application/crear-categoria'
 import { ActualizarCategoria } from '../features/gestion/application/actualizar-categoria'
@@ -65,6 +66,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     subirImagenGuia: new SubirImagenGuia(gestionRepo),
     eliminarGuia: new EliminarGuia(gestionRepo),
     cambiarEstadoGuia: new CambiarEstadoGuia(gestionRepo),
+    quitarMasPedida: new QuitarMasPedida(gestionRepo),
     listarCategoriasGestion: new ListarCategoriasGestion(gestionRepo),
     crearCategoria: new CrearCategoria(gestionRepo),
     actualizarCategoria: new ActualizarCategoria(gestionRepo),

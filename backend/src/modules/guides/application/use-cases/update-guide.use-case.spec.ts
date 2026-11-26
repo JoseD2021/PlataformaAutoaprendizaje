@@ -1,7 +1,11 @@
 import { Permission } from '../../../users/domain/enums/permission.enum';
 import { GuideStatus } from '../../domain/enums/guide-status.enum';
 import { CannotManageGuideError, InvalidGuideError } from '../../domain/errors/guide.errors';
-import { GuideCategoryNotFoundError, GuideNotFoundError } from '../errors/guide.errors';
+import {
+  GuideAlreadyMostRequestedError,
+  GuideCategoryNotFoundError,
+  GuideNotFoundError,
+} from '../errors/guide.errors';
 import { UpdateGuideUseCase } from './update-guide.use-case';
 import {
   FakeCategoryLookup,
@@ -74,6 +78,39 @@ describe('UpdateGuideUseCase', () => {
     await expect(
       useCase.execute('enviar-correo-foto', { ...input, categoryId: 'cat-inexistente' }, actor),
     ).rejects.toBeInstanceOf(GuideCategoryNotFoundError);
+  });
+
+  it('rechaza marcar esta guía si otra de la misma categoría ya es la más pedida', async () => {
+    const guides = new InMemoryGuideRepository([
+      makeGuide({ id: 'enviar-correo-foto', categoryId: 'cat-correo' }),
+      makeGuide({ id: 'otra-guia', categoryId: 'cat-correo', isMostRequested: true }),
+    ]);
+    const useCase = new UpdateGuideUseCase(
+      guides,
+      new FakeCategoryLookup({ correo: 'cat-correo' }),
+    );
+
+    await expect(useCase.execute('enviar-correo-foto', input, actor)).rejects.toBeInstanceOf(
+      GuideAlreadyMostRequestedError,
+    );
+  });
+
+  it('permite volver a marcar la misma guía como más pedida', async () => {
+    const guides = new InMemoryGuideRepository([
+      makeGuide({
+        id: 'enviar-correo-foto',
+        categoryId: 'cat-correo',
+        isMostRequested: true,
+      }),
+    ]);
+    const useCase = new UpdateGuideUseCase(
+      guides,
+      new FakeCategoryLookup({ correo: 'cat-correo' }),
+    );
+
+    await expect(useCase.execute('enviar-correo-foto', input, actor)).resolves.toMatchObject({
+      isMostRequested: true,
+    });
   });
 
   it('no deja una guía publicada sin pasos y conserva lo anterior', async () => {

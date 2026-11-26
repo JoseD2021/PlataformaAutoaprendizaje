@@ -3,7 +3,11 @@ import { Permission } from '../../../users/domain/enums/permission.enum';
 import { Guide } from '../../domain/entities/guide.entity';
 import { GUIDE_REPOSITORY, GuideRepository } from '../../domain/repositories/guide.repository';
 import { CATEGORY_LOOKUP, CategoryLookup } from '../ports/category-lookup.port';
-import { GuideCategoryNotFoundError, GuideNotFoundError } from '../errors/guide.errors';
+import {
+  GuideAlreadyMostRequestedError,
+  GuideCategoryNotFoundError,
+  GuideNotFoundError,
+} from '../errors/guide.errors';
 import { assertGuidePermission, type GuideActor } from '../models/guide-actor';
 import { buildGuideSteps, type GuideInput } from '../models/guide-input';
 import {
@@ -52,6 +56,12 @@ export class UpdateGuideUseCase {
 
     if (!(await this.categories.existsById(guide.categoryId))) {
       throw new GuideCategoryNotFoundError();
+    }
+    if (
+      guide.isMostRequested &&
+      (await this.guides.findMostRequestedByCategory(guide.categoryId, existing.id))
+    ) {
+      throw new GuideAlreadyMostRequestedError();
     }
 
     return toGuideManagementDetailModel(await this.guides.save(guide));

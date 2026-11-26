@@ -61,6 +61,10 @@ export function useMutacionesGestion() {
       container.cambiarEstadoGuia.execute(id, estado),
     onSuccess: refrescar,
   })
+  const quitarMasPedida = useMutation({
+    mutationFn: (id: string) => container.quitarMasPedida.execute(id),
+    onSuccess: refrescar,
+  })
   const crearCategoria = useMutation({
     mutationFn: (datos: DatosCategoria) => container.crearCategoria.execute(datos),
     onSuccess: refrescar,
@@ -80,6 +84,7 @@ export function useMutacionesGestion() {
     actualizarGuia,
     eliminarGuia,
     cambiarEstado,
+    quitarMasPedida,
     crearCategoria,
     actualizarCategoria,
     eliminarCategoria,

@@ -1,7 +1,11 @@
 import { Permission } from '../../../users/domain/enums/permission.enum';
 import { GuideStatus } from '../../domain/enums/guide-status.enum';
 import { CannotManageGuideError, InvalidGuideStepError } from '../../domain/errors/guide.errors';
-import { GuideAlreadyExistsError, GuideCategoryNotFoundError } from '../errors/guide.errors';
+import {
+  GuideAlreadyExistsError,
+  GuideAlreadyMostRequestedError,
+  GuideCategoryNotFoundError,
+} from '../errors/guide.errors';
 import { CreateGuideUseCase } from './create-guide.use-case';
 import {
   FakeCategoryLookup,
@@ -21,9 +25,12 @@ const input = {
   ],
 };
 
-const build = (guides = new InMemoryGuideRepository()) => ({
+const build = (
+  guides = new InMemoryGuideRepository(),
+  categorias: Record<string, string> = { correo: 'cat-correo' },
+) => ({
   guides,
-  useCase: new CreateGuideUseCase(guides, new FakeCategoryLookup({ correo: 'cat-correo' })),
+  useCase: new CreateGuideUseCase(guides, new FakeCategoryLookup(categorias)),
 });
 
 describe('CreateGuideUseCase', () => {
@@ -71,6 +78,34 @@ describe('CreateGuideUseCase', () => {
     );
 
     await expect(useCase.execute(input, actor)).rejects.toBeInstanceOf(GuideAlreadyExistsError);
+  });
+
+  it('rechaza otra guía más pedida en la misma categoría', async () => {
+    const { useCase } = build(
+      new InMemoryGuideRepository([
+        makeGuide({ id: 'otra-guia', categoryId: 'cat-correo', isMostRequested: true }),
+      ]),
+    );
+
+    await expect(useCase.execute({ ...input, isMostRequested: true }, actor)).rejects.toBeInstanceOf(
+      GuideAlreadyMostRequestedError,
+    );
+  });
+
+  it('permite una guía más pedida en otra categoría', async () => {
+    const { useCase } = build(
+      new InMemoryGuideRepository([
+        makeGuide({ id: 'otra-guia', categoryId: 'cat-correo', isMostRequested: true }),
+      ]),
+      { correo: 'cat-correo', tramites: 'cat-tramites' },
+    );
+
+    await expect(
+      useCase.execute(
+        { ...input, categoryId: 'cat-tramites', isMostRequested: true },
+        actor,
+      ),
+    ).resolves.toMatchObject({ isMostRequested: true });
   });
 
   it('no guarda nada si un paso es inválido', async () => {

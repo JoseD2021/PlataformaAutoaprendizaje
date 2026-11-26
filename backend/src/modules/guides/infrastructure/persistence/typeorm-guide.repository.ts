@@ -38,6 +38,24 @@ export class TypeOrmGuideRepository extends GuideRepository {
     return this.repository.existsBy({ id });
   }
 
+  async findMostRequestedByCategory(
+    categoryId: string,
+    excludeId?: string,
+  ): Promise<Guide | null> {
+    const query = this.repository
+      .createQueryBuilder('guide')
+      .leftJoinAndSelect('guide.steps', 'step')
+      .where('guide.categoryId = :categoryId', { categoryId })
+      .andWhere('guide.isMostRequested = :isMostRequested', { isMostRequested: true });
+
+    if (excludeId) {
+      query.andWhere('guide.id != :excludeId', { excludeId });
+    }
+
+    const orm = await query.orderBy('step.position', 'ASC').getOne();
+    return orm ? GuideMapper.toDomain(orm) : null;
+  }
+
   async save(guide: Guide): Promise<Guide> {
     return this.repository.manager.transaction(async (manager) => {
       await manager.delete(GuideStepOrmEntity, { guideId: guide.id });

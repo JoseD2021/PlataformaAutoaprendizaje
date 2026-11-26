@@ -101,6 +101,16 @@ describe('GestionHttpRepository', () => {
     expect(http.patch).toHaveBeenCalledWith('/management/guides/g1/status', { estado: 'publicada' })
   })
 
+  it('quita la marca de más pedida con un PATCH parcial', async () => {
+    const { repo, http } = crearRepo()
+
+    await repo.quitarMasPedida('g1')
+
+    expect(http.patch).toHaveBeenCalledWith('/management/guides/g1/most-requested', {
+      esMasPedida: false,
+    })
+  })
+
   it('envía la categoría con los nombres del backend', async () => {
     const { repo, http } = crearRepo()
 

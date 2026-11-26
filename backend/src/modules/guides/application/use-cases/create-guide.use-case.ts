@@ -5,7 +5,11 @@ import { GuideStatus } from '../../domain/enums/guide-status.enum';
 import { slugFromTitle } from '../../domain/services/guide-slug';
 import { GUIDE_REPOSITORY, GuideRepository } from '../../domain/repositories/guide.repository';
 import { CATEGORY_LOOKUP, CategoryLookup } from '../ports/category-lookup.port';
-import { GuideAlreadyExistsError, GuideCategoryNotFoundError } from '../errors/guide.errors';
+import {
+  GuideAlreadyExistsError,
+  GuideAlreadyMostRequestedError,
+  GuideCategoryNotFoundError,
+} from '../errors/guide.errors';
 import { assertGuidePermission, type GuideActor } from '../models/guide-actor';
 import { buildGuideSteps, type GuideInput } from '../models/guide-input';
 import {
@@ -42,6 +46,12 @@ export class CreateGuideUseCase {
 
     if (!(await this.categories.existsById(guide.categoryId))) {
       throw new GuideCategoryNotFoundError();
+    }
+    if (
+      guide.isMostRequested &&
+      (await this.guides.findMostRequestedByCategory(guide.categoryId))
+    ) {
+      throw new GuideAlreadyMostRequestedError();
     }
     if (await this.guides.existsById(guide.id)) {
       throw new GuideAlreadyExistsError();

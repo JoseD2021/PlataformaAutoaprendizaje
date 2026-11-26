@@ -167,6 +167,7 @@ export function GuiaForm({
           onChange={(e) => setEsMasPedida(e.target.checked)}
         />
         <label htmlFor="guia-mas-pedida">Marcar como «La más pedida»</label>
+        <small>Solo puede haber una guía más pedida por categoría.</small>
       </div>
 
       <h2>Pasos</h2>
