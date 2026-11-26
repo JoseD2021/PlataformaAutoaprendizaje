@@ -91,4 +91,15 @@ export class AuthHttpRepository implements AuthRepository {
     })
     return mapearUsuario(data)
   }
+
+  async cambiarNombre(nombreCompleto: string): Promise<void> {
+    await this.http.patch('/auth/me/name', { fullName: nombreCompleto.trim() })
+  }
+
+  async cambiarContrasena(contrasenaActual: string, contrasenaNueva: string): Promise<void> {
+    await this.http.patch('/auth/me/password', {
+      currentPassword: contrasenaActual,
+      newPassword: contrasenaNueva,
+    })
+  }
 }

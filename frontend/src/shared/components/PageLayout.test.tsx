@@ -47,7 +47,7 @@ describe('PageLayout', () => {
       usuarioActual.value = usuario(rol)
       renderizar()
 
-      expect(screen.getByText('Hola, Ana')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Ana' })).toHaveAttribute('href', '/perfil')
       expect(screen.getByRole('link', { name: 'Gestión' })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Cerrar sesión' })).toBeInTheDocument()
       expect(screen.queryByRole('button', { name: 'Pedir ayuda' })).not.toBeInTheDocument()

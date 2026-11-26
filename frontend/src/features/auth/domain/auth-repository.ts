@@ -6,4 +6,6 @@ export interface AuthRepository {
   cerrarSesion(refreshToken: string): Promise<void>
   obtenerPerfil(): Promise<Usuario>
   aceptarTerminosPrivacidad(version: string): Promise<Usuario>
+  cambiarNombre(nombreCompleto: string): Promise<void>
+  cambiarContrasena(contrasenaActual: string, contrasenaNueva: string): Promise<void>
 }

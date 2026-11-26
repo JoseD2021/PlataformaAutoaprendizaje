@@ -5,6 +5,7 @@ import { GuiasDeCategoriaPage } from '../features/guias/presentation/pages/Guias
 import { GuiaDetallePage } from '../features/guias/presentation/pages/GuiaDetallePage'
 import { LoginPage } from '../features/auth/presentation/pages/LoginPage'
 import { RegistroPage } from '../features/auth/presentation/pages/RegistroPage'
+import { PerfilPage } from '../features/auth/presentation/pages/PerfilPage'
 import { AdminPanelPage } from '../features/admin/presentation/pages/AdminPanelPage'
 import { FavoritosPage } from '../features/favoritos/presentation/pages/FavoritosPage'
 import { GestionPage } from '../features/gestion/presentation/pages/GestionPage'
@@ -16,6 +17,7 @@ import type { Rol } from '../features/auth/domain/entities'
 import { RaizLayout } from './RaizLayout'
 
 const ROLES_GESTION: Rol[] = ['personal_clena', 'administrador']
+const ROLES_PERFIL: Rol[] = ['usuario', 'personal_clena', 'administrador']
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ export const router = createBrowserRouter([
       { path: '/horario', element: <HorarioSalaPage /> },
       { path: '/privacidad', element: <PrivacidadAdminPage /> },
       { path: '/favoritos', element: <FavoritosPage /> },
+      {
+        path: '/perfil',
+        element: (
+          <RutaProtegida roles={ROLES_PERFIL}>
+            <PerfilPage />
+          </RutaProtegida>
+        ),
+      },
       {
         path: '/gestion',
         element: (

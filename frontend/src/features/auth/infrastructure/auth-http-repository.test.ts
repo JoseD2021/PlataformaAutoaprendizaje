@@ -100,6 +100,31 @@ describe('AuthHttpRepository', () => {
     expect(obtenerTokens()).toBeNull()
   })
 
+  it('cambiarNombre llama a PATCH /auth/me/name con el nombre normalizado', async () => {
+    const httpMock = {
+      patch: vi.fn().mockResolvedValue({ data: undefined } as AxiosResponse),
+    } as unknown as AxiosInstance
+
+    const repo = new AuthHttpRepository(httpMock)
+    await repo.cambiarNombre('  Ana Pérez  ')
+
+    expect(httpMock.patch).toHaveBeenCalledWith('/auth/me/name', { fullName: 'Ana Pérez' })
+  })
+
+  it('cambiarContrasena llama a PATCH /auth/me/password con ambas contraseñas', async () => {
+    const httpMock = {
+      patch: vi.fn().mockResolvedValue({ data: undefined } as AxiosResponse),
+    } as unknown as AxiosInstance
+
+    const repo = new AuthHttpRepository(httpMock)
+    await repo.cambiarContrasena('ClaveActual123', 'ClaveNueva123')
+
+    expect(httpMock.patch).toHaveBeenCalledWith('/auth/me/password', {
+      currentPassword: 'ClaveActual123',
+      newPassword: 'ClaveNueva123',
+    })
+  })
+
   it('obtenerPerfil llama a /auth/me y mapea el usuario', async () => {
     const usuarioBackend = {
       id: 'u3',

@@ -22,7 +22,9 @@ export function PageLayout({ hero, children }: { hero?: ReactNode; children: Rea
           <div className="app-header__acciones">
             {usuario && (
               <>
-                <span className="usuario-activo">Hola, {usuario.nombreCompleto.split(' ')[0]}</span>
+                <Link to="/perfil" className="usuario-activo" title="Administrar perfil">
+                  {usuario.nombreCompleto.split(' ')[0]}
+                </Link>
                 {esPersonal && (
                   <Link to="/gestion" className="btn btn--claro">Gestión</Link>
                 )}
