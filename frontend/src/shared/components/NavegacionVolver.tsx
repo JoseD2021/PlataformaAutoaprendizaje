@@ -48,9 +48,9 @@ export function NavegacionVolver({
             <FileText aria-hidden size={18} /> Gestionar roles
           </button>
           <span className="separador-nav" aria-hidden>·</span>
-          <button type="button" className="btn-enlace">
+          <Link to="/privacidad" className="btn-enlace">
             <FileText aria-hidden size={18} /> Tratamiento de datos
-          </button>
+          </Link>
         </>
       )}
     </nav>

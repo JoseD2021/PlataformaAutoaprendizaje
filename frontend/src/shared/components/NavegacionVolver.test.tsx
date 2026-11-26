@@ -35,7 +35,7 @@ const acciones = [
   ['link', 'Guías y categorías'],
   ['link', 'Horario de la sala'],
   ['button', 'Gestionar roles'],
-  ['button', 'Tratamiento de datos'],
+  ['link', 'Tratamiento de datos'],
 ] as const
 
 describe('NavegacionVolver', () => {
@@ -52,7 +52,7 @@ describe('NavegacionVolver', () => {
     expect(screen.getByRole('link', { name: 'Guías y categorías' })).toHaveAttribute('href', '/gestion')
     expect(screen.getByRole('link', { name: 'Horario de la sala' })).toHaveAttribute('href', '/horario')
     expect(screen.getByRole('button', { name: 'Gestionar roles' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Tratamiento de datos' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Tratamiento de datos' })).toHaveAttribute('href', '/privacidad')
   })
 
   it.each(['personal_clena', 'usuario'] as const)(

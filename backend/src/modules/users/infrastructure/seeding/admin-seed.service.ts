@@ -10,7 +10,7 @@ import {
   PASSWORD_HASHER,
   PasswordHasher,
 } from '../../../../shared/application/ports/password-hasher.port';
-import { CURRENT_PRIVACY_TERMS } from '../../../privacy/domain/privacy-terms';
+import { PrivacyTermsRepository } from '../../../privacy/domain/repositories/privacy-terms.repository';
 import { CreateDefaultRolesUseCase } from '../../application/use-cases/create-default-roles.use-case';
 import { User } from '../../domain/entities/user.entity';
 import { Role } from '../../domain/enums/role.enum';
@@ -35,6 +35,7 @@ export class AdminSeedService implements OnApplicationBootstrap {
     @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasher,
     private readonly createDefaultRoles: CreateDefaultRolesUseCase,
     private readonly config: ConfigService,
+    private readonly privacyTermsRepository: PrivacyTermsRepository,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
@@ -60,6 +61,7 @@ export class AdminSeedService implements OnApplicationBootstrap {
         return;
       }
 
+      const currentTerms = await this.privacyTermsRepository.findCurrent();
       const acceptedAt = new Date();
       const user = User.create({
         id: randomUUID(),
@@ -67,8 +69,8 @@ export class AdminSeedService implements OnApplicationBootstrap {
         passwordHash: await this.passwordHasher.hash(password),
         fullName,
         role: Role.ADMINISTRADOR,
-        privacyTermsAcceptedAt: acceptedAt,
-        privacyTermsVersion: CURRENT_PRIVACY_TERMS.version
+        privacyTermsAcceptedAt: currentTerms ? acceptedAt : null,
+        privacyTermsVersion: currentTerms?.version ?? null,
       });
 
       await this.users.save(user);

@@ -36,6 +36,7 @@ import { ListarUsuarios } from '../features/admin/application/listar-usuarios'
 import { CambiarRolUsuario } from '../features/admin/application/cambiar-rol-usuario'
 import { ListarRoles } from '../features/admin/application/listar-roles'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
+import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
@@ -77,6 +78,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
     listarRoles: new ListarRoles(adminRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
+    actualizarTerminosPrivacidad: new ActualizarTerminosPrivacidad(privacidadRepo),
   }
 }
 

@@ -7,6 +7,7 @@ import { SecurityModule } from '../../shared/infrastructure/security/security.mo
 import { JwtAuthGuard } from '../../shared/presentation/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../../shared/presentation/guards/permissions.guard';
 import { TOKEN_SERVICE } from '../../shared/application/ports/token-service.port';
+import { PrivacyModule } from '../privacy/privacy.module';
 import { UsersModule } from '../users/users.module';
 import { REFRESH_TOKEN_REPOSITORY } from './domain/repositories/refresh-token.repository';
 import { CloseAccountUseCase } from './application/use-cases/close-account.use-case';
@@ -27,6 +28,7 @@ import { AuthController } from './presentation/controllers/auth.controller';
     TypeOrmModule.forFeature([RefreshTokenOrmEntity]),
     UsersModule,
     SecurityModule,
+    PrivacyModule,
   ],
   controllers: [AuthController],
   providers: [

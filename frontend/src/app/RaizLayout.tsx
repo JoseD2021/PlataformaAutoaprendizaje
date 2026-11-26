@@ -4,7 +4,10 @@ import { BotonHorarioNormas } from '../features/sala/presentation/components/Bot
 export function RaizLayout() {
   const { pathname } = useLocation()
   const enGestion =
-    pathname.startsWith('/gestion') || pathname.startsWith('/admin') || pathname.startsWith('/horario')
+    pathname.startsWith('/gestion') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/horario') ||
+    pathname.startsWith('/privacidad')
 
   return (
     <>

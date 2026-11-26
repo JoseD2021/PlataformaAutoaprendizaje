@@ -1,7 +1,8 @@
 import { RegisterUserUseCase } from './register-user.use-case';
 import { Role } from '../../../users/domain/enums/role.enum';
 import { EmailAlreadyInUseError, RoleNotFoundError } from '../../../users/application/errors/user.errors';
-import { CURRENT_PRIVACY_TERMS } from '../../../privacy/domain/privacy-terms';
+import { PrivacyTerms } from '../../../privacy/domain/entities/privacy-terms.entity';
+import { PrivacyTermsRepository } from '../../../privacy/domain/repositories/privacy-terms.repository';
 import {
   PrivacyTermsNotAcceptedError,
   PrivacyTermsVersionMismatchError,
@@ -14,22 +15,38 @@ import {
   makeUser,
 } from '../../../../../test/support/fakes';
 
+class InMemoryPrivacyTermsRepository extends PrivacyTermsRepository {
+  constructor(private current: PrivacyTerms | null) { super(); }
+  async findCurrent() { return this.current; }
+  async save(terms: PrivacyTerms) { this.current = terms; return terms; }
+}
+
+const CURRENT_TERMS = PrivacyTerms.create({
+  id: 'terms-1',
+  version: '1.0',
+  effectiveDate: '2026-11-12',
+  title: 'Aviso',
+  sections: [{ title: 'Sección', paragraphs: ['Texto'] }],
+});
+
 const TERMS_ACCEPTED = {
   privacyTermsAccepted: true,
-  privacyTermsVersion: CURRENT_PRIVACY_TERMS.version,
+  privacyTermsVersion: CURRENT_TERMS.version,
 };
 
 describe('RegisterUserUseCase', () => {
   let users: InMemoryUserRepository;
   let roles: InMemoryRoleRepository;
   let passwordHasher: FakePasswordHasher;
+  let privacyTerms: InMemoryPrivacyTermsRepository;
   let useCase: RegisterUserUseCase;
 
   beforeEach(() => {
     users = new InMemoryUserRepository();
     roles = new InMemoryRoleRepository();
     passwordHasher = new FakePasswordHasher();
-    useCase = new RegisterUserUseCase(users, roles, passwordHasher);
+    privacyTerms = new InMemoryPrivacyTermsRepository(CURRENT_TERMS);
+    useCase = new RegisterUserUseCase(users, roles, passwordHasher, privacyTerms);
   });
 
   it('registra un usuario común por defecto y cifra la contraseña', async () => {
@@ -46,7 +63,7 @@ describe('RegisterUserUseCase', () => {
     expect(user.passwordHash).toBe('hashed:Password123');
     expect(user.isActive).toBe(true);
     expect(user.privacyTermsAcceptedAt).toBeInstanceOf(Date);
-    expect(user.privacyTermsVersion).toBe(CURRENT_PRIVACY_TERMS.version);
+    expect(user.privacyTermsVersion).toBe(CURRENT_TERMS.version);
     expect(users.all).toHaveLength(1);
   });
 
@@ -57,7 +74,7 @@ describe('RegisterUserUseCase', () => {
         password: 'Password123',
         fullName: 'Nuevo Usuario',
         privacyTermsAccepted: false,
-        privacyTermsVersion: CURRENT_PRIVACY_TERMS.version,
+        privacyTermsVersion: CURRENT_TERMS.version,
       }),
     ).rejects.toThrow(PrivacyTermsNotAcceptedError);
 
@@ -80,7 +97,7 @@ describe('RegisterUserUseCase', () => {
 
   it('rechaza un correo ya registrado', async () => {
     users = new InMemoryUserRepository([makeUser()]);
-    useCase = new RegisterUserUseCase(users, roles, passwordHasher);
+    useCase = new RegisterUserUseCase(users, roles, passwordHasher, privacyTerms);
 
     await expect(
       useCase.execute({
@@ -94,7 +111,7 @@ describe('RegisterUserUseCase', () => {
 
   it('rechaza el registro si no existe la definición del rol usuario', async () => {
     roles = new InMemoryRoleRepository([makeRole(Role.ADMINISTRADOR, 30)]);
-    useCase = new RegisterUserUseCase(users, roles, passwordHasher);
+    useCase = new RegisterUserUseCase(users, roles, passwordHasher, privacyTerms);
 
     await expect(
       useCase.execute({
