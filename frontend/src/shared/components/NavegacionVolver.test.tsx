@@ -33,7 +33,7 @@ function usuario(rol: Usuario['rol']): Usuario {
 const acciones = [
   ['link', 'Gestionar usuarios'],
   ['link', 'Guías y categorías'],
-  ['button', 'Horario de la sala'],
+  ['link', 'Horario de la sala'],
   ['button', 'Gestionar roles'],
   ['button', 'Tratamiento de datos'],
 ] as const
@@ -50,7 +50,7 @@ describe('NavegacionVolver', () => {
     expect(screen.getByRole('link', { name: 'Volver al inicio' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Gestionar usuarios' })).toHaveAttribute('href', '/admin')
     expect(screen.getByRole('link', { name: 'Guías y categorías' })).toHaveAttribute('href', '/gestion')
-    expect(screen.getByRole('button', { name: 'Horario de la sala' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Horario de la sala' })).toHaveAttribute('href', '/horario')
     expect(screen.getByRole('button', { name: 'Gestionar roles' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Tratamiento de datos' })).toBeInTheDocument()
   })

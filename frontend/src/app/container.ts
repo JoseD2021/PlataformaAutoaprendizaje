@@ -6,6 +6,7 @@ import { ListarGuiasPorCategoria } from '../features/guias/application/listar-gu
 import { ObtenerCategoria } from '../features/guias/application/obtener-categoria'
 import { ObtenerGuia } from '../features/guias/application/obtener-guia'
 import type { GuiasRepository } from '../features/guias/domain/guias-repository'
+import { ActualizarInformacionSala } from '../features/sala/application/actualizar-informacion-sala'
 import { ObtenerInformacionSala } from '../features/sala/application/obtener-informacion-sala'
 import { SalaHttpRepository } from '../features/sala/infrastructure/sala-http-repository'
 import { AuthHttpRepository } from '../features/auth/infrastructure/auth-http-repository'
@@ -47,6 +48,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const privacidadRepo = new PrivacidadHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
+    actualizarInformacionSala: new ActualizarInformacionSala(salaRepo),
     listarCategorias: new ListarCategorias(repo),
     listarGuiasPorCategoria: new ListarGuiasPorCategoria(repo),
     obtenerCategoria: new ObtenerCategoria(repo),
