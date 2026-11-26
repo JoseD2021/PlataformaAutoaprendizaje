@@ -7,8 +7,10 @@ import { SecurityModule } from '../../shared/infrastructure/security/security.mo
 import { JwtAuthGuard } from '../../shared/presentation/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../../shared/presentation/guards/permissions.guard';
 import { TOKEN_SERVICE } from '../../shared/application/ports/token-service.port';
+import { PrivacyModule } from '../privacy/privacy.module';
 import { UsersModule } from '../users/users.module';
 import { REFRESH_TOKEN_REPOSITORY } from './domain/repositories/refresh-token.repository';
+import { AcceptPrivacyTermsUseCase } from './application/use-cases/accept-privacy-terms.use-case';
 import { CloseAccountUseCase } from './application/use-cases/close-account.use-case';
 import { GetProfileUseCase } from './application/use-cases/get-profile.use-case';
 import { LoginUseCase } from './application/use-cases/login.use-case';
@@ -27,6 +29,7 @@ import { AuthController } from './presentation/controllers/auth.controller';
     TypeOrmModule.forFeature([RefreshTokenOrmEntity]),
     UsersModule,
     SecurityModule,
+    PrivacyModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -36,6 +39,7 @@ import { AuthController } from './presentation/controllers/auth.controller';
     GetProfileUseCase,
     RegisterUserUseCase,
     CloseAccountUseCase,
+    AcceptPrivacyTermsUseCase,
     { provide: REFRESH_TOKEN_REPOSITORY, useClass: TypeOrmRefreshTokenRepository },
     { provide: TOKEN_SERVICE, useClass: JwtTokenService },
     { provide: SESSION_CACHE, useClass: SessionCacheService },

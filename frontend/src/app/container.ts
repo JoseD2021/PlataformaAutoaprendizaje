@@ -6,9 +6,11 @@ import { ListarGuiasPorCategoria } from '../features/guias/application/listar-gu
 import { ObtenerCategoria } from '../features/guias/application/obtener-categoria'
 import { ObtenerGuia } from '../features/guias/application/obtener-guia'
 import type { GuiasRepository } from '../features/guias/domain/guias-repository'
+import { ActualizarInformacionSala } from '../features/sala/application/actualizar-informacion-sala'
 import { ObtenerInformacionSala } from '../features/sala/application/obtener-informacion-sala'
 import { SalaHttpRepository } from '../features/sala/infrastructure/sala-http-repository'
 import { AuthHttpRepository } from '../features/auth/infrastructure/auth-http-repository'
+import { AceptarTerminosPrivacidad } from '../features/auth/application/aceptar-terminos-privacidad'
 import { CerrarSesion } from '../features/auth/application/cerrar-sesion'
 import { IniciarSesion } from '../features/auth/application/iniciar-sesion'
 import { ObtenerPerfil } from '../features/auth/application/obtener-perfil'
@@ -35,6 +37,7 @@ import { ListarUsuarios } from '../features/admin/application/listar-usuarios'
 import { CambiarRolUsuario } from '../features/admin/application/cambiar-rol-usuario'
 import { ListarRoles } from '../features/admin/application/listar-roles'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
+import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
@@ -47,6 +50,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const privacidadRepo = new PrivacidadHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
+    actualizarInformacionSala: new ActualizarInformacionSala(salaRepo),
     listarCategorias: new ListarCategorias(repo),
     listarGuiasPorCategoria: new ListarGuiasPorCategoria(repo),
     obtenerCategoria: new ObtenerCategoria(repo),
@@ -56,6 +60,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     registrarUsuario: new RegistrarUsuario(authRepo),
     cerrarSesion: new CerrarSesion(authRepo),
     obtenerPerfil: new ObtenerPerfil(authRepo),
+    aceptarTerminosPrivacidad: new AceptarTerminosPrivacidad(authRepo),
     listarFavoritos: new ListarFavoritos(favoritosRepo),
     agregarFavorito: new AgregarFavorito(favoritosRepo),
     quitarFavorito: new QuitarFavorito(favoritosRepo),
@@ -75,6 +80,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
     listarRoles: new ListarRoles(adminRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
+    actualizarTerminosPrivacidad: new ActualizarTerminosPrivacidad(privacidadRepo),
   }
 }
 

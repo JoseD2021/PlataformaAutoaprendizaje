@@ -13,6 +13,7 @@ interface AuthContextValor {
   iniciarSesion: (credenciales: Credenciales) => Promise<Usuario>
   registrar: (datos: DatosRegistro) => Promise<void>
   cerrarSesion: () => Promise<void>
+  aceptarTerminosPrivacidad: (version: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValor | null>(null)
@@ -74,8 +75,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryClient.clear()
   }
 
+  async function aceptarTerminosPrivacidad(version: string) {
+    setError(null)
+    try {
+      const actualizado = await container.aceptarTerminosPrivacidad.execute(version)
+      setUsuario(actualizado)
+    } catch (err) {
+      setError(obtenerMensajeError(err))
+      throw err
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ usuario, cargando, error, iniciarSesion, registrar, cerrarSesion }}>
+    <AuthContext.Provider
+      value={{ usuario, cargando, error, iniciarSesion, registrar, cerrarSesion, aceptarTerminosPrivacidad }}
+    >
       {children}
     </AuthContext.Provider>
   )

@@ -1,8 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type {
-  PrivacyTermsDocument,
-  PrivacyTermsSection,
-} from '../../domain/privacy-terms';
+import type { PrivacyTerms, PrivacyTermsSectionProps } from '../../domain/entities/privacy-terms.entity';
 
 export class PrivacyTermsSectionResponseDto {
   @ApiProperty({ example: 'Qué datos personales recopilamos' })
@@ -11,7 +8,7 @@ export class PrivacyTermsSectionResponseDto {
   @ApiProperty({ type: [String] })
   paragraphs: string[];
 
-  static from(section: PrivacyTermsSection): PrivacyTermsSectionResponseDto {
+  static from(section: PrivacyTermsSectionProps): PrivacyTermsSectionResponseDto {
     const dto = new PrivacyTermsSectionResponseDto();
     dto.title = section.title;
     dto.paragraphs = [...section.paragraphs];
@@ -33,7 +30,7 @@ export class PrivacyTermsResponseDto {
   @ApiProperty({ type: [PrivacyTermsSectionResponseDto] })
   sections: PrivacyTermsSectionResponseDto[];
 
-  static from(source: PrivacyTermsDocument): PrivacyTermsResponseDto {
+  static from(source: PrivacyTerms): PrivacyTermsResponseDto {
     const dto = new PrivacyTermsResponseDto();
     dto.version = source.version;
     dto.effectiveDate = source.effectiveDate;

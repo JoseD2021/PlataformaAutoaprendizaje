@@ -24,12 +24,15 @@ import type { AuthenticatedUser } from '../../../../shared/application/models/au
 import { CurrentUser } from '../../../../shared/presentation/decorators/current-user.decorator';
 import { Public } from '../../../../shared/presentation/decorators/public.decorator';
 import { ApiErrorResponseDto } from '../../../../shared/presentation/dto/api-error-response.dto';
+import { PrivacyTermsRepository } from '../../../privacy/domain/repositories/privacy-terms.repository';
+import { AcceptPrivacyTermsUseCase } from '../../application/use-cases/accept-privacy-terms.use-case';
 import { CloseAccountUseCase } from '../../application/use-cases/close-account.use-case';
 import { GetProfileUseCase } from '../../application/use-cases/get-profile.use-case';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LogoutUseCase } from '../../application/use-cases/logout.use-case';
 import { RefreshTokenUseCase } from '../../application/use-cases/refresh-token.use-case';
 import { RegisterUserUseCase } from '../../application/use-cases/register-user.use-case';
+import { AcceptPrivacyTermsDto } from '../dtos/accept-privacy-terms.dto';
 import { AuthResponseDto } from '../dtos/auth-response.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
@@ -46,6 +49,8 @@ export class AuthController {
     private readonly getProfileUseCase: GetProfileUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly closeAccountUseCase: CloseAccountUseCase,
+    private readonly acceptPrivacyTermsUseCase: AcceptPrivacyTermsUseCase,
+    private readonly privacyTermsRepository: PrivacyTermsRepository,
   ) {}
 
   @Public()
@@ -62,8 +67,8 @@ export class AuthController {
       privacyTermsAccepted: dto.privacyTermsAccepted,
       privacyTermsVersion: dto.privacyTermsVersion,
     });
-
-    return UserResponseDto.from(user);
+    const currentTerms = await this.privacyTermsRepository.findCurrent();
+    return UserResponseDto.from(user, currentTerms?.version ?? null);
   }
 
   @Public()
@@ -80,8 +85,8 @@ export class AuthController {
       ipAddress: request.ip,
       userAgent: request.headers['user-agent'],
     });
-
-    return AuthResponseDto.from(result);
+    const currentTerms = await this.privacyTermsRepository.findCurrent();
+    return AuthResponseDto.from(result, currentTerms?.version ?? null);
   }
 
   @Public()
@@ -95,8 +100,8 @@ export class AuthController {
     const result = await this.refreshTokenUseCase.execute({
       refreshToken: dto.refreshToken,
     });
-
-    return AuthResponseDto.from(result);
+    const currentTerms = await this.privacyTermsRepository.findCurrent();
+    return AuthResponseDto.from(result, currentTerms?.version ?? null);
   }
 
   @Public()
@@ -117,8 +122,28 @@ export class AuthController {
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   async me(@CurrentUser() user: AuthenticatedUser): Promise<UserResponseDto> {
     const profile = await this.getProfileUseCase.execute(user.id);
+    const currentTerms = await this.privacyTermsRepository.findCurrent();
+    return UserResponseDto.from(profile, currentTerms?.version ?? null);
+  }
 
-    return UserResponseDto.from(profile);
+  @Post('privacy-terms/accept')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Aceptar la versión vigente del aviso de privacidad' })
+  @ApiOkResponse({ type: UserResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiConflictResponse({ type: ApiErrorResponseDto })
+  async acceptPrivacyTerms(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: AcceptPrivacyTermsDto,
+  ): Promise<UserResponseDto> {
+    const updated = await this.acceptPrivacyTermsUseCase.execute({
+      userId: user.id,
+      privacyTermsVersion: dto.privacyTermsVersion,
+    });
+    const currentTerms = await this.privacyTermsRepository.findCurrent();
+    return UserResponseDto.from(updated, currentTerms?.version ?? null);
   }
 
   @Delete('me')

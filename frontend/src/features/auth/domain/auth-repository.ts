@@ -5,4 +5,5 @@ export interface AuthRepository {
   registrar(datos: DatosRegistro): Promise<Usuario>
   cerrarSesion(refreshToken: string): Promise<void>
   obtenerPerfil(): Promise<Usuario>
+  aceptarTerminosPrivacidad(version: string): Promise<Usuario>
 }

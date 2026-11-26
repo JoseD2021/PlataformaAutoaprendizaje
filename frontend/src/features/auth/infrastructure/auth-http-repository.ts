@@ -10,6 +10,8 @@ interface UsuarioBackendDto {
   fullName: string
   role: Rol
   isActive: boolean
+  privacyTermsVersion: string | null
+  requiresPrivacyTermsAcceptance: boolean
 }
 
 interface AuthResponseBackendDto {
@@ -28,6 +30,8 @@ function mapearUsuario(dto: UsuarioBackendDto): Usuario {
     nombreCompleto: dto.fullName,
     rol: dto.role,
     activo: dto.isActive,
+    versionTerminosPrivacidad: dto.privacyTermsVersion ?? null,
+    requiereAceptarTerminosPrivacidad: dto.requiresPrivacyTermsAcceptance ?? false,
   }
 }
 
@@ -77,6 +81,14 @@ export class AuthHttpRepository implements AuthRepository {
 
   async obtenerPerfil(): Promise<Usuario> {
     const { data } = await this.http.get<UsuarioBackendDto>('/auth/me')
+    return mapearUsuario(data)
+  }
+
+  async aceptarTerminosPrivacidad(version: string): Promise<Usuario> {
+    const { data } = await this.http.post<UsuarioBackendDto>('/auth/privacy-terms/accept', {
+      privacyTermsAccepted: true,
+      privacyTermsVersion: version,
+    })
     return mapearUsuario(data)
   }
 }

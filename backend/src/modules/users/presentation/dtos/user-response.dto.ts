@@ -43,13 +43,19 @@ export class UserResponseDto {
   })
   privacyTermsVersion: string | null;
 
+  @ApiProperty({
+    example: false,
+    description: 'Indica si el usuario debe aceptar una versión vigente del aviso de privacidad.',
+  })
+  requiresPrivacyTermsAcceptance: boolean;
+
   @ApiProperty({ format: 'date-time' })
   createdAt: Date;
 
   @ApiProperty({ format: 'date-time' })
   updatedAt: Date;
 
-  static from(source: UserResponseSource): UserResponseDto {
+  static from(source: UserResponseSource, currentPrivacyTermsVersion?: string | null): UserResponseDto {
     const dto = new UserResponseDto();
     dto.id = source.id;
     dto.email = source.email;
@@ -58,6 +64,10 @@ export class UserResponseDto {
     dto.isActive = source.isActive;
     dto.privacyTermsAcceptedAt = source.privacyTermsAcceptedAt;
     dto.privacyTermsVersion = source.privacyTermsVersion;
+    dto.requiresPrivacyTermsAcceptance =
+      typeof currentPrivacyTermsVersion === 'string' &&
+      currentPrivacyTermsVersion.length > 0 &&
+      source.privacyTermsVersion !== currentPrivacyTermsVersion;
     dto.createdAt = source.createdAt;
     dto.updatedAt = source.updatedAt;
 

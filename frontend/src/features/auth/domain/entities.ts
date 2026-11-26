@@ -6,6 +6,8 @@ export interface Usuario {
   nombreCompleto: string
   rol: Rol
   activo: boolean
+  versionTerminosPrivacidad: string | null
+  requiereAceptarTerminosPrivacidad: boolean
 }
 
 export interface Tokens {

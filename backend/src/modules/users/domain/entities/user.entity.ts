@@ -148,4 +148,18 @@ export class User {
     this.props.role = role;
     this.props.updatedAt = now;
   }
+
+  acceptPrivacyTerms(version: string, acceptedAt: Date = new Date()): void {
+    const normalizedVersion = User.normalizePrivacyTermsVersion(version);
+    if (!normalizedVersion) {
+      throw new InvalidUserError('La versión del aviso de privacidad es obligatoria.');
+    }
+    if (Number.isNaN(acceptedAt.getTime())) {
+      throw new InvalidUserError('La fecha de aceptación del aviso de privacidad no es válida.');
+    }
+
+    this.props.privacyTermsAcceptedAt = acceptedAt;
+    this.props.privacyTermsVersion = normalizedVersion;
+    this.props.updatedAt = acceptedAt;
+  }
 }
