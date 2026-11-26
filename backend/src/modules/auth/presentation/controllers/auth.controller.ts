@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
 } from '@nestjs/common';
@@ -26,6 +27,8 @@ import { Public } from '../../../../shared/presentation/decorators/public.decora
 import { ApiErrorResponseDto } from '../../../../shared/presentation/dto/api-error-response.dto';
 import { PrivacyTermsRepository } from '../../../privacy/domain/repositories/privacy-terms.repository';
 import { AcceptPrivacyTermsUseCase } from '../../application/use-cases/accept-privacy-terms.use-case';
+import { ChangeNameUseCase } from '../../application/use-cases/change-name.use-case';
+import { ChangePasswordUseCase } from '../../application/use-cases/change-password.use-case';
 import { CloseAccountUseCase } from '../../application/use-cases/close-account.use-case';
 import { GetProfileUseCase } from '../../application/use-cases/get-profile.use-case';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
@@ -34,6 +37,8 @@ import { RefreshTokenUseCase } from '../../application/use-cases/refresh-token.u
 import { RegisterUserUseCase } from '../../application/use-cases/register-user.use-case';
 import { AcceptPrivacyTermsDto } from '../dtos/accept-privacy-terms.dto';
 import { AuthResponseDto } from '../dtos/auth-response.dto';
+import { ChangeNameDto } from '../dtos/change-name.dto';
+import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { RegisterDto } from '../dtos/register.dto';
@@ -50,6 +55,8 @@ export class AuthController {
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly closeAccountUseCase: CloseAccountUseCase,
     private readonly acceptPrivacyTermsUseCase: AcceptPrivacyTermsUseCase,
+    private readonly changePasswordUseCase: ChangePasswordUseCase,
+    private readonly changeNameUseCase: ChangeNameUseCase,
     private readonly privacyTermsRepository: PrivacyTermsRepository,
   ) {}
 
@@ -124,6 +131,44 @@ export class AuthController {
     const profile = await this.getProfileUseCase.execute(user.id);
     const currentTerms = await this.privacyTermsRepository.findCurrent();
     return UserResponseDto.from(profile, currentTerms?.version ?? null);
+  }
+
+  @Patch('me/password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: 'Cambiar la contraseña del usuario autenticado',
+    description: 'Revoca todas las sesiones activas; es necesario iniciar sesión de nuevo.',
+  })
+  @ApiNoContentResponse()
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    await this.changePasswordUseCase.execute({
+      userId: user.id,
+      currentPassword: dto.currentPassword,
+      newPassword: dto.newPassword,
+    });
+  }
+
+  @Patch('me/name')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Cambiar el nombre completo del usuario autenticado' })
+  @ApiNoContentResponse()
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  async changeName(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangeNameDto,
+  ): Promise<void> {
+    await this.changeNameUseCase.execute({
+      userId: user.id,
+      fullName: dto.fullName,
+    });
   }
 
   @Post('privacy-terms/accept')

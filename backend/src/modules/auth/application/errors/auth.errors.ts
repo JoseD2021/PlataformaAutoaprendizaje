@@ -12,6 +12,12 @@ export class InvalidTokenError extends ApplicationError {
   }
 }
 
+export class IncorrectCurrentPasswordError extends ApplicationError {
+  constructor() {
+    super('INCORRECT_CURRENT_PASSWORD', 'La contraseña actual es incorrecta.', 401);
+  }
+}
+
 export class PrivacyTermsNotAcceptedError extends ApplicationError {
   constructor() {
     super(
