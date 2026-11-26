@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecurityModule } from '../../shared/infrastructure/security/security.module';
+import { PrivacyModule } from '../privacy/privacy.module';
 import { ROLE_REPOSITORY } from './domain/repositories/role.repository';
 import { USER_REPOSITORY } from './domain/repositories/user.repository';
 import { CreateRoleUseCase } from './application/use-cases/create-role.use-case';
@@ -40,7 +41,7 @@ const useCases = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserOrmEntity, RoleOrmEntity]), SecurityModule],
+  imports: [TypeOrmModule.forFeature([UserOrmEntity, RoleOrmEntity]), SecurityModule, PrivacyModule],
   controllers: [UsersController, RolesController],
   providers: [...repositories, ...useCases, AdminSeedService],
   exports: [USER_REPOSITORY, ROLE_REPOSITORY, GetPrincipalUseCase],

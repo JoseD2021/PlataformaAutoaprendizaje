@@ -33,6 +33,8 @@ function usuario(rol: Usuario['rol']): Usuario {
     nombreCompleto: 'Ana Pérez',
     rol,
     activo: true,
+    versionTerminosPrivacidad: '1.0',
+    requiereAceptarTerminosPrivacidad: false,
   }
 }
 

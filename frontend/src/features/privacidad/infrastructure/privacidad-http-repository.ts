@@ -38,4 +38,15 @@ export class PrivacidadHttpRepository implements PrivacidadRepository {
     const { data } = await this.http.get<TerminosBackendDto>('/privacy/terms')
     return mapearTerminos(data)
   }
+
+  async actualizarTerminos(datos: TerminosPrivacidad): Promise<TerminosPrivacidad> {
+    const payload = {
+      version: datos.version,
+      effectiveDate: datos.fechaVigencia,
+      title: datos.titulo,
+      sections: datos.secciones.map((s) => ({ title: s.titulo, paragraphs: s.parrafos })),
+    }
+    const { data } = await this.http.put<TerminosBackendDto>('/privacy/terms', payload)
+    return mapearTerminos(data)
+  }
 }

@@ -36,7 +36,15 @@ function haceMinutos(minutos: number) {
 }
 
 function usuario(rol: Usuario['rol']): Usuario {
-  return { id: 'u1', email: 'x@clena.local', nombreCompleto: 'Luis Gómez', rol, activo: true }
+  return {
+    id: 'u1',
+    email: 'x@clena.local',
+    nombreCompleto: 'Luis Gómez',
+    rol,
+    activo: true,
+    versionTerminosPrivacidad: null,
+    requiereAceptarTerminosPrivacidad: false,
+  }
 }
 
 function renderizar() {

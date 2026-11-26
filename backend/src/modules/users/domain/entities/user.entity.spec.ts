@@ -61,4 +61,51 @@ describe('User', () => {
       expect(user.updatedAt).toEqual(user.createdAt);
     });
   });
+
+  describe('changePasswordHash', () => {
+    it('cambia el hash y actualiza la fecha de modificación', () => {
+      const createdAt = new Date('2026-01-01T00:00:00.000Z');
+      const changedAt = new Date('2026-02-01T00:00:00.000Z');
+      const user = makeUser({ createdAt, updatedAt: createdAt });
+
+      user.changePasswordHash('hashed:NuevaSegura123', changedAt);
+
+      expect(user.passwordHash).toBe('hashed:NuevaSegura123');
+      expect(user.updatedAt).toEqual(changedAt);
+    });
+
+    it('rechaza un hash vacío', () => {
+      const user = makeUser();
+
+      expect(() => user.changePasswordHash('   ')).toThrow(InvalidUserError);
+    });
+  });
+
+  describe('changeFullName', () => {
+    it('normaliza el nombre y actualiza la fecha de modificación', () => {
+      const createdAt = new Date('2026-01-01T00:00:00.000Z');
+      const changedAt = new Date('2026-02-01T00:00:00.000Z');
+      const user = makeUser({ createdAt, updatedAt: createdAt });
+
+      user.changeFullName('  Ana Pérez  ', changedAt);
+
+      expect(user.fullName).toBe('Ana Pérez');
+      expect(user.updatedAt).toEqual(changedAt);
+    });
+
+    it('rechaza un nombre fuera de los límites permitidos', () => {
+      const user = makeUser();
+
+      expect(() => user.changeFullName('A')).toThrow(InvalidUserError);
+      expect(() => user.changeFullName('x'.repeat(121))).toThrow(InvalidUserError);
+    });
+
+    it('no modifica la fecha si el nombre es el mismo', () => {
+      const user = makeUser({ fullName: 'Ana Pérez' });
+
+      user.changeFullName('  Ana Pérez  ');
+
+      expect(user.updatedAt).toEqual(user.createdAt);
+    });
+  });
 });

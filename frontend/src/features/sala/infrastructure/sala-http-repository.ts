@@ -1,5 +1,5 @@
-import type { AxiosInstance } from "axios"
-import type { SalaRepository } from "../domain/sala-repository"
+import type { AxiosInstance } from 'axios'
+import type { SalaRepository } from '../domain/sala-repository'
 import type { InformacionSala } from '../domain/entities'
 import { httpClient } from '../../../shared/http/client'
 
@@ -10,8 +10,13 @@ export class SalaHttpRepository implements SalaRepository {
     this.http = http
   }
 
-  async obtenerInformacion(): Promise<InformacionSala>{
+  async obtenerInformacion(): Promise<InformacionSala> {
     const { data } = await this.http.get<InformacionSala>('/sala/informacion')
+    return data
+  }
+
+  async actualizarInformacion(datos: InformacionSala): Promise<InformacionSala> {
+    const { data } = await this.http.put<InformacionSala>('/sala/informacion', datos)
     return data
   }
 }

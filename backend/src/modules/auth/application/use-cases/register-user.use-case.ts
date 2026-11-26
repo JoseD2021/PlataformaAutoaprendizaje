@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PASSWORD_HASHER, PasswordHasher } from '../../../../shared/application/ports/password-hasher.port';
-import { CURRENT_PRIVACY_TERMS } from '../../../privacy/domain/privacy-terms';
+import { PrivacyTermsRepository } from '../../../privacy/domain/repositories/privacy-terms.repository';
 import { User } from '../../../users/domain/entities/user.entity';
 import { Role } from '../../../users/domain/enums/role.enum';
 import { ROLE_REPOSITORY, RoleRepository } from '../../../users/domain/repositories/role.repository';
@@ -27,6 +27,7 @@ export class RegisterUserUseCase {
     @Inject(USER_REPOSITORY) private readonly users: UserRepository,
     @Inject(ROLE_REPOSITORY) private readonly roles: RoleRepository,
     @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasher,
+    private readonly privacyTermsRepository: PrivacyTermsRepository,
   ) {}
 
   async execute(input: RegisterUserInput): Promise<User> {
@@ -36,11 +37,16 @@ export class RegisterUserUseCase {
       throw new PrivacyTermsNotAcceptedError();
     }
 
+    const currentTerms = await this.privacyTermsRepository.findCurrent();
+    if (!currentTerms) {
+      throw new PrivacyTermsVersionMismatchError('vigente');
+    }
+
     const acceptedVersion =
       typeof input.privacyTermsVersion === 'string' ? input.privacyTermsVersion.trim() : '';
 
-    if (acceptedVersion !== CURRENT_PRIVACY_TERMS.version) {
-      throw new PrivacyTermsVersionMismatchError(CURRENT_PRIVACY_TERMS.version);
+    if (acceptedVersion !== currentTerms.version) {
+      throw new PrivacyTermsVersionMismatchError(currentTerms.version);
     }
 
     const role = Role.USUARIO;
@@ -63,7 +69,7 @@ export class RegisterUserUseCase {
       fullName: input.fullName,
       role,
       privacyTermsAcceptedAt: acceptedAt,
-      privacyTermsVersion: CURRENT_PRIVACY_TERMS.version,
+      privacyTermsVersion: currentTerms.version,
       createdAt: acceptedAt,
     });
 

@@ -10,6 +10,8 @@ import { FavoritosPage } from '../features/favoritos/presentation/pages/Favorito
 import { GestionPage } from '../features/gestion/presentation/pages/GestionPage'
 import { GuiaFormPage } from '../features/gestion/presentation/pages/GuiaFormPage'
 import { RutaProtegida } from '../features/gestion/presentation/components/RutaProtegida'
+import { HorarioSalaPage } from '../features/sala/presentation/pages/HorarioSalaPage'
+import { PrivacidadAdminPage } from '../features/privacidad/presentation/pages/PrivacidadAdminPage'
 import type { Rol } from '../features/auth/domain/entities'
 import { RaizLayout } from './RaizLayout'
 
@@ -26,6 +28,8 @@ export const router = createBrowserRouter([
       { path: '/login', element: <LoginPage /> },
       { path: '/registro', element: <RegistroPage /> },
       { path: '/admin', element: <AdminPanelPage /> },
+      { path: '/horario', element: <HorarioSalaPage /> },
+      { path: '/privacidad', element: <PrivacidadAdminPage /> },
       { path: '/favoritos', element: <FavoritosPage /> },
       {
         path: '/gestion',

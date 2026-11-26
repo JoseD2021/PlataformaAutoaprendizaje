@@ -40,17 +40,17 @@ export function NavegacionVolver({
             <BookOpen aria-hidden size={18} /> Guías y categorías
           </Link>
           <span className="separador-nav" aria-hidden>·</span>
-          <button type="button" className="btn-enlace">
+          <Link to="/horario" className="btn-enlace">
             <Clock aria-hidden size={18} /> Horario de la sala
-          </button>
+          </Link>
           <span className="separador-nav" aria-hidden>·</span>
           <button type="button" className="btn-enlace">
             <FileText aria-hidden size={18} /> Gestionar roles
           </button>
           <span className="separador-nav" aria-hidden>·</span>
-          <button type="button" className="btn-enlace">
+          <Link to="/privacidad" className="btn-enlace">
             <FileText aria-hidden size={18} /> Tratamiento de datos
-          </button>
+          </Link>
         </>
       )}
     </nav>

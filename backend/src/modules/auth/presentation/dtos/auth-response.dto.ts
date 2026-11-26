@@ -37,9 +37,9 @@ export class AuthResponseDto {
   @ApiProperty({ type: AuthTokensDto })
   tokens: AuthTokensDto;
 
-  static from(result: AuthResult): AuthResponseDto {
+  static from(result: AuthResult, currentPrivacyTermsVersion?: string | null): AuthResponseDto {
     const dto = new AuthResponseDto();
-    dto.user = UserResponseDto.from(result.user);
+    dto.user = UserResponseDto.from(result.user, currentPrivacyTermsVersion);
     dto.tokens = AuthTokensDto.from(result.tokens);
 
     return dto;

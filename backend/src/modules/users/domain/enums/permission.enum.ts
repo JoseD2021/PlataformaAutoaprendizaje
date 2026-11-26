@@ -28,6 +28,7 @@ export enum Permission {
   FAVORITES_MANAGE = 'favorites:manage',
 
   ROOM_INFO_MANAGE = 'room-info:manage',
+  PRIVACY_TERMS_MANAGE = 'privacy-terms:manage',
 }
 
 export const ALL_PERMISSIONS: Permission[] = Object.values(Permission);
