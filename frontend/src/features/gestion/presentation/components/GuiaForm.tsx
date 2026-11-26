@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { ArrowDown, ArrowUp, Plus, Save, Trash2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, Plus, Save, Trash2, Upload } from 'lucide-react'
 import type { CategoriaGestion, DatosGuia, PasoEditable } from '../../domain/entities'
+import { mensajeDeError } from '../mensaje-error'
 
 interface PasoForm extends PasoEditable {
   clave: number
@@ -24,9 +25,18 @@ interface Props {
   error: string | null
   textoBoton: string
   onGuardar: (datos: DatosGuia) => void
+  onSubirImagen: (archivo: File) => Promise<string>
 }
 
-export function GuiaForm({ inicial, categorias, enviando, error, textoBoton, onGuardar }: Props) {
+export function GuiaForm({
+  inicial,
+  categorias,
+  enviando,
+  error,
+  textoBoton,
+  onGuardar,
+  onSubirImagen,
+}: Props) {
   const [titulo, setTitulo] = useState(inicial.titulo)
   const [categoriaId, setCategoriaId] = useState(inicial.categoriaId)
   const [minutos, setMinutos] = useState(String(inicial.minutosEstimados || ''))
@@ -38,6 +48,8 @@ export function GuiaForm({ inicial, categorias, enviando, error, textoBoton, onG
       ? inicial.pasos.map((p) => ({ ...p, clave: nuevaClave() }))
       : [pasoVacio()],
   )
+  const [subiendoPaso, setSubiendoPaso] = useState<number | null>(null)
+  const [errorSubida, setErrorSubida] = useState<{ clave: number; mensaje: string } | null>(null)
 
   function cambiarPaso(clave: number, campo: keyof PasoEditable, valor: string) {
     setPasos((actuales) => actuales.map((p) => (p.clave === clave ? { ...p, [campo]: valor } : p)))
@@ -55,6 +67,19 @@ export function GuiaForm({ inicial, categorias, enviando, error, textoBoton, onG
 
   function quitarPaso(clave: number) {
     setPasos((actuales) => (actuales.length > 1 ? actuales.filter((p) => p.clave !== clave) : actuales))
+  }
+
+  async function subirImagen(clave: number, archivo: File) {
+    setErrorSubida(null)
+    setSubiendoPaso(clave)
+    try {
+      const url = await onSubirImagen(archivo)
+      cambiarPaso(clave, 'imagenUrl', url)
+    } catch (e) {
+      setErrorSubida({ clave, mensaje: mensajeDeError(e) })
+    } finally {
+      setSubiendoPaso(null)
+    }
   }
 
   function enviar(evento: FormEvent) {
@@ -190,6 +215,25 @@ export function GuiaForm({ inicial, categorias, enviando, error, textoBoton, onG
                 value={p.imagenUrl}
                 onChange={(e) => cambiarPaso(p.clave, 'imagenUrl', e.target.value)}
               />
+              <label className="gestion-etiqueta-archivo" htmlFor={`paso-${p.clave}-archivo`}>
+                <Upload aria-hidden size={16} /> Subir imagen desde el equipo
+              </label>
+              <input
+                id={`paso-${p.clave}-archivo`}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                disabled={subiendoPaso !== null}
+                onChange={(e) => {
+                  const archivo = e.target.files?.[0]
+                  e.target.value = ''
+                  if (archivo) void subirImagen(p.clave, archivo)
+                }}
+              />
+              <small>PNG, JPEG, WEBP o GIF de hasta 5 MB.</small>
+              {subiendoPaso === p.clave && <small role="status">Subiendo imagen…</small>}
+              {errorSubida?.clave === p.clave && (
+                <small role="alert" className="gestion-mensaje">{errorSubida.mensaje}</small>
+              )}
             </div>
             <div className="campo">
               <label htmlFor={`paso-${p.clave}-pie`}>Texto de la imagen (opcional)</label>
@@ -233,7 +277,7 @@ export function GuiaForm({ inicial, categorias, enviando, error, textoBoton, onG
       {error && <p role="alert" className="gestion-mensaje">{error}</p>}
 
       <div className="gestion-acciones">
-        <button type="submit" className="btn btn--verde" disabled={enviando}>
+        <button type="submit" className="btn btn--verde" disabled={enviando || subiendoPaso !== null}>
           <Save aria-hidden size={18} /> {enviando ? 'Guardando…' : textoBoton}
         </button>
       </div>

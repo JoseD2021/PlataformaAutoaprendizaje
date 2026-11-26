@@ -4,7 +4,12 @@ import { ArrowLeft } from 'lucide-react'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import type { DatosGuia } from '../../domain/entities'
 import { GuiaForm } from '../components/GuiaForm'
-import { useCategoriasGestion, useGuiaGestion, useMutacionesGestion } from '../hooks/useGestion'
+import {
+  useCategoriasGestion,
+  useGuiaGestion,
+  useMutacionesGestion,
+  useSubirImagenGuia,
+} from '../hooks/useGestion'
 import { mensajeDeError } from '../mensaje-error'
 import '../gestion.css'
 
@@ -24,6 +29,7 @@ export function GuiaFormPage() {
   const categorias = useCategoriasGestion()
   const guia = useGuiaGestion(id)
   const { crearGuia, actualizarGuia } = useMutacionesGestion()
+  const subirImagen = useSubirImagenGuia()
   const [error, setError] = useState<string | null>(null)
 
   async function guardar(datos: DatosGuia) {
@@ -74,6 +80,7 @@ export function GuiaFormPage() {
         error={error}
         textoBoton={id ? 'Guardar cambios' : 'Crear guía en borrador'}
         onGuardar={guardar}
+        onSubirImagen={(archivo) => subirImagen.mutateAsync(archivo)}
       />
     )
   }

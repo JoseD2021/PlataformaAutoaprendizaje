@@ -12,6 +12,7 @@ export interface GestionRepository {
   obtenerGuia(id: string): Promise<GuiaGestionDetalle | null>
   crearGuia(datos: DatosGuia): Promise<void>
   actualizarGuia(id: string, datos: DatosGuia): Promise<void>
+  subirImagen(archivo: File): Promise<string>
   eliminarGuia(id: string): Promise<void>
   cambiarEstadoGuia(id: string, estado: EstadoGuia): Promise<void>
 

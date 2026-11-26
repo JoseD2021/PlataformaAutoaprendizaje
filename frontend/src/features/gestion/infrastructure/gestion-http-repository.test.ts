@@ -79,7 +79,21 @@ describe('GestionHttpRepository', () => {
     expect(cuerpo.pasos[0].imagenUrl).toBeUndefined()
   })
 
+  it('sube una imagen con FormData y devuelve la URL pública', async () => {
+    const { repo, http } = crearRepo({ url: '/api/v1/guides/images/img-1' })
+    const archivo = new File(['contenido'], 'paso.png', { type: 'image/png' })
+
+    const url = await repo.subirImagen(archivo)
+
+    const [ruta, cuerpo] = http.post.mock.calls[0]
+    expect(ruta).toBe('/management/guides/images')
+    expect(cuerpo).toBeInstanceOf(FormData)
+    expect(cuerpo.get('file')).toBe(archivo)
+    expect(url).toMatch(/\/api\/v1\/guides\/images\/img-1$/)
+  })
+
   it('publica y oculta con PATCH al estado', async () => {
+
     const { repo, http } = crearRepo()
 
     await repo.cambiarEstadoGuia('g1', 'publicada')

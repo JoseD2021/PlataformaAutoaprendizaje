@@ -26,6 +26,12 @@ export function useCategoriasGestion() {
   })
 }
 
+export function useSubirImagenGuia() {
+  return useMutation({
+    mutationFn: (archivo: File) => container.subirImagenGuia.execute(archivo),
+  })
+}
+
 export function useMutacionesGestion() {
   const queryClient = useQueryClient()
 
