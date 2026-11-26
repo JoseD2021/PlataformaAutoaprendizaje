@@ -31,6 +31,10 @@ const solicitud = {
   creadaEn: '2026-11-26T15:00:00.000Z',
 }
 
+function haceMinutos(minutos: number) {
+  return new Date(Date.now() - minutos * 60_000).toISOString()
+}
+
 function usuario(rol: Usuario['rol']): Usuario {
   return { id: 'u1', email: 'x@clena.local', nombreCompleto: 'Luis Gómez', rol, activo: true }
 }
@@ -42,6 +46,7 @@ function renderizar() {
       <AvisosAyuda />
     </QueryClientProvider>,
   )
+  return { client }
 }
 
 describe('AvisosAyuda', () => {
@@ -86,6 +91,54 @@ describe('AvisosAyuda', () => {
 
     await waitFor(() => expect(screen.queryByText('Puesto 5')).not.toBeInTheDocument())
     expect(marcarAtendida).toHaveBeenCalledWith('h1')
+  })
+
+  it('muestra como máximo 3 tarjetas y un botón para ver las demás', async () => {
+    usuarioActual.value = usuario('personal_clena')
+    listarPendientes.mockResolvedValue(
+      [1, 2, 3, 4, 5].map((n) => ({ ...solicitud, id: `h${n}`, puesto: n })),
+    )
+    renderizar()
+
+    expect(await screen.findByText('5 personas están pidiendo ayuda')).toBeInTheDocument()
+    expect(screen.getAllByRole('listitem')).toHaveLength(3)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ver 2 más' }))
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(5)
+  })
+
+  it('se puede minimizar y se vuelve a abrir solo si llega una solicitud nueva', async () => {
+    usuarioActual.value = usuario('personal_clena')
+    listarPendientes.mockResolvedValue([solicitud])
+    const { client } = renderizar()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Minimizar' }))
+
+    expect(screen.queryByText('Puesto 5')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Mostrar solicitudes/ })).toHaveTextContent(
+      '1 pidiendo ayuda',
+    )
+
+    listarPendientes.mockResolvedValue([solicitud, { ...solicitud, id: 'h2', puesto: 8 }])
+    await client.refetchQueries()
+
+    expect(await screen.findByText('Puesto 8')).toBeInTheDocument()
+  })
+
+  it('resalta las solicitudes que llevan 5 minutos o más esperando', async () => {
+    usuarioActual.value = usuario('personal_clena')
+    listarPendientes.mockResolvedValue([
+      { ...solicitud, id: 'vieja', puesto: 1, creadaEn: haceMinutos(12) },
+      { ...solicitud, id: 'nueva', puesto: 2, creadaEn: haceMinutos(2) },
+    ])
+    renderizar()
+
+    expect(await screen.findByText('Lleva 12 min esperando')).toBeInTheDocument()
+    expect(screen.getByText(/hace 2 min/)).toBeInTheDocument()
+    const [vieja, nueva] = screen.getAllByRole('listitem')
+    expect(vieja).toHaveClass('aviso-ayuda--demorada')
+    expect(nueva).not.toHaveClass('aviso-ayuda--demorada')
   })
 
   it('no consulta ni muestra nada a un usuario común o sin sesión', () => {

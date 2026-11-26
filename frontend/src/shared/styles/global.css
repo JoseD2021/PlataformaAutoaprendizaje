@@ -452,7 +452,18 @@ body {
   padding: .75rem; border: 3px solid var(--color-marca); border-radius: var(--radius);
   background: #fff; color: var(--color-verde); box-shadow: 0 4px 16px rgb(0 0 0 / .35);
 }
-.avisos-ayuda__encabezado { font-size: var(--fs-lg); margin: 0 0 .5rem; }
+.avisos-ayuda__barra { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; margin: 0 0 .5rem; }
+.avisos-ayuda__encabezado { font-size: var(--fs-lg); margin: 0; }
+.avisos-ayuda--minimizado {
+  position: fixed; left: 1rem; bottom: 1rem; z-index: 6;
+  box-shadow: 0 2px 8px rgb(0 0 0 / .35);
+}
+/* Más de 5 minutos esperando: se resalta para priorizarla */
+.aviso-ayuda--demorada {
+  margin: 0 -.75rem; padding: .75rem; background: #fdecee;
+  border-left: 5px solid var(--color-rojo);
+}
+.aviso-ayuda--demorada .aviso-ayuda__hora { color: var(--color-rojo); opacity: 1; }
 .avisos-ayuda ul { list-style: none; margin: 0; padding: 0; }
 .aviso-ayuda { padding: .75rem 0; border-top: 1px solid var(--color-borde); }
 .aviso-ayuda p { margin: 0 0 .25rem; }
