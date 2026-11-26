@@ -31,9 +31,10 @@ function usuario(rol: Usuario['rol']): Usuario {
 }
 
 const acciones = [
-  ['link', 'Usuarios y roles'],
-  ['link', 'Gestionar guías y categorías'],
-  ['button', 'Gestionar horario'],
+  ['link', 'Gestionar usuarios'],
+  ['link', 'Guías y categorías'],
+  ['button', 'Horario de la sala'],
+  ['button', 'Gestionar roles'],
   ['button', 'Tratamiento de datos'],
 ] as const
 
@@ -47,12 +48,10 @@ describe('NavegacionVolver', () => {
     renderizar(true)
 
     expect(screen.getByRole('link', { name: 'Volver al inicio' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Usuarios y roles' })).toHaveAttribute('href', '/admin')
-    expect(screen.getByRole('link', { name: 'Gestionar guías y categorías' })).toHaveAttribute(
-      'href',
-      '/gestion',
-    )
-    expect(screen.getByRole('button', { name: 'Gestionar horario' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Gestionar usuarios' })).toHaveAttribute('href', '/admin')
+    expect(screen.getByRole('link', { name: 'Guías y categorías' })).toHaveAttribute('href', '/gestion')
+    expect(screen.getByRole('button', { name: 'Horario de la sala' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Gestionar roles' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Tratamiento de datos' })).toBeInTheDocument()
   })
 
