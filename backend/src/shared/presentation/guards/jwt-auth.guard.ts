@@ -6,6 +6,7 @@ import { UnauthorizedError } from '../../application/errors/common.errors';
 import { SESSION_CACHE, SessionCache } from '../../application/ports/session-cache.port';
 import { TOKEN_SERVICE, TokenService } from '../../application/ports/token-service.port';
 import { GetPrincipalUseCase } from '../../../modules/users/application/use-cases/get-principal.use-case';
+import { OPTIONAL_AUTH_KEY } from '../decorators/optional-auth.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 type AuthenticatedRequest = Request & { user?: AuthenticatedUser };
@@ -25,17 +26,33 @@ export class JwtAuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+
     if (isPublic) {
+      const optionalAuth = this.reflector.getAllAndOverride<boolean>(OPTIONAL_AUTH_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
+
+      if (optionalAuth) {
+        await this.tryAuthenticate(request);
+      }
+
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const token = this.extractBearerToken(request);
 
     if (!token) {
       throw new UnauthorizedError('Debes enviar un token de acceso Bearer.');
     }
 
+    request.user = await this.authenticate(token);
+
+    return true;
+  }
+
+  private async authenticate(token: string): Promise<AuthenticatedUser> {
     const claims = await this.tokenService.verifyAccessToken(token);
     const session = await this.sessions.findActive(claims.sid);
 
@@ -43,9 +60,22 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedError('La sesión ya no es válida.');
     }
 
-    request.user = await this.getPrincipal.execute(claims.sub);
+    return this.getPrincipal.execute(claims.sub);
+  }
 
-    return true;
+  /** Para rutas con @OptionalAuth: identifica al usuario si puede y, si no, sigue como anónimo. */
+  private async tryAuthenticate(request: AuthenticatedRequest): Promise<void> {
+    const token = this.extractBearerToken(request);
+
+    if (!token) {
+      return;
+    }
+
+    try {
+      request.user = await this.authenticate(token);
+    } catch {
+      request.user = undefined;
+    }
   }
 
   private extractBearerToken(request: Request): string | null {
