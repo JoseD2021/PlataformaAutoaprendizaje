@@ -43,6 +43,11 @@ import { AyudaHttpRepository } from '../features/ayuda/infrastructure/ayuda-http
 import { PedirAyuda } from '../features/ayuda/application/pedir-ayuda'
 import { ListarAyudasPendientes } from '../features/ayuda/application/listar-ayudas-pendientes'
 import { MarcarAyudaAtendida } from '../features/ayuda/application/marcar-ayuda-atendida'
+import { DudasHttpRepository } from '../features/dudas/infrastructure/dudas-http-repository'
+import { ListarDudas } from '../features/dudas/application/listar-dudas'
+import { AnotarDuda } from '../features/dudas/application/anotar-duda'
+import { ListarCategoriasDudas } from '../features/dudas/application/listar-categorias-dudas'
+import { EliminarDuda } from '../features/dudas/application/eliminar-duda'
 
 export function crearContenedor(repoOverride?: GuiasRepository) {
   const repo = repoOverride ?? new GuiasHttpRepository(httpClient)
@@ -53,6 +58,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const adminRepo = new AdminHttpRepository(httpClient)
   const privacidadRepo = new PrivacidadHttpRepository(httpClient)
   const ayudaRepo = new AyudaHttpRepository(httpClient)
+  const dudasRepo = new DudasHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
     actualizarInformacionSala: new ActualizarInformacionSala(salaRepo),
@@ -89,6 +95,10 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     listarAyudasPendientes: new ListarAyudasPendientes(ayudaRepo),
     marcarAyudaAtendida: new MarcarAyudaAtendida(ayudaRepo),
     actualizarTerminosPrivacidad: new ActualizarTerminosPrivacidad(privacidadRepo),
+    listarDudas: new ListarDudas(dudasRepo),
+    anotarDuda: new AnotarDuda(dudasRepo),
+    listarCategoriasDudas: new ListarCategoriasDudas(dudasRepo),
+    eliminarDuda: new EliminarDuda(dudasRepo),
   }
 }
 

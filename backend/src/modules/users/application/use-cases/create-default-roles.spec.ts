@@ -26,6 +26,7 @@ describe('CreateDefaultRolesUseCase', () => {
       Permission.GUIDES_MANAGE,
       Permission.CATEGORIES_CREATE,
       Permission.CATEGORIES_MANAGE,
+      Permission.DOUBTS_MANAGE,
     ]);
     expect(createdRoles[2].permissions).toEqual([
       Permission.FAVORITES_MANAGE,

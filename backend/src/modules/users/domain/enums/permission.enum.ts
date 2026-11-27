@@ -25,6 +25,7 @@ export enum Permission {
   HELP_REQUESTS_READ = 'help-requests:read',
   HELP_REQUESTS_CREATE = 'help-requests:create',
   HELP_REQUESTS_MANAGE = 'help-requests:manage',
+  DOUBTS_MANAGE = 'doubts:manage',
   FAVORITES_MANAGE = 'favorites:manage',
 
   ROOM_INFO_MANAGE = 'room-info:manage',
