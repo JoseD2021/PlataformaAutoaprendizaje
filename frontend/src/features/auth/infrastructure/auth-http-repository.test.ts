@@ -15,6 +15,8 @@ describe('AuthHttpRepository', () => {
         email: 'ana@clena.local',
         fullName: 'Ana Pérez',
         role: 'usuario',
+        roleRank: 10,
+        permissions: ['favorites:manage', 'help-requests:create'],
         isActive: true,
       },
       tokens: {
@@ -41,6 +43,8 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       nombreCompleto: 'Ana Pérez',
       rol: 'usuario',
+      rango: 10,
+      permisos: ['favorites:manage', 'help-requests:create'],
       activo: true,
       versionTerminosPrivacidad: null,
       requiereAceptarTerminosPrivacidad: false,
@@ -54,6 +58,8 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       fullName: 'Ana Pérez',
       role: 'usuario',
+      roleRank: 10,
+      permissions: ['favorites:manage', 'help-requests:create'],
       isActive: true,
     }
     const httpMock = {
@@ -81,6 +87,8 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       nombreCompleto: 'Ana Pérez',
       rol: 'usuario',
+      rango: 10,
+      permisos: ['favorites:manage', 'help-requests:create'],
       activo: true,
       versionTerminosPrivacidad: null,
       requiereAceptarTerminosPrivacidad: false,
@@ -125,12 +133,14 @@ describe('AuthHttpRepository', () => {
     })
   })
 
-  it('obtenerPerfil llama a /auth/me y mapea el usuario', async () => {
+  it('obtenerPerfil llama a /auth/me y mapea permisos y rango', async () => {
     const usuarioBackend = {
       id: 'u3',
       email: 'admin@clena.local',
       fullName: 'Admin',
       role: 'administrador',
+      roleRank: 30,
+      permissions: ['users:read', 'roles:read'],
       isActive: true,
     }
     const httpMock = {
@@ -146,6 +156,8 @@ describe('AuthHttpRepository', () => {
       email: 'admin@clena.local',
       nombreCompleto: 'Admin',
       rol: 'administrador',
+      rango: 30,
+      permisos: ['users:read', 'roles:read'],
       activo: true,
       versionTerminosPrivacidad: null,
       requiereAceptarTerminosPrivacidad: false,

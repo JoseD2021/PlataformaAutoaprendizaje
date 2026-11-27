@@ -26,6 +26,7 @@ import { CurrentUser } from '../../../../shared/presentation/decorators/current-
 import { Public } from '../../../../shared/presentation/decorators/public.decorator';
 import { ApiErrorResponseDto } from '../../../../shared/presentation/dto/api-error-response.dto';
 import { PrivacyTermsRepository } from '../../../privacy/domain/repositories/privacy-terms.repository';
+import { GetPrincipalUseCase } from '../../../users/application/use-cases/get-principal.use-case';
 import { AcceptPrivacyTermsUseCase } from '../../application/use-cases/accept-privacy-terms.use-case';
 import { ChangeNameUseCase } from '../../application/use-cases/change-name.use-case';
 import { ChangePasswordUseCase } from '../../application/use-cases/change-password.use-case';
@@ -58,6 +59,7 @@ export class AuthController {
     private readonly changePasswordUseCase: ChangePasswordUseCase,
     private readonly changeNameUseCase: ChangeNameUseCase,
     private readonly privacyTermsRepository: PrivacyTermsRepository,
+    private readonly getPrincipalUseCase: GetPrincipalUseCase,
   ) {}
 
   @Public()
@@ -74,8 +76,9 @@ export class AuthController {
       privacyTermsAccepted: dto.privacyTermsAccepted,
       privacyTermsVersion: dto.privacyTermsVersion,
     });
+    const principal = await this.getPrincipalUseCase.execute(user.id);
     const currentTerms = await this.privacyTermsRepository.findCurrent();
-    return UserResponseDto.from(user, currentTerms?.version ?? null);
+    return UserResponseDto.from(user, currentTerms?.version ?? null, principal);
   }
 
   @Public()
@@ -92,8 +95,9 @@ export class AuthController {
       ipAddress: request.ip,
       userAgent: request.headers['user-agent'],
     });
+    const principal = await this.getPrincipalUseCase.execute(result.user.id);
     const currentTerms = await this.privacyTermsRepository.findCurrent();
-    return AuthResponseDto.from(result, currentTerms?.version ?? null);
+    return AuthResponseDto.from(result, currentTerms?.version ?? null, principal);
   }
 
   @Public()
@@ -107,8 +111,9 @@ export class AuthController {
     const result = await this.refreshTokenUseCase.execute({
       refreshToken: dto.refreshToken,
     });
+    const principal = await this.getPrincipalUseCase.execute(result.user.id);
     const currentTerms = await this.privacyTermsRepository.findCurrent();
-    return AuthResponseDto.from(result, currentTerms?.version ?? null);
+    return AuthResponseDto.from(result, currentTerms?.version ?? null, principal);
   }
 
   @Public()
@@ -130,7 +135,10 @@ export class AuthController {
   async me(@CurrentUser() user: AuthenticatedUser): Promise<UserResponseDto> {
     const profile = await this.getProfileUseCase.execute(user.id);
     const currentTerms = await this.privacyTermsRepository.findCurrent();
-    return UserResponseDto.from(profile, currentTerms?.version ?? null);
+    return UserResponseDto.from(profile, currentTerms?.version ?? null, {
+      permissions: user.permissions,
+      roleRank: user.roleRank,
+    });
   }
 
   @Patch('me/password')
@@ -188,7 +196,10 @@ export class AuthController {
       privacyTermsVersion: dto.privacyTermsVersion,
     });
     const currentTerms = await this.privacyTermsRepository.findCurrent();
-    return UserResponseDto.from(updated, currentTerms?.version ?? null);
+    return UserResponseDto.from(updated, currentTerms?.version ?? null, {
+      permissions: user.permissions,
+      roleRank: user.roleRank,
+    });
   }
 
   @Delete('me')
@@ -196,6 +207,7 @@ export class AuthController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Cerrar la cuenta del usuario autenticado' })
   @ApiNoContentResponse()
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   async closeAccount(@CurrentUser() user: AuthenticatedUser): Promise<void> {
     await this.closeAccountUseCase.execute({ userId: user.id });

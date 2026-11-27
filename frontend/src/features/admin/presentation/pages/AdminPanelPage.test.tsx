@@ -8,8 +8,24 @@ import { httpClient } from '../../../../shared/http/client'
 import { guardarTokens, limpiarTokens } from '../../../../shared/http/token-storage'
 import { AuthProvider } from '../../../auth/presentation/context/AuthContext'
 
-const ADMIN = { id: 'u1', email: 'admin@clena.local', fullName: 'Admin', role: 'administrador', isActive: true }
-const ANA = { id: 'u2', email: 'ana@clena.local', fullName: 'Ana Gómez', role: 'usuario', isActive: true }
+const ADMIN = {
+  id: 'u1',
+  email: 'admin@clena.local',
+  fullName: 'Admin',
+  role: 'administrador',
+  roleRank: 30,
+  permissions: ['users:read', 'users:update-role'],
+  isActive: true,
+}
+const ANA = {
+  id: 'u2',
+  email: 'ana@clena.local',
+  fullName: 'Ana Gómez',
+  role: 'usuario',
+  roleRank: 10,
+  permissions: ['favorites:manage', 'help-requests:create'],
+  isActive: true,
+}
 
 const ROLES = [
   { role: 'administrador', name: 'Administrador', rank: 30 },
@@ -52,7 +68,7 @@ describe('AdminPanelPage', () => {
     limpiarTokens()
   })
 
-  it('muestra el panel cuando el usuario autenticado es administrador', async () => {
+  it('muestra el panel cuando el usuario tiene permiso para ver usuarios', async () => {
     guardarTokens({ accessToken: 'a', refreshToken: 'r' })
     simularBackend(ADMIN)
 
@@ -63,7 +79,7 @@ describe('AdminPanelPage', () => {
     ).toBeInTheDocument()
   })
 
-  it('redirige al inicio si el usuario autenticado no es administrador', async () => {
+  it('redirige al inicio si el usuario no tiene el permiso', async () => {
     guardarTokens({ accessToken: 'a', refreshToken: 'r' })
     simularBackend(ANA)
 

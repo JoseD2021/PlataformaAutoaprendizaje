@@ -1,10 +1,14 @@
-export type Rol = 'administrador' | 'personal_clena' | 'usuario'
+import type { Permiso } from '../../../shared/permisos'
+
+export type Rol = string
 
 export interface Usuario {
   id: string
   email: string
   nombreCompleto: string
   rol: Rol
+  rango?: number
+  permisos?: Permiso[]
   activo: boolean
   versionTerminosPrivacidad: string | null
   requiereAceptarTerminosPrivacidad: boolean

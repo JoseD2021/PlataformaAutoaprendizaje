@@ -118,7 +118,7 @@ export class RolesController {
   ): Promise<RoleResponseDto> {
     const role = await this.updateRolePermissionsUseCase.execute(
       { role: params.role, permissions: dto.permissions },
-      { roleRank: actor.roleRank },
+      { roleRank: actor.roleRank, permissions: actor.permissions },
     );
 
     return RoleResponseDto.from(role);

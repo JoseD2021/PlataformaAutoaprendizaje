@@ -38,6 +38,10 @@ import { AdminHttpRepository } from '../features/admin/infrastructure/admin-http
 import { ListarUsuarios } from '../features/admin/application/listar-usuarios'
 import { CambiarRolUsuario } from '../features/admin/application/cambiar-rol-usuario'
 import { ListarRoles } from '../features/admin/application/listar-roles'
+import { RolesHttpRepository } from '../features/roles/infrastructure/roles-http-repository'
+import { ListarRolesDetalle } from '../features/roles/application/listar-roles'
+import { CrearRol } from '../features/roles/application/crear-rol'
+import { ActualizarPermisosRol } from '../features/roles/application/actualizar-permisos-rol'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
 import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
@@ -49,6 +53,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const gestionRepo = new GestionHttpRepository(httpClient)
   const favoritosRepo = new FavoritosHttpRepository(httpClient)
   const adminRepo = new AdminHttpRepository(httpClient)
+  const rolesRepo = new RolesHttpRepository(httpClient)
   const privacidadRepo = new PrivacidadHttpRepository(httpClient)
   return {
     obtenerInformacionSala: new ObtenerInformacionSala(salaRepo),
@@ -83,6 +88,9 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     listarUsuarios: new ListarUsuarios(adminRepo),
     cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
     listarRoles: new ListarRoles(adminRepo),
+    listarRolesDetalle: new ListarRolesDetalle(rolesRepo),
+    crearRol: new CrearRol(rolesRepo),
+    actualizarPermisosRol: new ActualizarPermisosRol(rolesRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
     actualizarTerminosPrivacidad: new ActualizarTerminosPrivacidad(privacidadRepo),
   }

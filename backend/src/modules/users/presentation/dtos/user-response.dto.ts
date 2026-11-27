@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import type { Permission } from '../../domain/enums/permission.enum';
 import type { Role } from '../../domain/enums/role.enum';
 
 export interface UserResponseSource {
@@ -13,6 +14,11 @@ export interface UserResponseSource {
   updatedAt: Date;
 }
 
+export interface UserAccess {
+  permissions: Permission[];
+  roleRank: number;
+}
+
 export class UserResponseDto {
   @ApiProperty({ format: 'uuid' })
   id: string;
@@ -25,6 +31,16 @@ export class UserResponseDto {
 
   @ApiProperty({ example: 'usuario' })
   role: Role;
+
+  @ApiProperty({ example: 10, description: 'Jerarquía numérica del rol asignado.' })
+  roleRank: number;
+
+  @ApiProperty({
+    type: [String],
+    example: ['favorites:manage', 'help-requests:create'],
+    description: 'Permisos efectivos del usuario según la definición vigente de su rol.',
+  })
+  permissions: Permission[];
 
   @ApiProperty({ example: true })
   isActive: boolean;
@@ -55,12 +71,18 @@ export class UserResponseDto {
   @ApiProperty({ format: 'date-time' })
   updatedAt: Date;
 
-  static from(source: UserResponseSource, currentPrivacyTermsVersion?: string | null): UserResponseDto {
+  static from(
+    source: UserResponseSource,
+    currentPrivacyTermsVersion?: string | null,
+    access?: UserAccess,
+  ): UserResponseDto {
     const dto = new UserResponseDto();
     dto.id = source.id;
     dto.email = source.email;
     dto.fullName = source.fullName;
     dto.role = source.role;
+    dto.roleRank = access?.roleRank ?? 0;
+    dto.permissions = access?.permissions ?? [];
     dto.isActive = source.isActive;
     dto.privacyTermsAcceptedAt = source.privacyTermsAcceptedAt;
     dto.privacyTermsVersion = source.privacyTermsVersion;

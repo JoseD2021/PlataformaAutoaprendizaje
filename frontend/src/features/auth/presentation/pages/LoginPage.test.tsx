@@ -50,6 +50,8 @@ describe('LoginPage', () => {
           email: 'ana@clena.local',
           fullName: 'Ana Pérez',
           role: 'usuario',
+          roleRank: 10,
+          permissions: ['favorites:manage', 'help-requests:create'],
           isActive: true,
         },
         tokens: {
@@ -74,7 +76,7 @@ describe('LoginPage', () => {
     expect(obtenerTokens()).toEqual({ accessToken: 'a', refreshToken: 'r' })
   })
 
-  it('redirige al panel admin cuando el usuario tiene rol administrador', async () => {
+  it('redirige al panel admin cuando el usuario tiene permiso para ver usuarios', async () => {
     vi.spyOn(httpClient, 'post').mockResolvedValue({
       data: {
         user: {
@@ -82,6 +84,8 @@ describe('LoginPage', () => {
           email: 'admin@clena.local',
           fullName: 'Admin CLENA',
           role: 'administrador',
+          roleRank: 30,
+          permissions: ['users:read'],
           isActive: true,
         },
         tokens: {

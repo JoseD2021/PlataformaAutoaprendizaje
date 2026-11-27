@@ -2,13 +2,15 @@ import type { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { LogIn, LogOut, CircleHelp } from 'lucide-react'
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
+import { PERMISOS_GESTION, tieneAlgunPermiso, tienePermiso } from '../permisos'
 
 export function PageLayout({ hero, children }: { hero?: ReactNode; children: ReactNode }) {
   const { usuario, cerrarSesion } = useAuth()
   // Ajuste de login/registro: no mostrar "Iniciar sesión" en las pantallas de autenticación
   const { pathname } = useLocation()
   const enPantallaAuth = pathname === '/login' || pathname === '/registro'
-  const esPersonal = usuario?.rol === 'personal_clena' || usuario?.rol === 'administrador'
+  const puedeGestionar = tieneAlgunPermiso(usuario, PERMISOS_GESTION)
+  const mostrarAyuda = !tienePermiso(usuario, 'help-requests:read')
 
   return (
     <>
@@ -25,7 +27,7 @@ export function PageLayout({ hero, children }: { hero?: ReactNode; children: Rea
                 <Link to="/perfil" className="usuario-activo" title="Administrar perfil">
                   {usuario.nombreCompleto.split(' ')[0]}
                 </Link>
-                {esPersonal && (
+                {puedeGestionar && (
                   <Link to="/gestion" className="btn btn--claro">Gestión</Link>
                 )}
                 <button type="button" className="btn btn--contorno" onClick={cerrarSesion}>
@@ -38,7 +40,7 @@ export function PageLayout({ hero, children }: { hero?: ReactNode; children: Rea
                 <LogIn aria-hidden size={18} /> Iniciar sesión
               </Link>
             )}
-            {!esPersonal && (
+            {mostrarAyuda && (
               <button type="button" className="btn btn--claro">
                 <CircleHelp aria-hidden size={18} /> Pedir ayuda
               </button>

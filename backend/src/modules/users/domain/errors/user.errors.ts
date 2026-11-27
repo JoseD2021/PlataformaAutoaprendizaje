@@ -72,3 +72,13 @@ export class CannotGrantPermissionsError extends DomainError {
     );
   }
 }
+
+export class PermissionRankTooHighError extends DomainError {
+  constructor(permissions: string[], rank: number) {
+    super(
+      'PERMISSION_RANK_TOO_HIGH',
+      `El rango ${rank} no permite estos permisos: ${permissions.join(', ')}.`,
+      'forbidden',
+    );
+  }
+}
