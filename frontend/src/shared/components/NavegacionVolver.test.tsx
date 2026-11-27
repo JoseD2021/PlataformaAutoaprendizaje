@@ -32,9 +32,8 @@ function usuario(rol: Usuario['rol']): Usuario {
   }
 }
 
-const acciones = [
+const accionesAdmin = [
   ['link', 'Gestionar usuarios'],
-  ['link', 'Guías y categorías'],
   ['link', 'Horario de la sala'],
   ['button', 'Gestionar roles'],
   ['link', 'Tratamiento de datos'],
@@ -55,27 +54,38 @@ describe('NavegacionVolver', () => {
     expect(screen.getByRole('link', { name: 'Horario de la sala' })).toHaveAttribute('href', '/horario')
     expect(screen.getByRole('button', { name: 'Gestionar roles' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Tratamiento de datos' })).toHaveAttribute('href', '/privacidad')
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toHaveAttribute('href', '/dudas')
   })
 
-  it.each(['personal_clena', 'usuario'] as const)(
-    'solo muestra «Volver al inicio» al rol %s',
-    (rol) => {
-      usuarioActual.value = usuario(rol)
-      renderizar(true)
+  it('muestra «Dudas sin guía» al personal y no las acciones de administrador', () => {
+    usuarioActual.value = usuario('personal_clena')
+    renderizar(true)
 
-      expect(screen.getByRole('link', { name: 'Volver al inicio' })).toBeInTheDocument()
-      for (const [role, name] of acciones) {
-        expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
-      }
-    },
-  )
+    expect(screen.getByRole('link', { name: 'Guías y categorías' })).toHaveAttribute('href', '/gestion')
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toHaveAttribute('href', '/dudas')
+    for (const [role, name] of accionesAdmin) {
+      expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
+    }
+  })
+
+  it('no muestra «Dudas sin guía» ni las acciones de administrador a un usuario común', () => {
+    usuarioActual.value = usuario('usuario')
+    renderizar(true)
+
+    expect(screen.getByRole('link', { name: 'Guías y categorías' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Dudas sin guía' })).not.toBeInTheDocument()
+    for (const [role, name] of accionesAdmin) {
+      expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
+    }
+  })
 
   it('no muestra acciones de administrador si la página no las solicita', () => {
     usuarioActual.value = usuario('administrador')
     renderizar()
 
-    for (const [role, name] of acciones) {
+    for (const [role, name] of accionesAdmin) {
       expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
     }
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toBeInTheDocument()
   })
 })

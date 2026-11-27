@@ -12,6 +12,7 @@ import { GuiaFormPage } from '../features/gestion/presentation/pages/GuiaFormPag
 import { RutaProtegida } from '../features/gestion/presentation/components/RutaProtegida'
 import { HorarioSalaPage } from '../features/sala/presentation/pages/HorarioSalaPage'
 import { PrivacidadAdminPage } from '../features/privacidad/presentation/pages/PrivacidadAdminPage'
+import { DudasSinGuiaPage } from '../features/dudas/presentation/pages/DudasSinGuiaPage'
 import type { Rol } from '../features/auth/domain/entities'
 import { RaizLayout } from './RaizLayout'
 
@@ -36,6 +37,14 @@ export const router = createBrowserRouter([
         element: (
           <RutaProtegida roles={ROLES_GESTION}>
             <GestionPage />
+          </RutaProtegida>
+        ),
+      },
+      {
+        path: '/dudas',
+        element: (
+          <RutaProtegida roles={ROLES_GESTION}>
+            <DudasSinGuiaPage />
           </RutaProtegida>
         ),
       },

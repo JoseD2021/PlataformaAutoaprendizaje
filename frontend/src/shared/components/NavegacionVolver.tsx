@@ -1,5 +1,13 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, BookOpen, Clock, FileText, Home, Users } from 'lucide-react'
+import {
+  ArrowLeft,
+  BookOpen,
+  Clock,
+  FileText,
+  Home,
+  MessageCircleQuestion,
+  Users,
+} from 'lucide-react'
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
 
 export function NavegacionVolver({
@@ -29,15 +37,20 @@ export function NavegacionVolver({
       <Link to="/" className="btn-enlace">
         <Home aria-hidden size={20} /> Volver al inicio
       </Link>
+      <span className="separador-nav" aria-hidden>·</span>
+      <Link to="/gestion" className="btn-enlace">
+        <BookOpen aria-hidden size={18} /> Guías y categorías
+      </Link>
+      <span className="separador-nav" aria-hidden>·</span>
+      <Link to="/dudas" className="btn-enlace">
+        <MessageCircleQuestion aria-hidden size={18} /> Dudas sin guía
+      </Link>
+      
       {conAccionesAdmin && esAdmin && (
         <>
           <span className="separador-nav" aria-hidden>·</span>
           <Link to="/admin" className="btn-enlace">
             <Users aria-hidden size={18} /> Gestionar usuarios
-          </Link>
-          <span className="separador-nav" aria-hidden>·</span>
-          <Link to="/gestion" className="btn-enlace">
-            <BookOpen aria-hidden size={18} /> Guías y categorías
           </Link>
           <span className="separador-nav" aria-hidden>·</span>
           <Link to="/horario" className="btn-enlace">
