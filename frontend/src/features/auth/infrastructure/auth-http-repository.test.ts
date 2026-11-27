@@ -15,6 +15,8 @@ describe('AuthHttpRepository', () => {
         email: 'ana@clena.local',
         fullName: 'Ana Pérez',
         role: 'usuario',
+        roleRank: 10,
+        permissions: ['favorites:manage', 'help-requests:create'],
         isActive: true,
       },
       tokens: {
@@ -41,6 +43,8 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       nombreCompleto: 'Ana Pérez',
       rol: 'usuario',
+      rango: 10,
+      permisos: ['favorites:manage', 'help-requests:create'],
       activo: true,
       versionTerminosPrivacidad: null,
       requiereAceptarTerminosPrivacidad: false,
@@ -54,6 +58,8 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       fullName: 'Ana Pérez',
       role: 'usuario',
+      roleRank: 10,
+      permissions: ['favorites:manage', 'help-requests:create'],
       isActive: true,
     }
     const httpMock = {
@@ -81,6 +87,8 @@ describe('AuthHttpRepository', () => {
       email: 'ana@clena.local',
       nombreCompleto: 'Ana Pérez',
       rol: 'usuario',
+      rango: 10,
+      permisos: ['favorites:manage', 'help-requests:create'],
       activo: true,
       versionTerminosPrivacidad: null,
       requiereAceptarTerminosPrivacidad: false,
@@ -100,12 +108,39 @@ describe('AuthHttpRepository', () => {
     expect(obtenerTokens()).toBeNull()
   })
 
-  it('obtenerPerfil llama a /auth/me y mapea el usuario', async () => {
+  it('cambiarNombre llama a PATCH /auth/me/name con el nombre normalizado', async () => {
+    const httpMock = {
+      patch: vi.fn().mockResolvedValue({ data: undefined } as AxiosResponse),
+    } as unknown as AxiosInstance
+
+    const repo = new AuthHttpRepository(httpMock)
+    await repo.cambiarNombre('  Ana Pérez  ')
+
+    expect(httpMock.patch).toHaveBeenCalledWith('/auth/me/name', { fullName: 'Ana Pérez' })
+  })
+
+  it('cambiarContrasena llama a PATCH /auth/me/password con ambas contraseñas', async () => {
+    const httpMock = {
+      patch: vi.fn().mockResolvedValue({ data: undefined } as AxiosResponse),
+    } as unknown as AxiosInstance
+
+    const repo = new AuthHttpRepository(httpMock)
+    await repo.cambiarContrasena('ClaveActual123', 'ClaveNueva123')
+
+    expect(httpMock.patch).toHaveBeenCalledWith('/auth/me/password', {
+      currentPassword: 'ClaveActual123',
+      newPassword: 'ClaveNueva123',
+    })
+  })
+
+  it('obtenerPerfil llama a /auth/me y mapea permisos y rango', async () => {
     const usuarioBackend = {
       id: 'u3',
       email: 'admin@clena.local',
       fullName: 'Admin',
       role: 'administrador',
+      roleRank: 30,
+      permissions: ['users:read', 'roles:read'],
       isActive: true,
     }
     const httpMock = {
@@ -121,6 +156,8 @@ describe('AuthHttpRepository', () => {
       email: 'admin@clena.local',
       nombreCompleto: 'Admin',
       rol: 'administrador',
+      rango: 30,
+      permisos: ['users:read', 'roles:read'],
       activo: true,
       versionTerminosPrivacidad: null,
       requiereAceptarTerminosPrivacidad: false,

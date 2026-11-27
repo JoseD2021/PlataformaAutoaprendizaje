@@ -5,7 +5,9 @@ import { GuiasDeCategoriaPage } from '../features/guias/presentation/pages/Guias
 import { GuiaDetallePage } from '../features/guias/presentation/pages/GuiaDetallePage'
 import { LoginPage } from '../features/auth/presentation/pages/LoginPage'
 import { RegistroPage } from '../features/auth/presentation/pages/RegistroPage'
+import { PerfilPage } from '../features/auth/presentation/pages/PerfilPage'
 import { AdminPanelPage } from '../features/admin/presentation/pages/AdminPanelPage'
+import { RolesPage } from '../features/roles/presentation/pages/RolesPage'
 import { FavoritosPage } from '../features/favoritos/presentation/pages/FavoritosPage'
 import { GestionPage } from '../features/gestion/presentation/pages/GestionPage'
 import { GuiaFormPage } from '../features/gestion/presentation/pages/GuiaFormPage'
@@ -13,10 +15,10 @@ import { RutaProtegida } from '../features/gestion/presentation/components/RutaP
 import { HorarioSalaPage } from '../features/sala/presentation/pages/HorarioSalaPage'
 import { PrivacidadAdminPage } from '../features/privacidad/presentation/pages/PrivacidadAdminPage'
 import { DudasSinGuiaPage } from '../features/dudas/presentation/pages/DudasSinGuiaPage'
-import type { Rol } from '../features/auth/domain/entities'
+import { PERMISOS_GESTION, type Permiso } from '../shared/permisos'
 import { RaizLayout } from './RaizLayout'
 
-const ROLES_GESTION: Rol[] = ['personal_clena', 'administrador']
+const PERMISOS_FORMULARIO: Permiso[] = ['guides:create', 'guides:manage']
 
 export const router = createBrowserRouter([
   {
@@ -28,14 +30,51 @@ export const router = createBrowserRouter([
       { path: '/guias/:id', element: <GuiaDetallePage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/registro', element: <RegistroPage /> },
-      { path: '/admin', element: <AdminPanelPage /> },
-      { path: '/horario', element: <HorarioSalaPage /> },
-      { path: '/privacidad', element: <PrivacidadAdminPage /> },
+      {
+        path: '/admin',
+        element: (
+          <RutaProtegida permisos={['users:read']}>
+            <AdminPanelPage />
+          </RutaProtegida>
+        ),
+      },
+      {
+        path: '/roles',
+        element: (
+          <RutaProtegida permisos={['roles:read']}>
+            <RolesPage />
+          </RutaProtegida>
+        ),
+      },
+      {
+        path: '/horario',
+        element: (
+          <RutaProtegida permisos={['room-info:manage']}>
+            <HorarioSalaPage />
+          </RutaProtegida>
+        ),
+      },
+      {
+        path: '/privacidad',
+        element: (
+          <RutaProtegida permisos={['privacy-terms:manage']}>
+            <PrivacidadAdminPage />
+          </RutaProtegida>
+        ),
+      },
       { path: '/favoritos', element: <FavoritosPage /> },
+      {
+        path: '/perfil',
+        element: (
+          <RutaProtegida>
+            <PerfilPage />
+          </RutaProtegida>
+        ),
+      },
       {
         path: '/gestion',
         element: (
-          <RutaProtegida roles={ROLES_GESTION}>
+          <RutaProtegida permisos={PERMISOS_GESTION}>
             <GestionPage />
           </RutaProtegida>
         ),
@@ -43,7 +82,7 @@ export const router = createBrowserRouter([
       {
         path: '/dudas',
         element: (
-          <RutaProtegida roles={ROLES_GESTION}>
+          <RutaProtegida permisos={['doubts:manage']}>
             <DudasSinGuiaPage />
           </RutaProtegida>
         ),
@@ -51,7 +90,7 @@ export const router = createBrowserRouter([
       {
         path: '/gestion/guias/nueva',
         element: (
-          <RutaProtegida roles={ROLES_GESTION}>
+          <RutaProtegida permisos={PERMISOS_FORMULARIO}>
             <GuiaFormPage />
           </RutaProtegida>
         ),
@@ -59,7 +98,7 @@ export const router = createBrowserRouter([
       {
         path: '/gestion/guias/:id',
         element: (
-          <RutaProtegida roles={ROLES_GESTION}>
+          <RutaProtegida permisos={PERMISOS_FORMULARIO}>
             <GuiaFormPage />
           </RutaProtegida>
         ),

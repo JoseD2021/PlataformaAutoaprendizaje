@@ -1,7 +1,11 @@
 import { UpdateRolePermissionsUseCase } from './update-role-permissions.use-case';
 import { Permission } from '../../domain/enums/permission.enum';
 import { Role } from '../../domain/enums/role.enum';
-import { CannotModifyRolePermissionsError } from '../../domain/errors/user.errors';
+import {
+  CannotGrantPermissionsError,
+  CannotModifyRolePermissionsError,
+  PermissionRankTooHighError,
+} from '../../domain/errors/user.errors';
 import { RoleNotFoundError } from '../errors/user.errors';
 import { InMemoryRoleRepository, makeRole } from '../../../../../test/support/fakes';
 
@@ -20,7 +24,10 @@ describe('UpdateRolePermissionsUseCase', () => {
         role: Role.USUARIO,
         permissions: [Permission.FAVORITES_MANAGE, Permission.HELP_REQUESTS_CREATE],
       },
-      { roleRank: 30 },
+      {
+        roleRank: 30,
+        permissions: [Permission.FAVORITES_MANAGE, Permission.HELP_REQUESTS_CREATE],
+      },
     );
 
     expect(updated.permissions).toEqual([
@@ -34,7 +41,7 @@ describe('UpdateRolePermissionsUseCase', () => {
     await expect(
       useCase.execute(
         { role: Role.ADMINISTRADOR, permissions: [] },
-        { roleRank: 30 },
+        { roleRank: 30, permissions: [] },
       ),
     ).rejects.toThrow(CannotModifyRolePermissionsError);
   });
@@ -43,9 +50,27 @@ describe('UpdateRolePermissionsUseCase', () => {
     await expect(
       useCase.execute(
         { role: Role.PERSONAL_CLENA, permissions: [] },
-        { roleRank: 20 },
+        { roleRank: 20, permissions: [] },
       ),
     ).rejects.toThrow(CannotModifyRolePermissionsError);
+  });
+
+  it('impide otorgar permisos que el actor no posee', async () => {
+    await expect(
+      useCase.execute(
+        { role: Role.USUARIO, permissions: [Permission.FAVORITES_MANAGE] },
+        { roleRank: 30, permissions: [] },
+      ),
+    ).rejects.toThrow(CannotGrantPermissionsError);
+  });
+
+  it('impide asignar permisos reservados a rangos superiores', async () => {
+    await expect(
+      useCase.execute(
+        { role: Role.USUARIO, permissions: [Permission.USERS_CREATE] },
+        { roleRank: 30, permissions: [Permission.USERS_CREATE] },
+      ),
+    ).rejects.toThrow(PermissionRankTooHighError);
   });
 
   it('rechaza un rol inexistente', async () => {
@@ -53,7 +78,10 @@ describe('UpdateRolePermissionsUseCase', () => {
     useCase = new UpdateRolePermissionsUseCase(roles);
 
     await expect(
-      useCase.execute({ role: Role.USUARIO, permissions: [] }, { roleRank: 30 }),
+      useCase.execute(
+        { role: Role.USUARIO, permissions: [] },
+        { roleRank: 30, permissions: [] },
+      ),
     ).rejects.toThrow(RoleNotFoundError);
   });
 });

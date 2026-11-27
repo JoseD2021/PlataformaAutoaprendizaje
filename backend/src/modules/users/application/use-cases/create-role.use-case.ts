@@ -1,8 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { permisosIncompatiblesConRango } from '../../domain/constants/permission-rank';
 import { RoleDefinition } from '../../domain/entities/role-definition.entity';
 import type { Permission } from '../../domain/enums/permission.enum';
 import type { Role } from '../../domain/enums/role.enum';
-import { CannotGrantPermissionsError, CannotManageRoleError } from '../../domain/errors/user.errors';
+import {
+  CannotGrantPermissionsError,
+  CannotManageRoleError,
+  PermissionRankTooHighError,
+} from '../../domain/errors/user.errors';
 import { ROLE_REPOSITORY, RoleRepository } from '../../domain/repositories/role.repository';
 import { RoleAlreadyExistsError } from '../errors/user.errors';
 
@@ -34,6 +39,15 @@ export class CreateRoleUseCase {
       throw new CannotManageRoleError(
         'Solo puedes crear roles con una jerarquía estrictamente inferior a la tuya.',
       );
+    }
+
+    const incompatibles = permisosIncompatiblesConRango(
+      roleDefinition.rank,
+      roleDefinition.permissions,
+    );
+
+    if (incompatibles.length > 0) {
+      throw new PermissionRankTooHighError(incompatibles, roleDefinition.rank);
     }
 
     const grantedPermissions = roleDefinition.permissions.filter(

@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
 import { PageLayout } from '../../../../shared/components/PageLayout'
+import { tienePermiso } from '../../../../shared/permisos'
 import { useAuth } from '../../../auth/presentation/context/AuthContext'
 import { UsuariosPanel } from '../components/UsuariosPanel'
 import '../admin.css'
@@ -9,7 +10,7 @@ export function AdminPanelPage() {
   const { usuario, cargando } = useAuth()
 
   if (cargando) return null
-  if (!usuario || usuario.rol !== 'administrador') return <Navigate to="/" replace />
+  if (!usuario || !tienePermiso(usuario, 'users:read')) return <Navigate to="/" replace />
 
   return (
     <PageLayout>

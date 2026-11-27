@@ -4,6 +4,7 @@ import { LogIn, LogOut } from 'lucide-react'
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
 import { BotonPedirAyuda } from '../../features/ayuda/presentation/components/BotonPedirAyuda'
 import type { ContextoAyuda } from '../../features/ayuda/domain/entities'
+import { PERMISOS_GESTION, tieneAlgunPermiso, tienePermiso } from '../permisos'
 
 interface PageLayoutProps {
   hero?: ReactNode
@@ -17,7 +18,8 @@ export function PageLayout({ hero, children, contextoAyuda }: PageLayoutProps) {
   // Ajuste de login/registro: no mostrar "Iniciar sesión" en las pantallas de autenticación
   const { pathname } = useLocation()
   const enPantallaAuth = pathname === '/login' || pathname === '/registro'
-  const esPersonal = usuario?.rol === 'personal_clena' || usuario?.rol === 'administrador'
+  const puedeGestionar = tieneAlgunPermiso(usuario, PERMISOS_GESTION)
+  const mostrarAyuda = !tienePermiso(usuario, 'help-requests:read')
 
   return (
     <>
@@ -31,8 +33,10 @@ export function PageLayout({ hero, children, contextoAyuda }: PageLayoutProps) {
           <div className="app-header__acciones">
             {usuario && (
               <>
-                <span className="usuario-activo">Hola, {usuario.nombreCompleto.split(' ')[0]}</span>
-                {esPersonal && (
+                <Link to="/perfil" className="usuario-activo" title="Administrar perfil">
+                  {usuario.nombreCompleto.split(' ')[0]}
+                </Link>
+                {puedeGestionar && (
                   <Link to="/gestion" className="btn btn--claro">Gestión</Link>
                 )}
                 <button type="button" className="btn btn--contorno" onClick={cerrarSesion}>
@@ -45,7 +49,7 @@ export function PageLayout({ hero, children, contextoAyuda }: PageLayoutProps) {
                 <LogIn aria-hidden size={18} /> Iniciar sesión
               </Link>
             )}
-            {!esPersonal && <BotonPedirAyuda contexto={contextoAyuda} />}
+            {mostrarAyuda && <BotonPedirAyuda contexto={contextoAyuda} />}
           </div>
         </div>
         {hero && <div className="app-header__hero">{hero}</div>}

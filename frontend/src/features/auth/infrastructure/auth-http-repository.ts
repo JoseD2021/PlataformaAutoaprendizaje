@@ -1,14 +1,19 @@
 import type { AxiosInstance } from 'axios'
 import { httpClient } from '../../../shared/http/client'
 import { guardarTokens, limpiarTokens } from '../../../shared/http/token-storage'
+import { PERMISOS, type Permiso } from '../../../shared/permisos'
 import type { AuthRepository } from '../domain/auth-repository'
-import type { Credenciales, DatosRegistro, Rol, SesionIniciada, Usuario } from '../domain/entities'
+import type { Credenciales, DatosRegistro, SesionIniciada, Usuario } from '../domain/entities'
+
+const VALORES_PERMISO = new Set<string>(PERMISOS.map((permiso) => permiso.valor))
 
 interface UsuarioBackendDto {
   id: string
   email: string
   fullName: string
-  role: Rol
+  role: string
+  roleRank?: number
+  permissions?: string[]
   isActive: boolean
   privacyTermsVersion: string | null
   requiresPrivacyTermsAcceptance: boolean
@@ -29,6 +34,10 @@ function mapearUsuario(dto: UsuarioBackendDto): Usuario {
     email: dto.email,
     nombreCompleto: dto.fullName,
     rol: dto.role,
+    rango: dto.roleRank,
+    permisos: (dto.permissions ?? []).filter((permiso): permiso is Permiso =>
+      VALORES_PERMISO.has(permiso),
+    ),
     activo: dto.isActive,
     versionTerminosPrivacidad: dto.privacyTermsVersion ?? null,
     requiereAceptarTerminosPrivacidad: dto.requiresPrivacyTermsAcceptance ?? false,
@@ -90,5 +99,16 @@ export class AuthHttpRepository implements AuthRepository {
       privacyTermsVersion: version,
     })
     return mapearUsuario(data)
+  }
+
+  async cambiarNombre(nombreCompleto: string): Promise<void> {
+    await this.http.patch('/auth/me/name', { fullName: nombreCompleto.trim() })
+  }
+
+  async cambiarContrasena(contrasenaActual: string, contrasenaNueva: string): Promise<void> {
+    await this.http.patch('/auth/me/password', {
+      currentPassword: contrasenaActual,
+      newPassword: contrasenaNueva,
+    })
   }
 }

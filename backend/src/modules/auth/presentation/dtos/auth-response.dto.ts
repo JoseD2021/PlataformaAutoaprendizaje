@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import type { AuthResult, AuthTokens } from '../../application/models/auth-result.model';
-import { UserResponseDto } from '../../../users/presentation/dtos/user-response.dto';
+import { UserResponseDto, type UserAccess } from '../../../users/presentation/dtos/user-response.dto';
 
 export class AuthTokensDto {
   @ApiProperty()
@@ -37,9 +37,13 @@ export class AuthResponseDto {
   @ApiProperty({ type: AuthTokensDto })
   tokens: AuthTokensDto;
 
-  static from(result: AuthResult, currentPrivacyTermsVersion?: string | null): AuthResponseDto {
+  static from(
+    result: AuthResult,
+    currentPrivacyTermsVersion?: string | null,
+    access?: UserAccess,
+  ): AuthResponseDto {
     const dto = new AuthResponseDto();
-    dto.user = UserResponseDto.from(result.user, currentPrivacyTermsVersion);
+    dto.user = UserResponseDto.from(result.user, currentPrivacyTermsVersion, access);
     dto.tokens = AuthTokensDto.from(result.tokens);
 
     return dto;

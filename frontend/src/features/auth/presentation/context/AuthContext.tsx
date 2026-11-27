@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { container } from '../../../../app/container'
 import { EVENTO_SESION_EXPIRADA } from '../../../../shared/http/client'
 import { obtenerMensajeError } from '../../../../shared/http/obtener-mensaje-error'
-import { obtenerTokens } from '../../../../shared/http/token-storage'
+import { limpiarTokens, obtenerTokens } from '../../../../shared/http/token-storage'
 import type { Credenciales, DatosRegistro, Usuario } from '../../domain/entities'
 
 interface AuthContextValor {
@@ -14,6 +14,8 @@ interface AuthContextValor {
   registrar: (datos: DatosRegistro) => Promise<void>
   cerrarSesion: () => Promise<void>
   aceptarTerminosPrivacidad: (version: string) => Promise<void>
+  cambiarNombre: (nombreCompleto: string) => Promise<void>
+  cambiarContrasena: (contrasenaActual: string, contrasenaNueva: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValor | null>(null)
@@ -86,9 +88,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function cambiarNombre(nombreCompleto: string) {
+    await container.cambiarNombre.execute(nombreCompleto)
+    const nombreNormalizado = nombreCompleto.trim()
+    setUsuario((actual) => (actual ? { ...actual, nombreCompleto: nombreNormalizado } : actual))
+  }
+
+  async function cambiarContrasena(contrasenaActual: string, contrasenaNueva: string) {
+    await container.cambiarContrasena.execute(contrasenaActual, contrasenaNueva)
+    limpiarTokens()
+    setUsuario(null)
+    queryClient.clear()
+  }
+
   return (
     <AuthContext.Provider
-      value={{ usuario, cargando, error, iniciarSesion, registrar, cerrarSesion, aceptarTerminosPrivacidad }}
+      value={{
+        usuario,
+        cargando,
+        error,
+        iniciarSesion,
+        registrar,
+        cerrarSesion,
+        aceptarTerminosPrivacidad,
+        cambiarNombre,
+        cambiarContrasena,
+      }}
     >
       {children}
     </AuthContext.Provider>

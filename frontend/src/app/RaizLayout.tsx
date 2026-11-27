@@ -8,6 +8,7 @@ export function RaizLayout() {
   const enGestion =
     pathname.startsWith('/gestion') ||
     pathname.startsWith('/admin') ||
+    pathname.startsWith('/roles') ||
     pathname.startsWith('/horario') ||
     pathname.startsWith('/privacidad')
 

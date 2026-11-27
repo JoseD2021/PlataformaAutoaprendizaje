@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Save } from 'lucide-react'
 import { obtenerMensajeError } from '../../../../shared/http/obtener-mensaje-error'
+import { tienePermiso } from '../../../../shared/permisos'
 import type { Rol } from '../../../auth/domain/entities'
 import { useAuth } from '../../../auth/presentation/context/AuthContext'
 import type { RolInfo, UsuarioAdmin } from '../../domain/entities'
@@ -18,12 +19,21 @@ interface FilaProps {
   roles: RolInfo[]
   esYo: boolean
   guardando: boolean
+  puedeCambiarRol: boolean
   onGuardar: (usuario: UsuarioAdmin, rol: Rol) => void
 }
 
-function FilaUsuario({ usuario, roles, esYo, guardando, onGuardar }: FilaProps) {
+function FilaUsuario({
+  usuario,
+  roles,
+  esYo,
+  guardando,
+  puedeCambiarRol,
+  onGuardar,
+}: FilaProps) {
   const [rolElegido, setRolElegido] = useState<Rol>(usuario.rol)
   const hayCambio = rolElegido !== usuario.rol
+  const bloqueado = esYo || guardando || !puedeCambiarRol
   const idSelect = `rol-${usuario.id}`
 
   return (
@@ -41,7 +51,7 @@ function FilaUsuario({ usuario, roles, esYo, guardando, onGuardar }: FilaProps) 
         <select
           id={idSelect}
           value={rolElegido}
-          disabled={esYo || guardando}
+          disabled={bloqueado}
           onChange={(e) => setRolElegido(e.target.value as Rol)}
         >
           {roles.map((r) => (
@@ -49,12 +59,15 @@ function FilaUsuario({ usuario, roles, esYo, guardando, onGuardar }: FilaProps) 
           ))}
         </select>
         {esYo && <small className="admin-nota">No puedes cambiar tu propio rol.</small>}
+        {!puedeCambiarRol && !esYo && (
+          <small className="admin-nota">No tienes permiso para cambiar roles.</small>
+        )}
       </td>
       <td>
         <button
           type="button"
           className="btn btn--verde btn-sm"
-          disabled={!hayCambio || esYo || guardando}
+          disabled={!hayCambio || bloqueado}
           onClick={() => onGuardar(usuario, rolElegido)}
         >
           <Save aria-hidden size={16} /> Guardar rol
@@ -72,6 +85,7 @@ export function UsuariosPanel() {
   const usuarios = useUsuarios(pagina)
   const roles = useRoles()
   const cambiarRol = useCambiarRol()
+  const puedeCambiarRol = tienePermiso(yo, 'users:update-role')
 
   const opciones = roles.data ?? ROLES_RESPALDO
 
@@ -122,6 +136,7 @@ export function UsuariosPanel() {
                   roles={opciones}
                   esYo={u.id === yo?.id}
                   guardando={cambiarRol.isPending}
+                  puedeCambiarRol={puedeCambiarRol}
                   onGuardar={guardar}
                 />
               ))}

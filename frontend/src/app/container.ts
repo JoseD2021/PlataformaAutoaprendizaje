@@ -11,6 +11,8 @@ import { ObtenerInformacionSala } from '../features/sala/application/obtener-inf
 import { SalaHttpRepository } from '../features/sala/infrastructure/sala-http-repository'
 import { AuthHttpRepository } from '../features/auth/infrastructure/auth-http-repository'
 import { AceptarTerminosPrivacidad } from '../features/auth/application/aceptar-terminos-privacidad'
+import { CambiarContrasena } from '../features/auth/application/cambiar-contrasena'
+import { CambiarNombre } from '../features/auth/application/cambiar-nombre'
 import { CerrarSesion } from '../features/auth/application/cerrar-sesion'
 import { IniciarSesion } from '../features/auth/application/iniciar-sesion'
 import { ObtenerPerfil } from '../features/auth/application/obtener-perfil'
@@ -36,6 +38,10 @@ import { AdminHttpRepository } from '../features/admin/infrastructure/admin-http
 import { ListarUsuarios } from '../features/admin/application/listar-usuarios'
 import { CambiarRolUsuario } from '../features/admin/application/cambiar-rol-usuario'
 import { ListarRoles } from '../features/admin/application/listar-roles'
+import { RolesHttpRepository } from '../features/roles/infrastructure/roles-http-repository'
+import { ListarRolesDetalle } from '../features/roles/application/listar-roles'
+import { CrearRol } from '../features/roles/application/crear-rol'
+import { ActualizarPermisosRol } from '../features/roles/application/actualizar-permisos-rol'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
 import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
@@ -56,6 +62,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
   const gestionRepo = new GestionHttpRepository(httpClient)
   const favoritosRepo = new FavoritosHttpRepository(httpClient)
   const adminRepo = new AdminHttpRepository(httpClient)
+  const rolesRepo = new RolesHttpRepository(httpClient)
   const privacidadRepo = new PrivacidadHttpRepository(httpClient)
   const ayudaRepo = new AyudaHttpRepository(httpClient)
   const dudasRepo = new DudasHttpRepository(httpClient)
@@ -72,6 +79,8 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     cerrarSesion: new CerrarSesion(authRepo),
     obtenerPerfil: new ObtenerPerfil(authRepo),
     aceptarTerminosPrivacidad: new AceptarTerminosPrivacidad(authRepo),
+    cambiarNombre: new CambiarNombre(authRepo),
+    cambiarContrasena: new CambiarContrasena(authRepo),
     listarFavoritos: new ListarFavoritos(favoritosRepo),
     agregarFavorito: new AgregarFavorito(favoritosRepo),
     quitarFavorito: new QuitarFavorito(favoritosRepo),
@@ -90,6 +99,9 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     listarUsuarios: new ListarUsuarios(adminRepo),
     cambiarRolUsuario: new CambiarRolUsuario(adminRepo),
     listarRoles: new ListarRoles(adminRepo),
+    listarRolesDetalle: new ListarRolesDetalle(rolesRepo),
+    crearRol: new CrearRol(rolesRepo),
+    actualizarPermisosRol: new ActualizarPermisosRol(rolesRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
     pedirAyuda: new PedirAyuda(ayudaRepo),
     listarAyudasPendientes: new ListarAyudasPendientes(ayudaRepo),

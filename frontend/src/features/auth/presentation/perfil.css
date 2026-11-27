@@ -1,0 +1,47 @@
+.perfil-cabecera {
+  margin-bottom: 1.5rem;
+}
+.perfil-cabecera h1 {
+  margin: 0 0 .25rem;
+}
+.perfil-cabecera p {
+  margin: 0;
+  font-size: var(--fs-base);
+}
+
+.perfil-tarjeta {
+  background: #fff;
+  border: 2px solid var(--color-borde);
+  border-top: .5rem solid var(--color-marca);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgb(26 58 42 / .08);
+}
+.perfil-tarjeta__cabecera {
+  margin-bottom: 1rem;
+}
+.perfil-tarjeta__cabecera h2 {
+  font-size: var(--fs-lg);
+  margin: 0 0 .125rem;
+}
+.perfil-tarjeta__cabecera p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.perfil-formulario {
+  margin-top: 0;
+  max-width: none;
+}
+.perfil-formulario .btn {
+  align-self: flex-start;
+}
+.perfil-aviso {
+  margin: 0;
+  padding: .5rem .75rem;
+  font-size: 1rem;
+  background: #fff8e1;
+  border-left: 4px solid var(--color-marca);
+  border-radius: .25rem;
+}
