@@ -68,12 +68,12 @@ describe('NavegacionVolver', () => {
     }
   })
 
-  it('no muestra «Dudas sin guía» ni las acciones de administrador a un usuario común', () => {
+  it('muestra «Dudas sin guía» pero no las acciones de administrador a un usuario común', () => {
     usuarioActual.value = usuario('usuario')
     renderizar(true)
 
     expect(screen.getByRole('link', { name: 'Guías y categorías' })).toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Dudas sin guía' })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toHaveAttribute('href', '/dudas')
     for (const [role, name] of accionesAdmin) {
       expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
     }
