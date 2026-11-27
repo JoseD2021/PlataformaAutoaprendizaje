@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
@@ -88,15 +88,11 @@ export function RolesPage() {
   const [avisoCrear, setAvisoCrear] = useState('')
   const [errorCrear, setErrorCrear] = useState('')
 
-  const [seleccion, setSeleccion] = useState<Record<string, Permiso[]>>({})
+  // Solo guardamos aquí los cambios del usuario; el valor inicial viene del servidor.
+  const [cambios, setCambios] = useState<Record<string, Permiso[]>>({})
   const [avisoPermisos, setAvisoPermisos] = useState('')
   const [errorPermisos, setErrorPermisos] = useState('')
   const [editando, setEditando] = useState('')
-
-  useEffect(() => {
-    if (!roles.data) return
-    setSeleccion(Object.fromEntries(roles.data.map((rol) => [rol.rol, rol.permisos])))
-  }, [roles.data])
 
   if (cargando) return null
   if (!usuario || !tienePermiso(usuario, 'roles:read')) return <Navigate to="/" replace />
@@ -137,7 +133,11 @@ export function RolesPage() {
     try {
       await actualizarPermisos.mutateAsync({
         rol: rol.rol,
-        permisos: seleccion[rol.rol] ?? rol.permisos,
+        permisos: cambios[rol.rol] ?? rol.permisos,
+      })
+      setCambios((actual) => {
+        const { [rol.rol]: _guardado, ...restantes } = actual
+        return restantes
       })
       setAvisoPermisos(`Permisos de «${rol.nombre}» actualizados.`)
     } catch (err) {
@@ -231,7 +231,7 @@ export function RolesPage() {
             <p className="admin-mensaje" role="alert">No se pudo cargar la lista de roles.</p>
           )}
           {roles.data?.map((rol) => {
-            const seleccionados = seleccion[rol.rol] ?? rol.permisos
+            const seleccionados = cambios[rol.rol] ?? rol.permisos
             const editable = rol.rango < rangoActor && puedeActualizar
             return (
               <details className="rol-detalle" key={rol.rol}>
@@ -253,7 +253,7 @@ export function RolesPage() {
                     permitidos={permitidos}
                     deshabilitado={!editable}
                     alCambiar={(permiso) =>
-                      setSeleccion((actual) => ({
+                      setCambios((actual) => ({
                         ...actual,
                         [rol.rol]: alternar(seleccionados, permiso),
                       }))

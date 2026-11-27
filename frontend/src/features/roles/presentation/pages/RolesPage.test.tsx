@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AxiosResponse } from 'axios'
@@ -101,15 +101,18 @@ describe('RolesPage', () => {
     fireEvent.change(screen.getByLabelText('Identificador'), { target: { value: 'colaborador' } })
     fireEvent.change(screen.getByLabelText('Nombre visible'), { target: { value: 'Colaborador' } })
     fireEvent.change(screen.getByLabelText('Rango'), { target: { value: '25' } })
-    fireEvent.click(screen.getByLabelText('Gestionar guías'))
+    const formulario = screen.getByRole('button', { name: 'Crear rol' }).closest('form') as HTMLElement
+    fireEvent.click(within(formulario).getByLabelText('Gestionar guías'))
     fireEvent.click(screen.getByRole('button', { name: 'Crear rol' }))
 
-    expect(post).toHaveBeenCalledWith('/roles', {
-      role: 'colaborador',
-      name: 'Colaborador',
-      rank: 25,
-      permissions: ['guides:manage'],
-    })
+    await waitFor(() =>
+      expect(post).toHaveBeenCalledWith('/roles', {
+        role: 'colaborador',
+        name: 'Colaborador',
+        rank: 25,
+        permissions: ['guides:manage'],
+      }),
+    )
     expect(await screen.findByText('Rol «Colaborador» creado correctamente.')).toBeInTheDocument()
   })
 
@@ -127,9 +130,11 @@ describe('RolesPage', () => {
     fireEvent.click(within(detalles).getByLabelText('Crear guías'))
     fireEvent.click(within(detalles).getByRole('button', { name: 'Guardar permisos' }))
 
-    expect(patch).toHaveBeenCalledWith('/roles/personal_clena/permissions', {
-      permissions: ['users:read', 'guides:create'],
-    })
+    await waitFor(() =>
+      expect(patch).toHaveBeenCalledWith('/roles/personal_clena/permissions', {
+        permissions: ['users:read', 'guides:create'],
+      }),
+    )
     expect(await screen.findByText('Permisos de «Personal de la sala» actualizados.')).toBeInTheDocument()
   })
 
