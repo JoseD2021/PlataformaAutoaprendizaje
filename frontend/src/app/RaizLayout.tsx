@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { BotonHorarioNormas } from '../features/sala/presentation/components/BotonHorarioNormas'
+import { AvisosAyuda } from '../features/ayuda/presentation/components/AvisosAyuda'
 import { DialogoAceptarTerminosActualizados } from '../features/privacidad/presentation/components/DialogoAceptarTerminosActualizados'
 
 export function RaizLayout() {
@@ -15,6 +16,7 @@ export function RaizLayout() {
     <>
       <Outlet />
       {!enGestion && <BotonHorarioNormas />}
+      <AvisosAyuda />
       <DialogoAceptarTerminosActualizados />
     </>
   )

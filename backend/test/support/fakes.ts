@@ -38,6 +38,9 @@ import { RoomInfoRepository } from '../../src/modules/room-info/domain/repositor
 import { CategoryLookup } from '../../src/modules/guides/application/ports/category-lookup.port';
 import { Favorite } from '../../src/modules/favorites/domain/entities/favorite.entity';
 import { FavoriteRepository } from '../../src/modules/favorites/domain/repositories/favorite.repository';
+import { HelpRequest } from '../../src/modules/help-requests/domain/entities/help-request.entity';
+import { HelpRequestStatus } from '../../src/modules/help-requests/domain/enums/help-request-status.enum';
+import { HelpRequestRepository } from '../../src/modules/help-requests/domain/repositories/help-request.repository';
 
 
 export class InMemoryUserRepository extends UserRepository {
@@ -248,6 +251,50 @@ export class InMemoryFavoriteRepository extends FavoriteRepository {
 
   get all(): Favorite[] {
     return [...this.favorites];
+  }
+}
+
+export class InMemoryHelpRequestRepository extends HelpRequestRepository {
+  private readonly helpRequests = new Map<string, HelpRequest>();
+
+  constructor(seed: HelpRequest[] = []) {
+    super();
+    seed.forEach((helpRequest) => this.helpRequests.set(helpRequest.id, helpRequest));
+  }
+
+  async save(helpRequest: HelpRequest): Promise<void> {
+    this.helpRequests.set(helpRequest.id, helpRequest);
+  }
+
+  async findById(id: string): Promise<HelpRequest | null> {
+    return this.helpRequests.get(id) ?? null;
+  }
+
+  async findPendingByStationOrUser(
+    stationNumber: number | null,
+    userId: string | null,
+  ): Promise<HelpRequest | null> {
+    if (stationNumber === null && userId === null) {
+      return null;
+    }
+
+    return (
+      (await this.listPending()).find(
+        (h) =>
+          (stationNumber !== null && h.stationNumber === stationNumber) ||
+          (userId !== null && h.userId === userId),
+      ) ?? null
+    );
+  }
+
+  async listPending(): Promise<HelpRequest[]> {
+    return this.all
+      .filter((h) => h.status === HelpRequestStatus.PENDING)
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }
+
+  get all(): HelpRequest[] {
+    return [...this.helpRequests.values()];
   }
 }
 
@@ -482,6 +529,16 @@ export function makeFavorite(
   return Favorite.create({
     userId: 'user-1',
     guideId: 'enviar-correo-foto',
+    ...overrides,
+  });
+}
+
+export function makeHelpRequest(
+  overrides: Partial<Parameters<typeof HelpRequest.create>[0]> = {},
+): HelpRequest {
+  return HelpRequest.create({
+    id: '11111111-1111-4111-8111-111111111111',
+    stationNumber: 5,
     ...overrides,
   });
 }

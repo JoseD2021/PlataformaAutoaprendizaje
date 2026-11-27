@@ -1,6 +1,15 @@
 import { Fragment } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, BookOpen, Clock, FileText, Home, Users, type LucideIcon } from 'lucide-react'
+import {
+  ArrowLeft,
+  BookOpen,
+  Clock,
+  FileText,
+  Home,
+  MessageCircleQuestion,
+  Users,
+  type LucideIcon,
+} from 'lucide-react'
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
 import {
   PERMISOS_GESTION,
@@ -21,7 +30,20 @@ export function NavegacionVolver({
   // 'default' = la persona llegó directo a esta URL, no hay página anterior dentro de la app
   const hayHistorialInterno = location.key !== 'default'
 
-  const acciones: { ruta: string; etiqueta: string; Icono: LucideIcon; permisos: Permiso[] }[] = [
+  const acciones: {
+    ruta: string
+    etiqueta: string
+    Icono: LucideIcon
+    permisos: Permiso[]
+    siempreVisible?: boolean
+  }[] = [
+    {
+      ruta: '/dudas',
+      etiqueta: 'Dudas sin guía',
+      Icono: MessageCircleQuestion,
+      permisos: ['doubts:manage'],
+      siempreVisible: true,
+    },
     { ruta: '/admin', etiqueta: 'Gestionar usuarios', Icono: Users, permisos: ['users:read'] },
     { ruta: '/gestion', etiqueta: 'Guías y categorías', Icono: BookOpen, permisos: PERMISOS_GESTION },
     { ruta: '/horario', etiqueta: 'Horario de la sala', Icono: Clock, permisos: ['room-info:manage'] },
@@ -33,7 +55,10 @@ export function NavegacionVolver({
       permisos: ['privacy-terms:manage'],
     },
   ]
-  const visibles = acciones.filter((accion) => tieneAlgunPermiso(usuario, accion.permisos))
+  const visibles = acciones.filter(
+    (accion) =>
+      tieneAlgunPermiso(usuario, accion.permisos) && (accion.siempreVisible || conAccionesAdmin),
+  )
 
   return (
     <nav className="navegacion-superior" aria-label="Navegación de retorno">
@@ -48,15 +73,14 @@ export function NavegacionVolver({
       <Link to="/" className="btn-enlace">
         <Home aria-hidden size={20} /> Volver al inicio
       </Link>
-      {conAccionesAdmin &&
-        visibles.map((accion) => (
-          <Fragment key={accion.ruta}>
-            <span className="separador-nav" aria-hidden>·</span>
-            <Link to={accion.ruta} className="btn-enlace">
-              <accion.Icono aria-hidden size={18} /> {accion.etiqueta}
-            </Link>
-          </Fragment>
-        ))}
+      {visibles.map((accion) => (
+        <Fragment key={accion.ruta}>
+          <span className="separador-nav" aria-hidden>·</span>
+          <Link to={accion.ruta} className="btn-enlace">
+            <accion.Icono aria-hidden size={18} /> {accion.etiqueta}
+          </Link>
+        </Fragment>
+      ))}
     </nav>
   )
 }

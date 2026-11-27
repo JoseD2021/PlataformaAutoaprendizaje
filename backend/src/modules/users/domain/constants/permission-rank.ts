@@ -16,6 +16,8 @@ export const RANGO_MINIMO_POR_PERMISO: Record<Permission, number> = {
   [Permission.SESSIONS_READ_ONLINE]: 20,
   [Permission.HELP_REQUESTS_READ]: 20,
   [Permission.HELP_REQUESTS_CREATE]: 10,
+  [Permission.HELP_REQUESTS_MANAGE]: 20,
+  [Permission.DOUBTS_MANAGE]: 20,
   [Permission.FAVORITES_MANAGE]: 10,
   [Permission.ROOM_INFO_MANAGE]: 20,
   [Permission.PRIVACY_TERMS_MANAGE]: 20,

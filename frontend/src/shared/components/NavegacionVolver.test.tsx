@@ -35,12 +35,17 @@ function usuario(permisos: Permiso[] = []): Usuario {
   }
 }
 
-const acciones = [
+const accionesAdmin = [
   ['link', 'Gestionar usuarios'],
-  ['link', 'Guías y categorías'],
   ['link', 'Horario de la sala'],
   ['link', 'Gestionar roles'],
   ['link', 'Tratamiento de datos'],
+] as const
+
+const todasLasAcciones = [
+  ...accionesAdmin,
+  ['link', 'Guías y categorías'],
+  ['link', 'Dudas sin guía'],
 ] as const
 
 describe('NavegacionVolver', () => {
@@ -50,6 +55,7 @@ describe('NavegacionVolver', () => {
 
   it('muestra las acciones según los permisos del usuario', () => {
     usuarioActual.value = usuario([
+      'doubts:manage',
       'users:read',
       ...PERMISOS_GESTION,
       'room-info:manage',
@@ -64,25 +70,44 @@ describe('NavegacionVolver', () => {
     expect(screen.getByRole('link', { name: 'Horario de la sala' })).toHaveAttribute('href', '/horario')
     expect(screen.getByRole('link', { name: 'Gestionar roles' })).toHaveAttribute('href', '/roles')
     expect(screen.getByRole('link', { name: 'Tratamiento de datos' })).toHaveAttribute('href', '/privacidad')
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toHaveAttribute('href', '/dudas')
   })
 
   it('solo muestra las acciones para las que hay permiso', () => {
     usuarioActual.value = usuario(['roles:read'])
     renderizar(true)
 
-    expect(screen.getByRole('link', { name: 'Gestionar roles' })).toBeInTheDocument()
-    for (const [role, name] of acciones) {
+    expect(screen.getByRole('link', { name: 'Gestionar roles' })).toHaveAttribute('href', '/roles')
+    for (const [role, name] of todasLasAcciones) {
       if (name === 'Gestionar roles') continue
       expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
     }
   })
 
-  it('no muestra acciones si la página no las solicita', () => {
-    usuarioActual.value = usuario(['users:read', 'roles:read'])
-    renderizar()
+  it('muestra «Dudas sin guía» sin acciones de administrador', () => {
+    usuarioActual.value = usuario(['doubts:manage'])
+    renderizar(true)
 
-    for (const [role, name] of acciones) {
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toHaveAttribute('href', '/dudas')
+    for (const [role, name] of accionesAdmin) {
       expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
     }
+  })
+
+  it('no muestra «Dudas sin guía» a un usuario sin permiso', () => {
+    usuarioActual.value = usuario(['favorites:manage', 'help-requests:create'])
+    renderizar(true)
+
+    expect(screen.queryByRole('link', { name: 'Dudas sin guía' })).not.toBeInTheDocument()
+  })
+
+  it('muestra «Dudas sin guía» aunque la página no solicite acciones de administrador', () => {
+    usuarioActual.value = usuario(['users:read', 'roles:read', 'doubts:manage'])
+    renderizar()
+
+    for (const [role, name] of accionesAdmin) {
+      expect(screen.queryByRole(role, { name })).not.toBeInTheDocument()
+    }
+    expect(screen.getByRole('link', { name: 'Dudas sin guía' })).toHaveAttribute('href', '/dudas')
   })
 })

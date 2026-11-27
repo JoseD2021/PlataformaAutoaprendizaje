@@ -17,6 +17,8 @@ export const PERMISOS = [
   { valor: 'sessions:read-online', etiqueta: 'Ver sesiones en línea', grupo: 'Funciones previstas' },
   { valor: 'help-requests:read', etiqueta: 'Ver solicitudes de ayuda', grupo: 'Funciones previstas' },
   { valor: 'help-requests:create', etiqueta: 'Enviar solicitudes de ayuda', grupo: 'Funciones previstas' },
+  { valor: 'help-requests:manage', etiqueta: 'Atender solicitudes de ayuda', grupo: 'Funciones previstas' },
+  { valor: 'doubts:manage', etiqueta: 'Gestionar dudas sin guía', grupo: 'Funciones previstas' },
 ] as const
 
 export type Permiso = (typeof PERMISOS)[number]['valor']
@@ -40,6 +42,8 @@ export const RANGO_MINIMO_POR_PERMISO: Record<Permiso, number> = {
   'sessions:read-online': 20,
   'help-requests:read': 20,
   'help-requests:create': 10,
+  'help-requests:manage': 20,
+  'doubts:manage': 20,
 }
 
 export const PERMISOS_GESTION: Permiso[] = [

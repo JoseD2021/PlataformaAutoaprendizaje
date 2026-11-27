@@ -1,10 +1,19 @@
 import type { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { LogIn, LogOut, CircleHelp } from 'lucide-react'
+import { LogIn, LogOut } from 'lucide-react'
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
+import { BotonPedirAyuda } from '../../features/ayuda/presentation/components/BotonPedirAyuda'
+import type { ContextoAyuda } from '../../features/ayuda/domain/entities'
 import { PERMISOS_GESTION, tieneAlgunPermiso, tienePermiso } from '../permisos'
 
-export function PageLayout({ hero, children }: { hero?: ReactNode; children: ReactNode }) {
+interface PageLayoutProps {
+  hero?: ReactNode
+  children: ReactNode
+  /** Guía y paso actuales, para que «Pedir ayuda» le diga a la asistente dónde se quedó. */
+  contextoAyuda?: ContextoAyuda
+}
+
+export function PageLayout({ hero, children, contextoAyuda }: PageLayoutProps) {
   const { usuario, cerrarSesion } = useAuth()
   // Ajuste de login/registro: no mostrar "Iniciar sesión" en las pantallas de autenticación
   const { pathname } = useLocation()
@@ -40,11 +49,7 @@ export function PageLayout({ hero, children }: { hero?: ReactNode; children: Rea
                 <LogIn aria-hidden size={18} /> Iniciar sesión
               </Link>
             )}
-            {mostrarAyuda && (
-              <button type="button" className="btn btn--claro">
-                <CircleHelp aria-hidden size={18} /> Pedir ayuda
-              </button>
-            )}
+            {mostrarAyuda && <BotonPedirAyuda contexto={contextoAyuda} />}
           </div>
         </div>
         {hero && <div className="app-header__hero">{hero}</div>}

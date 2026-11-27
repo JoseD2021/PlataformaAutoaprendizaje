@@ -14,6 +14,7 @@ import { GuiaFormPage } from '../features/gestion/presentation/pages/GuiaFormPag
 import { RutaProtegida } from '../features/gestion/presentation/components/RutaProtegida'
 import { HorarioSalaPage } from '../features/sala/presentation/pages/HorarioSalaPage'
 import { PrivacidadAdminPage } from '../features/privacidad/presentation/pages/PrivacidadAdminPage'
+import { DudasSinGuiaPage } from '../features/dudas/presentation/pages/DudasSinGuiaPage'
 import { PERMISOS_GESTION, type Permiso } from '../shared/permisos'
 import { RaizLayout } from './RaizLayout'
 
@@ -75,6 +76,14 @@ export const router = createBrowserRouter([
         element: (
           <RutaProtegida permisos={PERMISOS_GESTION}>
             <GestionPage />
+          </RutaProtegida>
+        ),
+      },
+      {
+        path: '/dudas',
+        element: (
+          <RutaProtegida permisos={['doubts:manage']}>
+            <DudasSinGuiaPage />
           </RutaProtegida>
         ),
       },
