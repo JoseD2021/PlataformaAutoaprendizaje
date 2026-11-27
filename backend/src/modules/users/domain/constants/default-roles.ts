@@ -36,6 +36,7 @@ export const DEFAULT_ROLES: DefaultRoleDefinition[] = [
       Permission.GUIDES_MANAGE,
       Permission.CATEGORIES_CREATE,
       Permission.CATEGORIES_MANAGE,
+      Permission.DOUBTS_MANAGE,
     ],
   },
   {
