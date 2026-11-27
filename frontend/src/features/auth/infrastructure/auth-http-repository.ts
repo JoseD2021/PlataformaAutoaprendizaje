@@ -111,4 +111,9 @@ export class AuthHttpRepository implements AuthRepository {
       newPassword: contrasenaNueva,
     })
   }
+
+  async eliminarCuenta(): Promise<void> {
+    await this.http.delete('/auth/me')
+    limpiarTokens()
+  }
 }

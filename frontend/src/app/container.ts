@@ -14,6 +14,7 @@ import { AceptarTerminosPrivacidad } from '../features/auth/application/aceptar-
 import { CambiarContrasena } from '../features/auth/application/cambiar-contrasena'
 import { CambiarNombre } from '../features/auth/application/cambiar-nombre'
 import { CerrarSesion } from '../features/auth/application/cerrar-sesion'
+import { EliminarCuenta } from '../features/auth/application/eliminar-cuenta'
 import { IniciarSesion } from '../features/auth/application/iniciar-sesion'
 import { ObtenerPerfil } from '../features/auth/application/obtener-perfil'
 import { RegistrarUsuario } from '../features/auth/application/registrar-usuario'
@@ -81,6 +82,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     aceptarTerminosPrivacidad: new AceptarTerminosPrivacidad(authRepo),
     cambiarNombre: new CambiarNombre(authRepo),
     cambiarContrasena: new CambiarContrasena(authRepo),
+    eliminarCuenta: new EliminarCuenta(authRepo),
     listarFavoritos: new ListarFavoritos(favoritosRepo),
     agregarFavorito: new AgregarFavorito(favoritosRepo),
     quitarFavorito: new QuitarFavorito(favoritosRepo),

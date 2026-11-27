@@ -24,6 +24,7 @@ function renderizar() {
         <MemoryRouter initialEntries={['/perfil']}>
           <Routes>
             <Route path="/perfil" element={<PerfilPage />} />
+            <Route path="/login" element={<p>Inicio de sesión</p>} />
           </Routes>
         </MemoryRouter>
       </AuthProvider>
@@ -152,5 +153,54 @@ describe('PerfilPage', () => {
       'Las contraseñas nuevas no coinciden.',
     )
     expect(patch).not.toHaveBeenCalled()
+  })
+
+  it('abre el modal de confirmación y cancela sin llamar al servidor', async () => {
+    const borrar = vi.spyOn(httpClient, 'delete').mockResolvedValue({ data: undefined } as AxiosResponse)
+    renderizar()
+    await esperarFormulario()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Eliminar mi cuenta' }))
+
+    const modal = await screen.findByRole('alertdialog')
+    expect(modal).toHaveAttribute('open')
+    expect(borrar).not.toHaveBeenCalled()
+
+    fireEvent.click(within(modal).getByRole('button', { name: 'Cancelar' }))
+
+    expect(modal).not.toHaveAttribute('open')
+    expect(borrar).not.toHaveBeenCalled()
+  })
+
+  it('elimina la cuenta tras confirmar y cierra la sesión', async () => {
+    const borrar = vi.spyOn(httpClient, 'delete').mockResolvedValue({ data: undefined } as AxiosResponse)
+    renderizar()
+    await esperarFormulario()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Eliminar mi cuenta' }))
+    const modal = await screen.findByRole('alertdialog')
+    fireEvent.click(within(modal).getByRole('button', { name: 'Sí, eliminar mi cuenta' }))
+
+    await waitFor(() => expect(borrar).toHaveBeenCalledWith('/auth/me'))
+    expect(await screen.findByText('Inicio de sesión')).toBeInTheDocument()
+    expect(obtenerTokens()).toBeNull()
+  })
+
+  it('muestra el error del servidor y mantiene abierto el modal', async () => {
+    vi.spyOn(httpClient, 'delete').mockRejectedValue(
+      crearError('No se pudo eliminar la cuenta.'),
+    )
+    renderizar()
+    await esperarFormulario()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Eliminar mi cuenta' }))
+    const modal = await screen.findByRole('alertdialog')
+    fireEvent.click(within(modal).getByRole('button', { name: 'Sí, eliminar mi cuenta' }))
+
+    expect(await within(modal).findByRole('alert')).toHaveTextContent(
+      'No se pudo eliminar la cuenta.',
+    )
+    expect(modal).toHaveAttribute('open')
+    expect(screen.getByRole('button', { name: 'Eliminar mi cuenta' })).toBeInTheDocument()
   })
 })

@@ -8,4 +8,5 @@ export interface AuthRepository {
   aceptarTerminosPrivacidad(version: string): Promise<Usuario>
   cambiarNombre(nombreCompleto: string): Promise<void>
   cambiarContrasena(contrasenaActual: string, contrasenaNueva: string): Promise<void>
+  eliminarCuenta(): Promise<void>
 }
