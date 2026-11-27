@@ -72,6 +72,13 @@ describe('PageLayout', () => {
     expect(screen.getByRole('link', { name: 'Gestión' })).toBeInTheDocument()
   })
 
+  it('muestra gestión y lleva al panel de usuarios a quien puede cambiar roles', () => {
+    usuarioActual.value = usuario(['users:update-role'])
+    renderizar()
+
+    expect(screen.getByRole('link', { name: 'Gestión' })).toHaveAttribute('href', '/admin')
+  })
+
   it('muestra «Pedir ayuda» a quien no ha iniciado sesión', () => {
     renderizar()
 

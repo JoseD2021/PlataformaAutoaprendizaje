@@ -84,6 +84,17 @@ describe('NavegacionVolver', () => {
     }
   })
 
+  it('muestra solo «Gestionar usuarios» a quien puede cambiar roles', () => {
+    usuarioActual.value = usuario(['users:update-role'])
+    renderizar(true)
+
+    expect(screen.getByRole('link', { name: 'Gestionar usuarios' })).toHaveAttribute('href', '/admin')
+    for (const [, name] of todasLasAcciones) {
+      if (name === 'Gestionar usuarios') continue
+      expect(screen.queryByRole('link', { name })).not.toBeInTheDocument()
+    }
+  })
+
   it('muestra «Dudas sin guía» sin acciones de administrador', () => {
     usuarioActual.value = usuario(['doubts:manage'])
     renderizar(true)

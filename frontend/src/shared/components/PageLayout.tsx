@@ -4,7 +4,7 @@ import { LogIn, LogOut } from 'lucide-react'
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
 import { BotonPedirAyuda } from '../../features/ayuda/presentation/components/BotonPedirAyuda'
 import type { ContextoAyuda } from '../../features/ayuda/domain/entities'
-import { PERMISOS_GESTION, tieneAlgunPermiso, tienePermiso } from '../permisos'
+import { rutaPrincipalDeGestion, tienePermiso } from '../permisos'
 
 interface PageLayoutProps {
   hero?: ReactNode
@@ -18,7 +18,8 @@ export function PageLayout({ hero, children, contextoAyuda }: PageLayoutProps) {
   // Ajuste de login/registro: no mostrar "Iniciar sesión" en las pantallas de autenticación
   const { pathname } = useLocation()
   const enPantallaAuth = pathname === '/login' || pathname === '/registro'
-  const puedeGestionar = tieneAlgunPermiso(usuario, PERMISOS_GESTION)
+  const rutaGestion = usuario ? rutaPrincipalDeGestion(usuario) : '/'
+  const puedeGestionar = rutaGestion !== '/'
   const mostrarAyuda = !tienePermiso(usuario, 'help-requests:read')
 
   return (
@@ -37,7 +38,7 @@ export function PageLayout({ hero, children, contextoAyuda }: PageLayoutProps) {
                   {usuario.nombreCompleto.split(' ')[0]}
                 </Link>
                 {puedeGestionar && (
-                  <Link to="/gestion" className="btn btn--claro">Gestión</Link>
+                  <Link to={rutaGestion} className="btn btn--claro">Gestión</Link>
                 )}
                 <button type="button" className="btn btn--contorno" onClick={cerrarSesion}>
                   <LogOut aria-hidden size={18} /> Cerrar sesión

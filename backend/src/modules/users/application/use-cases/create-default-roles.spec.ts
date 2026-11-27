@@ -17,7 +17,6 @@ describe('CreateDefaultRolesUseCase', () => {
     ]);
     expect(createdRoles[0].permissions).toEqual(ALL_PERMISSIONS);
     expect(createdRoles[1].permissions).toEqual([
-      Permission.USERS_READ,
       Permission.SESSIONS_READ_ONLINE,
       Permission.HELP_REQUESTS_READ,
       Permission.HELP_REQUESTS_MANAGE,

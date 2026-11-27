@@ -53,6 +53,22 @@ export const PERMISOS_GESTION: Permiso[] = [
   'categories:manage',
 ]
 
+export const PERMISOS_USUARIOS: Permiso[] = [
+  'users:create',
+  'users:read',
+  'users:update-role',
+  'users:delete',
+]
+
+export const PERMISOS_ADMINISTRACION: Permiso[] = [
+  ...PERMISOS_USUARIOS,
+  ...PERMISOS_GESTION,
+  'roles:read',
+  'room-info:manage',
+  'privacy-terms:manage',
+  'doubts:manage',
+]
+
 interface ConPermisos {
   permisos?: readonly Permiso[]
 }
@@ -79,4 +95,15 @@ export function permisosPorRango(rango: number): Permiso[] {
   return PERMISOS.filter((permiso) => rango >= RANGO_MINIMO_POR_PERMISO[permiso.valor]).map(
     (permiso) => permiso.valor,
   )
+}
+
+export function rutaPrincipalDeGestion(usuario: ConPermisos | null | undefined): string {
+  if (!tieneAlgunPermiso(usuario, PERMISOS_ADMINISTRACION)) return '/'
+  if (tieneAlgunPermiso(usuario, PERMISOS_GESTION)) return '/gestion'
+  if (tieneAlgunPermiso(usuario, PERMISOS_USUARIOS)) return '/admin'
+  if (tienePermiso(usuario, 'roles:read')) return '/roles'
+  if (tienePermiso(usuario, 'room-info:manage')) return '/horario'
+  if (tienePermiso(usuario, 'privacy-terms:manage')) return '/privacidad'
+  if (tienePermiso(usuario, 'doubts:manage')) return '/dudas'
+  return '/'
 }

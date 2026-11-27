@@ -15,7 +15,11 @@ import { RutaProtegida } from '../features/gestion/presentation/components/RutaP
 import { HorarioSalaPage } from '../features/sala/presentation/pages/HorarioSalaPage'
 import { PrivacidadAdminPage } from '../features/privacidad/presentation/pages/PrivacidadAdminPage'
 import { DudasSinGuiaPage } from '../features/dudas/presentation/pages/DudasSinGuiaPage'
-import { PERMISOS_GESTION, type Permiso } from '../shared/permisos'
+import {
+  PERMISOS_GESTION,
+  PERMISOS_USUARIOS,
+  type Permiso,
+} from '../shared/permisos'
 import { RaizLayout } from './RaizLayout'
 
 const PERMISOS_FORMULARIO: Permiso[] = ['guides:create', 'guides:manage']
@@ -33,7 +37,7 @@ export const router = createBrowserRouter([
       {
         path: '/admin',
         element: (
-          <RutaProtegida permisos={['users:read']}>
+          <RutaProtegida permisos={PERMISOS_USUARIOS}>
             <AdminPanelPage />
           </RutaProtegida>
         ),

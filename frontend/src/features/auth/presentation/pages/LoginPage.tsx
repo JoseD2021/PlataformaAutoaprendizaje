@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
-import { PERMISOS_GESTION, tieneAlgunPermiso, tienePermiso } from '../../../../shared/permisos'
+import { rutaPrincipalDeGestion } from '../../../../shared/permisos'
 import { useAuth } from '../context/AuthContext'
 
 export function LoginPage() {
@@ -24,12 +24,7 @@ export function LoginPage() {
   }
 
   if (usuario) {
-    const destino = tienePermiso(usuario, 'users:read')
-      ? '/admin'
-      : tieneAlgunPermiso(usuario, PERMISOS_GESTION)
-        ? '/gestion'
-        : '/'
-    return <Navigate to={destino} replace />
+    return <Navigate to={rutaPrincipalDeGestion(usuario)} replace />
   }
 
   return (

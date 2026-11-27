@@ -13,6 +13,7 @@ import {
 import { useAuth } from '../../features/auth/presentation/context/AuthContext'
 import {
   PERMISOS_GESTION,
+  PERMISOS_USUARIOS,
   tieneAlgunPermiso,
   type Permiso,
 } from '../permisos'
@@ -44,7 +45,7 @@ export function NavegacionVolver({
       permisos: ['doubts:manage'],
       siempreVisible: true,
     },
-    { ruta: '/admin', etiqueta: 'Gestionar usuarios', Icono: Users, permisos: ['users:read'] },
+    { ruta: '/admin', etiqueta: 'Gestionar usuarios', Icono: Users, permisos: PERMISOS_USUARIOS },
     { ruta: '/gestion', etiqueta: 'Guías y categorías', Icono: BookOpen, permisos: PERMISOS_GESTION },
     { ruta: '/horario', etiqueta: 'Horario de la sala', Icono: Clock, permisos: ['room-info:manage'] },
     { ruta: '/roles', etiqueta: 'Gestionar roles', Icono: FileText, permisos: ['roles:read'] },
