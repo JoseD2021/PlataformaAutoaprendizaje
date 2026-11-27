@@ -16,6 +16,7 @@ interface AuthContextValor {
   aceptarTerminosPrivacidad: (version: string) => Promise<void>
   cambiarNombre: (nombreCompleto: string) => Promise<void>
   cambiarContrasena: (contrasenaActual: string, contrasenaNueva: string) => Promise<void>
+  eliminarCuenta: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValor | null>(null)
@@ -101,6 +102,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryClient.clear()
   }
 
+  async function eliminarCuenta() {
+    setError(null)
+    await container.eliminarCuenta.execute()
+    limpiarTokens()
+    setUsuario(null)
+    queryClient.clear()
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -113,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         aceptarTerminosPrivacidad,
         cambiarNombre,
         cambiarContrasena,
+        eliminarCuenta,
       }}
     >
       {children}

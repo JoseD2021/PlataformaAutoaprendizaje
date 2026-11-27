@@ -7,6 +7,7 @@ function crearRepo(data: unknown = undefined) {
     get: vi.fn().mockResolvedValue({ data }),
     post: vi.fn().mockResolvedValue({ data }),
     patch: vi.fn().mockResolvedValue({ data }),
+    delete: vi.fn().mockResolvedValue({ data }),
   }
   return { http, repo: new RolesHttpRepository(http as unknown as AxiosInstance) }
 }
@@ -55,5 +56,13 @@ describe('RolesHttpRepository', () => {
     expect(http.patch).toHaveBeenCalledWith('/roles/personal%20clena/permissions', {
       permissions: ['guides:manage'],
     })
+  })
+
+  it('elimina un rol con DELETE /roles/:role', async () => {
+    const { repo, http } = crearRepo()
+
+    await repo.eliminar('personal clena')
+
+    expect(http.delete).toHaveBeenCalledWith('/roles/personal%20clena')
   })
 })

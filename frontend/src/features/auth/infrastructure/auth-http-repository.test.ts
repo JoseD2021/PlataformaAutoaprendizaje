@@ -133,6 +133,19 @@ describe('AuthHttpRepository', () => {
     })
   })
 
+  it('eliminarCuenta llama a DELETE /auth/me y limpia los tokens', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    const httpMock = {
+      delete: vi.fn().mockResolvedValue({ data: undefined } as AxiosResponse),
+    } as unknown as AxiosInstance
+
+    const repo = new AuthHttpRepository(httpMock)
+    await repo.eliminarCuenta()
+
+    expect(httpMock.delete).toHaveBeenCalledWith('/auth/me')
+    expect(obtenerTokens()).toBeNull()
+  })
+
   it('obtenerPerfil llama a /auth/me y mapea permisos y rango', async () => {
     const usuarioBackend = {
       id: 'u3',

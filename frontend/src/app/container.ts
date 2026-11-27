@@ -14,6 +14,7 @@ import { AceptarTerminosPrivacidad } from '../features/auth/application/aceptar-
 import { CambiarContrasena } from '../features/auth/application/cambiar-contrasena'
 import { CambiarNombre } from '../features/auth/application/cambiar-nombre'
 import { CerrarSesion } from '../features/auth/application/cerrar-sesion'
+import { EliminarCuenta } from '../features/auth/application/eliminar-cuenta'
 import { IniciarSesion } from '../features/auth/application/iniciar-sesion'
 import { ObtenerPerfil } from '../features/auth/application/obtener-perfil'
 import { RegistrarUsuario } from '../features/auth/application/registrar-usuario'
@@ -42,6 +43,7 @@ import { RolesHttpRepository } from '../features/roles/infrastructure/roles-http
 import { ListarRolesDetalle } from '../features/roles/application/listar-roles'
 import { CrearRol } from '../features/roles/application/crear-rol'
 import { ActualizarPermisosRol } from '../features/roles/application/actualizar-permisos-rol'
+import { EliminarRol } from '../features/roles/application/eliminar-rol'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
 import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
@@ -81,6 +83,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     aceptarTerminosPrivacidad: new AceptarTerminosPrivacidad(authRepo),
     cambiarNombre: new CambiarNombre(authRepo),
     cambiarContrasena: new CambiarContrasena(authRepo),
+    eliminarCuenta: new EliminarCuenta(authRepo),
     listarFavoritos: new ListarFavoritos(favoritosRepo),
     agregarFavorito: new AgregarFavorito(favoritosRepo),
     quitarFavorito: new QuitarFavorito(favoritosRepo),
@@ -102,6 +105,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     listarRolesDetalle: new ListarRolesDetalle(rolesRepo),
     crearRol: new CrearRol(rolesRepo),
     actualizarPermisosRol: new ActualizarPermisosRol(rolesRepo),
+    eliminarRol: new EliminarRol(rolesRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
     pedirAyuda: new PedirAyuda(ayudaRepo),
     listarAyudasPendientes: new ListarAyudasPendientes(ayudaRepo),

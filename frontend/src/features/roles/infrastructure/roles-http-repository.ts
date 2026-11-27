@@ -49,4 +49,8 @@ export class RolesHttpRepository implements RolesRepository {
     )
     return mapearRol(data)
   }
+
+  async eliminar(rol: string): Promise<void> {
+    await this.http.delete(`/roles/${encodeURIComponent(rol)}`)
+  }
 }

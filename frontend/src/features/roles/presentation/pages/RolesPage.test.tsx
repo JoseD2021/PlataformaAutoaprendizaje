@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import type { AxiosResponse } from 'axios'
+import { AxiosError, type AxiosResponse } from 'axios'
 import { RolesPage } from './RolesPage'
 import { httpClient } from '../../../../shared/http/client'
 import { guardarTokens, limpiarTokens } from '../../../../shared/http/token-storage'
@@ -151,6 +151,42 @@ describe('RolesPage', () => {
     expect(within(detalles).getByLabelText('Enviar solicitudes de ayuda')).toBeEnabled()
   })
 
+  it('elimina un rol inferior después de confirmar', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    simularBackend(ADMIN)
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    const borrar = vi.spyOn(httpClient, 'delete').mockResolvedValue({} as AxiosResponse)
+
+    renderizar()
+    const resumen = await screen.findByText('Personal de la sala')
+    fireEvent.click(resumen)
+    const detalles = resumen.closest('details') as HTMLElement
+
+    fireEvent.click(within(detalles).getByRole('button', { name: 'Eliminar rol Personal de la sala' }))
+
+    await waitFor(() => expect(borrar).toHaveBeenCalledWith('/roles/personal_clena'))
+    expect(await screen.findByText('Rol «Personal de la sala» eliminado correctamente.')).toBeInTheDocument()
+  })
+
+  it('muestra el error del servidor si no se puede eliminar el rol', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    simularBackend(ADMIN)
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    const error = new AxiosError('Conflicto', 'ERR_BAD_REQUEST', undefined, undefined, {
+      data: { error: { message: 'El rol tiene usuarios asignados.' } },
+    } as AxiosResponse)
+    vi.spyOn(httpClient, 'delete').mockRejectedValue(error)
+
+    renderizar()
+    const resumen = await screen.findByText('Personal de la sala')
+    fireEvent.click(resumen)
+    const detalles = resumen.closest('details') as HTMLElement
+
+    fireEvent.click(within(detalles).getByRole('button', { name: 'Eliminar rol Personal de la sala' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('El rol tiene usuarios asignados.')
+  })
+
   it('no permite cambiar los permisos del rol con igual jerarquía', async () => {
     guardarTokens({ accessToken: 'a', refreshToken: 'r' })
     simularBackend(ADMIN)
@@ -162,5 +198,18 @@ describe('RolesPage', () => {
 
     expect(within(detalles).getByLabelText('Crear usuarios')).toBeDisabled()
     expect(within(detalles).getByRole('button', { name: 'Guardar permisos' })).toBeDisabled()
+    expect(within(detalles).getByRole('button', { name: 'Eliminar rol Administrador' })).toBeDisabled()
+  })
+
+  it('no permite eliminar los roles reservados', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    simularBackend(ADMIN)
+
+    renderizar()
+    const resumen = await screen.findByText('Usuario')
+    fireEvent.click(resumen)
+    const detalles = resumen.closest('details') as HTMLElement
+
+    expect(within(detalles).getByRole('button', { name: 'Eliminar rol Usuario' })).toBeDisabled()
   })
 })

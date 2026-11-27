@@ -79,6 +79,18 @@ describe('AdminPanelPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('muestra el panel a quien solo tiene permiso para cambiar roles', async () => {
+    guardarTokens({ accessToken: 'a', refreshToken: 'r' })
+    simularBackend({ ...ADMIN, permissions: ['users:update-role'] })
+
+    renderizar()
+
+    expect(
+      await screen.findByRole('heading', { name: 'Panel de administración' }),
+    ).toBeInTheDocument()
+    expect(await screen.findByLabelText('Rol de Ana Gómez')).toBeEnabled()
+  })
+
   it('redirige al inicio si el usuario no tiene el permiso', async () => {
     guardarTokens({ accessToken: 'a', refreshToken: 'r' })
     simularBackend(ANA)
