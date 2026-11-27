@@ -88,7 +88,7 @@ describe('AdminPanelPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Panel de administración' }),
     ).toBeInTheDocument()
-    expect(screen.getByLabelText('Rol de Ana Gómez')).toBeEnabled()
+    expect(await screen.findByLabelText('Rol de Ana Gómez')).toBeEnabled()
   })
 
   it('redirige al inicio si el usuario no tiene el permiso', async () => {
