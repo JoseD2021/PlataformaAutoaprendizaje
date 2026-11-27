@@ -91,3 +91,12 @@
   flex-wrap: wrap;
   margin-top: 1rem;
 }
+.btn--peligro {
+  border-color: var(--color-rojo);
+  color: var(--color-rojo);
+}
+.btn--peligro:not(:disabled):hover {
+  background: var(--color-rojo);
+  border-color: var(--color-rojo);
+  color: #fff;
+}

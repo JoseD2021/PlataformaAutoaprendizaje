@@ -34,3 +34,14 @@ export function useActualizarPermisosRol() {
     },
   })
 }
+
+export function useEliminarRol() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (rol: string) => container.eliminarRol.execute(rol),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CLAVE_ROLES })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'roles'] })
+    },
+  })
+}

@@ -43,6 +43,7 @@ import { RolesHttpRepository } from '../features/roles/infrastructure/roles-http
 import { ListarRolesDetalle } from '../features/roles/application/listar-roles'
 import { CrearRol } from '../features/roles/application/crear-rol'
 import { ActualizarPermisosRol } from '../features/roles/application/actualizar-permisos-rol'
+import { EliminarRol } from '../features/roles/application/eliminar-rol'
 import { PrivacidadHttpRepository } from '../features/privacidad/infrastructure/privacidad-http-repository'
 import { ActualizarTerminosPrivacidad } from '../features/privacidad/application/actualizar-terminos-privacidad'
 import { ObtenerTerminosPrivacidad } from '../features/privacidad/application/obtener-terminos-privacidad'
@@ -104,6 +105,7 @@ export function crearContenedor(repoOverride?: GuiasRepository) {
     listarRolesDetalle: new ListarRolesDetalle(rolesRepo),
     crearRol: new CrearRol(rolesRepo),
     actualizarPermisosRol: new ActualizarPermisosRol(rolesRepo),
+    eliminarRol: new EliminarRol(rolesRepo),
     obtenerTerminosPrivacidad: new ObtenerTerminosPrivacidad(privacidadRepo),
     pedirAyuda: new PedirAyuda(ayudaRepo),
     listarAyudasPendientes: new ListarAyudasPendientes(ayudaRepo),

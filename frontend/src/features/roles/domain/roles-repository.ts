@@ -5,4 +5,5 @@ export interface RolesRepository {
   listar(): Promise<RolDetalle[]>
   crear(datos: DatosNuevoRol): Promise<RolDetalle>
   actualizarPermisos(rol: string, permisos: Permiso[]): Promise<RolDetalle>
+  eliminar(rol: string): Promise<void>
 }

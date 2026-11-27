@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
+import { Trash2 } from 'lucide-react'
 import { PageLayout } from '../../../../shared/components/PageLayout'
 import { NavegacionVolver } from '../../../../shared/components/NavegacionVolver'
 import { RANGO_MINIMO_POR_PERMISO, tienePermiso } from '../../../../shared/permisos'
@@ -10,10 +11,13 @@ import { GRUPOS_PERMISOS, PERMISOS, type Permiso } from '../../domain/permisos'
 import {
   useActualizarPermisosRol,
   useCrearRol,
+  useEliminarRol,
   useRolesDetalle,
 } from '../hooks/useRoles'
 import '../../../admin/presentation/admin.css'
 import '../roles.css'
+
+const ROLES_RESERVADOS = ['administrador', 'usuario']
 
 function alternar(lista: Permiso[], valor: Permiso): Permiso[] {
   return lista.includes(valor) ? lista.filter((permiso) => permiso !== valor) : [...lista, valor]
@@ -80,6 +84,7 @@ export function RolesPage() {
   const roles = useRolesDetalle()
   const crearRol = useCrearRol()
   const actualizarPermisos = useActualizarPermisosRol()
+  const eliminarRol = useEliminarRol()
 
   const [slug, setSlug] = useState('')
   const [nombre, setNombre] = useState('')
@@ -93,6 +98,9 @@ export function RolesPage() {
   const [avisoPermisos, setAvisoPermisos] = useState('')
   const [errorPermisos, setErrorPermisos] = useState('')
   const [editando, setEditando] = useState('')
+  const [avisoEliminar, setAvisoEliminar] = useState('')
+  const [errorEliminar, setErrorEliminar] = useState('')
+  const [borrando, setBorrando] = useState('')
 
   if (cargando) return null
   if (!usuario || !tienePermiso(usuario, 'roles:read')) return <Navigate to="/" replace />
@@ -104,6 +112,7 @@ export function RolesPage() {
   )
   const puedeCrear = tienePermiso(usuario, 'roles:create')
   const puedeActualizar = tienePermiso(usuario, 'roles:update-permissions')
+  const puedeBorrar = tienePermiso(usuario, 'roles:delete')
 
   async function crear(evento: FormEvent) {
     evento.preventDefault()
@@ -144,6 +153,21 @@ export function RolesPage() {
       setErrorPermisos(obtenerMensajeError(err))
     } finally {
       setEditando('')
+    }
+  }
+
+  async function borrar(rol: RolDetalle) {
+    if (!window.confirm(`¿Eliminar el rol «${rol.nombre}»? Esta acción no se puede deshacer.`)) return
+    setAvisoEliminar('')
+    setErrorEliminar('')
+    setBorrando(rol.rol)
+    try {
+      await eliminarRol.mutateAsync(rol.rol)
+      setAvisoEliminar(`Rol «${rol.nombre}» eliminado correctamente.`)
+    } catch (err) {
+      setErrorEliminar(obtenerMensajeError(err))
+    } finally {
+      setBorrando('')
     }
   }
 
@@ -223,9 +247,11 @@ export function RolesPage() {
 
         <section className="roles-seccion" aria-labelledby="roles-actuales-titulo">
           <h2 id="roles-actuales-titulo">Permisos de los roles existentes</h2>
-          <p>Abre un rol para revisar y cambiar sus permisos.</p>
+          <p>Abre un rol para revisar, cambiar sus permisos o eliminarlo.</p>
           {avisoPermisos && <p className="admin-aviso" role="status">{avisoPermisos}</p>}
           {errorPermisos && <p className="admin-mensaje" role="alert">{errorPermisos}</p>}
+          {avisoEliminar && <p className="admin-aviso" role="status">{avisoEliminar}</p>}
+          {errorEliminar && <p className="admin-mensaje" role="alert">{errorEliminar}</p>}
           {roles.isLoading && <p role="status">Cargando roles…</p>}
           {roles.isError && (
             <p className="admin-mensaje" role="alert">No se pudo cargar la lista de roles.</p>
@@ -233,6 +259,8 @@ export function RolesPage() {
           {roles.data?.map((rol) => {
             const seleccionados = cambios[rol.rol] ?? rol.permisos
             const editable = rol.rango < rangoActor && puedeActualizar
+            const borrable =
+              rol.rango < rangoActor && puedeBorrar && !ROLES_RESERVADOS.includes(rol.rol)
             return (
               <details className="rol-detalle" key={rol.rol}>
                 <summary>
@@ -267,6 +295,16 @@ export function RolesPage() {
                       onClick={() => guardarPermisos(rol)}
                     >
                       {editando === rol.rol ? 'Guardando…' : 'Guardar permisos'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--peligro btn-sm"
+                      aria-label={`Eliminar rol ${rol.nombre}`}
+                      disabled={!borrable || borrando === rol.rol}
+                      onClick={() => borrar(rol)}
+                    >
+                      <Trash2 aria-hidden size={16} />
+                      {borrando === rol.rol ? 'Eliminando…' : 'Eliminar'}
                     </button>
                   </div>
                 </div>
